@@ -1,6 +1,5 @@
 import { IUserRepository } from "../../interfaces/IUserRepsitory";
-import { UserEntity, AccountSetup } from "../../entities/User";
-import { CreateUserDTO } from "../../dtos/UserDTO";
+
 
 export class AddUserCoursesIdsUseCase {
   constructor(private userRepository: IUserRepository) {}
