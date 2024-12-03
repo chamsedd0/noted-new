@@ -1,16 +1,16 @@
-import { TimeSlot } from "./types";
+import { TimeStamp } from "./types";
 
 export class Event {
   id: string;
   title: string;
   color: string;
-  timestamps: TimeSlot[];
+  timestamps: TimeStamp[];
 
   constructor(
     id: string,
     title: string,
     color: string,
-    timestamps: TimeSlot[]
+    timestamps: TimeStamp[]
   ) {
     this.id = id;
     this.title = title;
