@@ -1,6 +1,5 @@
 import { IUserRepository } from "../../interfaces/IUserRepsitory";
 import { UserDTO } from "../../dtos/UserDTO";
-import { AccountSetupStage } from "../../entities/User";
 
 export class GetUserUseCase {
   constructor(private userRepository: IUserRepository) {}
@@ -9,7 +8,7 @@ export class GetUserUseCase {
     const user = await this.userRepository.getUser(uid);
     if (!user) return null;
 
-    const accountSetup = user.getAccountSetup();
+    const accountSetup = user.getAccountSetup() ? user.getAccountSetup() : undefined;
     
     return {
       uid: user.getUid(),
@@ -17,10 +16,7 @@ export class GetUserUseCase {
       email: user.getEmail(),
       birthDate: user.getBirthDate(),
       photoUrl: user.getPhotoUrl(),
-      accountSetup: accountSetup ? {
-        accountSetup: accountSetup.accountSetup,
-        stage: accountSetup.stage as AccountSetupStage
-      } : undefined
+      accountSetup: accountSetup,
     };
   }
 }
