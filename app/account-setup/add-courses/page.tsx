@@ -2,7 +2,7 @@
 
 
 import styled from "styled-components";
-import { Key, useEffect, useState } from "react";
+import { Key, useState } from "react";
 import Footer from "@/app/components/preLoginFooter";
 import NextButtonComponent from "@/app/components/button/nextButton";
 import AddButtonComponent from "@/app/components/button/addButton";
@@ -228,7 +228,7 @@ export default function AddCoursePage() {
             <InputsContainer>
 
                 <InputCourseComponent setVariable={setNewCourseName} title='Course Name' value={newCourseName} placeHolder='Data Structures and algorithms' type='text'></InputCourseComponent>
-                <AddButtonComponent variable={newCourseName} f={handleAddCourse}></AddButtonComponent>
+                <AddButtonComponent f={handleAddCourse}></AddButtonComponent>
 
             </InputsContainer>
 

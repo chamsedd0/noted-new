@@ -14,11 +14,10 @@ const AddButton = styled(Button)`
 `;
 
 interface ButtonComponentProps {
-  variable: string;
   f: (value: void) => void;
 }
 
-const AddButtonComponent = ({ variable, f }: ButtonComponentProps) => {
+const AddButtonComponent = ({ f }: ButtonComponentProps) => {
     return (
       <AddButton onClick={() => {
         

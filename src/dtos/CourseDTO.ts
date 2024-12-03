@@ -1,4 +1,3 @@
-import { TimeStamp } from "../entities/types";
 
 export interface CourseDTO {
   uid: string;
