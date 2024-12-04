@@ -1,14 +1,10 @@
-import { IUserRepository } from "../../interfaces/IUserRepsitory";
+import { IUserRepository } from "@/src/interfaces/IUserRepsitory";
+import { CourseDTO } from "../../dtos/CourseDTO";
 
-
-export class AddUserCoursesIdsUseCase {
+export class AddUserCoursesUseCase {
   constructor(private userRepository: IUserRepository) {}
 
-  async execute(
-    user_id: string,
-    ids: string[],
-  ): Promise<void> {
-    
-    await this.userRepository.addUserCourseIds(ids, user_id);
+  async execute(user_id: string, courses: CourseDTO[]): Promise<void> {
+    await this.userRepository.addUserCourses(user_id, courses);
   }
 }

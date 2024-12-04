@@ -1,8 +1,10 @@
 import { IUserRepository } from "../interfaces/IUserRepsitory";
 import { UserEntity } from "../entities/User";
+import { CourseDTO } from "../dtos/CourseDTO";
 import { db } from "../../lib/firebase-admin";
 
 export class FirebaseUserRepository implements IUserRepository {
+  
   async createUser(user: UserEntity): Promise<void> {
     const userRef = db.collection("users").doc(user.getUid());
     await userRef.set({
@@ -46,11 +48,26 @@ export class FirebaseUserRepository implements IUserRepository {
     await db.collection("users").doc(id).delete();
   }
 
-  async addUserCourseIds(ids: string[], user_id: string): Promise<void> {
+  async addUserCourses(user_id: string, courses: CourseDTO[]): Promise<void> {
     const userRef = db.collection("users").doc(user_id);
-    await userRef.set({
-      courseIds: ids,
-    }, { merge: true });
+    const userDoc = await userRef.get();
 
+    if (!userDoc.exists) {
+      throw new Error("User not found");
+    }
+
+    const userData = userDoc.data();
+    const existingCourses = userData?.courses || [];
+
+    const newCourses = courses.map((course) => ({
+      uid: course.uid,
+      title: course.title,
+      color: course.color,
+      createdAt: course.createdAt.toISOString(),
+    }));
+
+    await userRef.update({
+      courses: [...existingCourses, ...newCourses],
+    });
   }
 }

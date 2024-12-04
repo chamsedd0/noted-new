@@ -9,8 +9,7 @@ import AddButtonComponent from "@/app/components/button/addButton";
 
 
 import InputCourseComponent from "@/app/components/input/inputCourse";
-import { createCourse } from "./_actions/createCourseAction";
-import { addUserCourseIdsAction } from "./_actions/addUserCourseIdsAction";
+import { addUserCoursesAction } from "./_actions/addUserCourseIdsAction";
 
 
 
@@ -178,36 +177,22 @@ export default function AddCoursePage() {
     };
 
     const handleAddingCoursesToUsers = async () => {
-      
-      // Creating Courses from CourseNames and Storing them in db
-      const ids: string[] = [];
-
+      const coursesData = courseNames.map((courseName) => ({
+        title: courseName,
+        color: "gray",
+      }));
+    
       try {
-
-        const promises = courseNames.map(async (courseName) => {
-            const id = await createCourse({title: courseName, color: 'gray'});
-            ids.push(id);
-
-        })
-
-        await Promise.all(promises);
-
-      
-        // Adding course Ids to user
-        await addUserCourseIdsAction(ids);
-        
+        await addUserCoursesAction(coursesData);
       } catch (error) {
         console.error("Error adding courses:", error);
         alert("Failed to add courses. Please try again.");
       }
+    };
+    
 
-        
 
-        
 
-        
-
-    }
 
   return (
     <Box>
