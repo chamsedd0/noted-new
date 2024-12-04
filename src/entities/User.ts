@@ -1,3 +1,5 @@
+import { CourseEntity } from "./Course";
+
 export type AccountSetup = {
   accountSetupCompleted: boolean;
   stage: AccountSetupStage;
@@ -24,7 +26,7 @@ export class UserEntity {
   private birthDate: Date;
   private photoUrl?: string;
   private plan?: PlanType;
-  private coursesIds: string[] = [];
+  private courses: CourseEntity[] = [];
 
   constructor(
     uid: string,
@@ -89,10 +91,10 @@ export class UserEntity {
       stage,
     };
   }
-  public getCoursesIds() {
-    return this.coursesIds;
+  public getCourses() {
+    return this.courses;
   }
-  public setCoursesIds(coursesIds: string[]) {
-    this.coursesIds = coursesIds;
+  public setCourses(courses: CourseEntity[]) {
+    this.courses = courses;
   }
 }
