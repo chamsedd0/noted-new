@@ -209,9 +209,6 @@ export default function AddCoursePage() {
 
     }
 
-
-
-
   return (
     <Box>
 
