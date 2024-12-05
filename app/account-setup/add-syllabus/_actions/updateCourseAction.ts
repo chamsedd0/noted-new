@@ -1,7 +1,7 @@
 "use server";
 
-import { courseApi } from "@/api/FireBassCourseApi";
-import { userApi } from "@/api/FirebaseUserApi";
+import { courseApi } from "@/api/FireBaseCourseAPI";
+import { userApi } from "@/api/FireBaseUserAPI";
 import { AccountSetupStage } from "@/types/User";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { redirect } from "next/navigation";
@@ -12,6 +12,7 @@ export async function updateCourseSyllabus(
   syllabus: string
 ): Promise<void> {
   try {
+    // Verify the id token
     const decodedToken = await verifyIdToken(idToken);
     if (!decodedToken) {
       redirect("/login");

@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { User, AccountSetupStage, AccountSetup } from "@/types/User";
-import { userApi } from "@/api/FirebaseUserApi";
+import { userApi } from "@/api/FireBaseUserAPI";
 import { verifyIdToken } from "@/lib/firebase-admin";
 export async function isNewUserAction(
   user: User,
@@ -15,6 +15,7 @@ export async function isNewUserAction(
     throw new Error("Unauthorized");
   }
 
+  // Get existing user
   const existingUser = await userApi.getUser(decodedToken.uid);
 
   if (!existingUser) {
@@ -22,6 +23,8 @@ export async function isNewUserAction(
       completed: false,
       stage: AccountSetupStage.PERSONAL_INFO,
     };
+
+    // Create new user
     await userApi.createUser({ ...user, accountSetup });
 
     redirect("/account-setup/personal-info");
