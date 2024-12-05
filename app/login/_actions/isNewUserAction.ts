@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { User, AccountSetupStage, AccountSetup } from "@/types/User";
+import { User, AccountSetupStage } from "@/types/User";
 import { userApi } from "@/api/FireBaseUserAPI";
 import { verifyIdToken } from "@/lib/firebase-admin";
 export async function isNewUserAction(
@@ -19,23 +19,21 @@ export async function isNewUserAction(
   const existingUser = await userApi.getUser(decodedToken.uid);
 
   if (!existingUser) {
-    const accountSetup: AccountSetup = {
-      completed: false,
-      stage: AccountSetupStage.PERSONAL_INFO,
-    };
-
     // Create new user
-    await userApi.createUser({ ...user, accountSetup });
+    await userApi.createUser({
+      ...user,
+      accountSetupStage: AccountSetupStage.PERSONAL_INFO,
+    });
 
-    redirect("/account-setup/personal-info");
+    redirect("/personal-info");
   }
 
   const stage =
-    existingUser.accountSetup?.stage ?? AccountSetupStage.PERSONAL_INFO;
+    existingUser.accountSetupStage ?? AccountSetupStage.PERSONAL_INFO;
 
-  if (existingUser.accountSetup?.completed) {
+  if (existingUser.accountSetupStage === AccountSetupStage.COMPLETED) {
     redirect("/dashboard");
   }
 
-  redirect(`/account-setup/${stage}`);
+  redirect(`/${stage}`);
 }

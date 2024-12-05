@@ -11,14 +11,12 @@ export async function updateUser(
   user: PersonalInfoFormValues
 ): Promise<void> {
   try {
-    // Verify the ID token to get the user's UID from Firebase-admin SDK which runs on the server
     const decodedToken = await verifyIdToken(idToken);
 
     if (!decodedToken) {
       redirect("/login");
     }
 
-    // Only update the fields that are provided in the form
     const updates = {
       ...(user.firstName || user.lastName
         ? {
@@ -27,15 +25,12 @@ export async function updateUser(
         : {}),
       ...(user.email ? { email: user.email } : {}),
       ...(user.birthDate ? { birthDate: user.birthDate } : {}),
-      accountSetup: {
-        completed: false,
-        stage: AccountSetupStage.ADD_COURSES,
-      },
+      accountSetupStage: AccountSetupStage.ADD_COURSES,
     };
 
     await userApi.updateUser(decodedToken.uid, updates);
 
-    redirect("/account-setup/add-courses");
+    redirect("/add-courses");
   } catch (error) {
     console.error("Error updating user:", error);
     throw error;

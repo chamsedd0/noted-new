@@ -12,10 +12,6 @@ export enum Plan {
   PREMIUM = "Premium Plan"
 }
 
-export type AccountSetup = {
-  completed: boolean;
-  stage: AccountSetupStage;
-};
 
 export type User = {
   uid: string;
@@ -23,6 +19,6 @@ export type User = {
   email: string;
   photoUrl: string | null;
   birthDate: string | null;
-  accountSetup: AccountSetup | null;
+  accountSetupStage: AccountSetupStage | null;
   plan: Plan | null;
 };

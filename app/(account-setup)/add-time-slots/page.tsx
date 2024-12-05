@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "@/app/hooks/useAuth";
+import { useAuthContext } from "../layout";
 import { Course } from "@/types/Course";
 import { TimeSlot } from "@/types/Time";
 import { updateCourseTimes } from "./_actions/updateCourseTimesAction";
@@ -172,7 +172,8 @@ interface CourseTime {
 }
 
 export default function AddTimeSlots() {
-  const { idToken, loading } = useAuth();
+  const { idToken } = useAuthContext();
+  const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [courseTimes, setCourseTimes] = useState<CourseTime[]>([]);
@@ -187,6 +188,8 @@ export default function AddTimeSlots() {
         setCourses(userCourses);
       } catch (error) {
         console.error("Error loading courses:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -230,7 +233,11 @@ export default function AddTimeSlots() {
 
     try {
       for (const courseTime of courseTimes) {
-        await updateCourseTimes(idToken, courseTime.courseId, courseTime.timeSlots);
+        await updateCourseTimes(
+          idToken,
+          courseTime.courseId,
+          courseTime.timeSlots
+        );
       }
     } catch (error) {
       console.error("Error updating times:", error);
@@ -295,7 +302,7 @@ export default function AddTimeSlots() {
               ))}
             </TimeWrapper>
 
-            <NextButtonComponent event={handleSaveCourse}  />
+            <NextButtonComponent event={handleSaveCourse} />
           </>
         )}
       </Form>

@@ -10,7 +10,9 @@ import InputComponent from "@/app/components/inputs/input";
 import { getUser } from "./_actions/getUserAction";
 import { personalInfoSchema, type PersonalInfoFormValues } from "./schema";
 import { updateUser } from "./_actions/updateUserAction";
-import { useAuth } from "@/app/hooks/useAuth";
+import { useAuthContext } from "../layout";
+import { redirect } from "next/navigation";
+import { AccountSetupStage } from "@/types/User";
 
 const Box = styled.div`
   background-color: #383838;
@@ -102,38 +104,36 @@ const Loading = styled.div`
 `;
 
 export default function PersonalInfo() {
+  const { idToken } = useAuthContext();
+  const [loading, setLoading] = useState(true);
+
   const [formData, setFormData] = useState<PersonalInfoFormValues>({
     firstName: "",
     lastName: "",
     email: "",
     birthDate: new Date().toISOString().split("T")[0],
   });
-  const { idToken, loading } = useAuth();
 
   useEffect(() => {
-    const loadUserData = async () => {
-      if (!idToken) return;
-
-      const userData = await getUser(idToken);
-      if (userData) {
-        const nameParts = userData.name.split(" ");
-        setFormData({
-          firstName: nameParts[0] || "",
-          lastName: nameParts.slice(1).join(" ") || "",
-          email: userData.email,
-          birthDate: userData.birthDate
-            ? new Date(userData.birthDate).toISOString().split("T")[0]
-            : new Date().toISOString().split("T")[0],
-        });
+    const getUserData = async () => {
+      if (idToken) {
+        const userData = await getUser(idToken);
+        if (userData) {
+          setFormData({
+            firstName: userData.name.split(" ")[0],
+            lastName: userData.name.split(" ")[1],
+            email: userData.email,
+            birthDate:
+              userData.birthDate || new Date().toISOString().split("T")[0],
+          });
+        }
       }
+      setLoading(false);
     };
-
-    loadUserData();
+    getUserData();
   }, [idToken]);
 
-  if (loading) {
-    return <Loading>Loading...</Loading>;
-  }
+  if (loading) return <Loading>Loading...</Loading>;
 
   return (
     <Box>

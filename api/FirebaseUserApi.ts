@@ -8,7 +8,7 @@ async function createUser(user: User): Promise<void> {
     name: user.name,
     email: user.email,
     photoUrl: user.photoUrl,
-    accountSetup: user.accountSetup,
+    accountSetupStage: user.accountSetupStage,
   });
 }
 

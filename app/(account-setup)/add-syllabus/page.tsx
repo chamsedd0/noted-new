@@ -2,10 +2,10 @@
 
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useAuthContext } from "../layout";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import UploadButtonComponent from "@/app/components/buttons/uploadButton";
-import { useAuth } from "@/app/hooks/useAuth";
 import { Course } from "@/types/Course";
 import { getCourses } from "./_actions/getCoursesAction";
 import { updateCourseSyllabus } from "./_actions/updateCourseAction";
@@ -190,7 +190,7 @@ const DUMMY_SYLLABUS = "Sample syllabus content";
 export default function AddSyllabusPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-  const { idToken } = useAuth();
+  const { idToken } = useAuthContext();
 
   useEffect(() => {
     const loadCourses = async () => {

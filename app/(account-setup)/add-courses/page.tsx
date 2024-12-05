@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { useState } from "react";
-import { useAuth } from "@/app/hooks/useAuth";
+import { useAuthContext } from "../layout";
 import { createCourses } from "./_actions/createCoursesAction";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import AddButtonComponent from "@/app/components/buttons/addButton";
@@ -126,21 +126,10 @@ const RemoveButtonComponent = styled.button`
   }
 `;
 
-const Loading = styled.div`
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 40px;
-  font-weight: 700;
-`;
-
 export default function AddCoursePage() {
   const [newCourseName, setNewCourseName] = useState<string>("");
   const [courseTitles, setCourseTitles] = useState<string[]>([]);
-  const { idToken, loading } = useAuth();
+  const { idToken } = useAuthContext();
 
   // add course
   const handleAddCourse = () => {
@@ -171,10 +160,6 @@ export default function AddCoursePage() {
       alert("Failed to submit courses. Please try again.");
     }
   };
-
-  if (loading) {
-    return <Loading>Loading...</Loading>;
-  }
 
   return (
     <Box>

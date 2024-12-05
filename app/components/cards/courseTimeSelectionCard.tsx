@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import type { TimeStamp } from "@/types/Time";
-// Main container for the card
+
 const Card = styled.div<{ completed?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -14,7 +14,7 @@ const Card = styled.div<{ completed?: boolean }>`
   text-align: left;
   transition: all 0.3s ease;
   cursor: pointer;
-  border: 2px solid ${props => props.completed ? '#4CAF50' : 'transparent'};
+  border: 2px solid ${(props) => (props.completed ? "#4CAF50" : "transparent")};
 
   &:hover {
     background-color: #444444;
@@ -53,7 +53,12 @@ interface CourseCardProps {
   completed?: boolean;
 }
 
-const CourseCardComponent: React.FC<CourseCardProps> = ({ title, timestamps, onSelect, completed }) => {
+const CourseCardComponent: React.FC<CourseCardProps> = ({
+  title,
+  timestamps,
+  onSelect,
+  completed,
+}) => {
   return (
     <Card completed={completed} onClick={onSelect}>
       <Title>{title}</Title>
