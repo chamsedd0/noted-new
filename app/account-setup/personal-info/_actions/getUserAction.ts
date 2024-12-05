@@ -1,27 +1,19 @@
 "use server";
+import { userApi } from "@/api/FirebaseUserApi";
+import { verifyIdToken } from "@/lib/firebase-admin";
+import { User } from "@/types/User";
+export async function getUser(idToken: string): Promise<User | null> {
+  try {
+    // Verify the ID token to get the user's UID from Firebase-admin SDK which runs on the server
+    const decodedToken = await verifyIdToken(idToken);
 
-import { auth } from "@/lib/auth";
-import { FirebaseUserRepository } from "@/src/persistence/FirebaseUserRepository";
-import { GetUserUseCase } from "@/src/use-cases/user/getUserUseCase";
-import { UserDTO } from "@/src/dtos/UserDTO";
-import { redirect } from "next/navigation";
+    if (!decodedToken) {
+      return null;
+    }
 
-export async function getUser(): Promise<UserDTO> {
-  const { getUser } = await auth();
-  const user = getUser();
-
-  if (!user) {
-    redirect("/login");
+    return await userApi.getUser(decodedToken.uid);
+  } catch (error) {
+    console.error("Error getting user:", error);
+    return null;
   }
-
-  const userRepository = new FirebaseUserRepository();
-  const getUserUseCase = new GetUserUseCase(userRepository);
-
-  const userData = await getUserUseCase.execute(user.userId);
-
-  if (!userData) {
-    redirect("/login");
-  }
-
-  return userData;
 }

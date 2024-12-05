@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Button from "@/app/components/button/button";
+import Button from "@/app/components/buttons/button";
 import googleImage from "@/public/google.svg";
 import Image from "next/image";
 

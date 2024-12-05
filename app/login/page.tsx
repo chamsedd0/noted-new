@@ -1,14 +1,13 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import AuthComponent from "./authContainer";
 import Footer from "../components/preLoginFooter";
 import logo from "@/public/logo.svg";
+import { signInWithGoogle } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
+import { isNewUserAction } from "./_actions/isNewUserAction";
 
 const Box = styled.div`
   background-color: #383838;
@@ -42,29 +41,30 @@ const Box = styled.div`
 `;
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
   const handleGoogleLogin = async () => {
-    await signIn("google");
-  };
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      const { accountSetup } = session.user;
-
-      if (accountSetup?.accountSetupCompleted) {
-        router.replace("/dashboard");
-      } else {
-        router.replace(`/account-setup/${accountSetup?.stage || "personal-info"}`);
-      }
+    try {
+      const idToken = await signInWithGoogle();
+      await isNewUserAction(
+        {
+          uid: auth.currentUser!.uid,
+          name: auth.currentUser!.displayName ?? "",
+          email: auth.currentUser!.email ?? "",
+          photoUrl: auth.currentUser!.photoURL ?? "",
+          birthDate: null,
+          accountSetup: null,
+          plan: null,
+        },
+        idToken
+      );
+    } catch (error) {
+      console.error(error);
     }
-  }, [status, session]);
+  };
 
   return (
     <Box>
       <div className="upper">
-        <Image id="logo" src={logo} alt="login" />
+        <Image id="logo" src={logo} alt="logo" />
         <AuthComponent googleAuth={handleGoogleLogin} appleAuth={console.log} />
       </div>
       <Footer />

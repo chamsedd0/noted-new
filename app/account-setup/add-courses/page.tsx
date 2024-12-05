@@ -1,21 +1,15 @@
-'use client'
-
+"use client";
 
 import styled from "styled-components";
-import { Key, useState } from "react";
+import { useState } from "react";
+import { useAuth } from "@/app/hooks/useAuth";
+import { createCourses } from "./_actions/createCoursesAction";
+import NextButtonComponent from "@/app/components/buttons/nextButton";
+import AddButtonComponent from "@/app/components/buttons/addButton";
+import InputCourseComponent from "@/app/components/inputs/inputCourse";
 import Footer from "@/app/components/preLoginFooter";
-import NextButtonComponent from "@/app/components/button/nextButton";
-import AddButtonComponent from "@/app/components/button/addButton";
-
-
-import InputCourseComponent from "@/app/components/input/inputCourse";
-import { createCourse } from "./_actions/createCourseAction";
-import { addUserCourseIdsAction } from "./_actions/addUserCourseIdsAction";
-
-
 
 const Box = styled.div`
-
   background-color: #383838;
   width: 100vw;
   height: 100vh;
@@ -27,92 +21,72 @@ const Box = styled.div`
   justify-content: space-between;
   color: white;
   gap: 60px;
-  
 
   @media (max-width: 1470px) {
-        padding-bottom: 60px;
-        padding-top: 40px;
-        gap: 40px;
-    }
-
-
-`
+    padding-bottom: 60px;
+    padding-top: 40px;
+    gap: 40px;
+  }
+`;
 
 const Form = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 50%;
 
-    flex: 1;
+  .introduction {
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 24px;
-    width: 50%;
+    gap: 10px;
 
-    
+    h2 {
+      font-size: 40px;
+      font-weight: 700;
 
-    .introduction {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-
-        h2 {
-            font-size: 40px;
-            font-weight: 700;
-
-            @media (max-width: 1470px) {
-                font-size: 32px;
-            }
-        }
-        p{
-            font-size: 16px;
-            font-weight: 400;
-            max-width: 480px;
-
-            @media (max-width: 1470px) {
-                font-size: 14px;
-            }
-        }
-
+      @media (max-width: 1470px) {
+        font-size: 32px;
+      }
     }
+    p {
+      font-size: 16px;
+      font-weight: 400;
+      max-width: 480px;
 
-
-`
-
+      @media (max-width: 1470px) {
+        font-size: 14px;
+      }
+    }
+  }
+`;
 
 const Logo = styled.img`
+  position: absolute;
+  width: 165px;
+  top: 40px;
+  right: 30px;
 
-    position: absolute;
-    width: 165px;
-    top: 40px;
-    right: 30px;
-
-    @media (max-width: 1000px){
-        width: 125px;
-        
-    }
-
-`
-
+  @media (max-width: 1000px) {
+    width: 125px;
+  }
+`;
 
 const InputsContainer = styled.div`
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 24px; /* Space between form items */
 
-    display: flex;
-    align-items: end;
-    justify-content: center;
-    gap: 24px; /* Space between form items */
-    
-    width: 100%;
-    
-    
-    
-
-`
+  width: 100%;
+`;
 
 const CourseList = styled.div`
-  
   width: 100%;
   display: flex;
   align-items: start;
@@ -137,113 +111,110 @@ const CourseItem = styled.div`
 `;
 
 const RemoveButtonComponent = styled.button`
-    border: none;
-    background-color: transparent;
-    text-decoration: underline;
-    font-size: 16px;
-    font-weight: 500;
-    color: white;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: all 0.3s ease;
+  border: none;
+  background-color: transparent;
+  text-decoration: underline;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
 
-    
+  &:hover {
+    opacity: 1;
+  }
+`;
 
-    &:hover {
-        opacity: 1;
-    }
+const Loading = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 40px;
+  font-weight: 700;
 `;
 
 export default function AddCoursePage() {
+  const [newCourseName, setNewCourseName] = useState<string>("");
+  const [courseTitles, setCourseTitles] = useState<string[]>([]);
+  const { idToken, loading } = useAuth();
 
-    const [newCourseName, setNewCourseName] = useState<string>('');
-    const [courseNames, setCourseNames] = useState<string[]>([]);
-
-    
-
-    const handleAddCourse = () => {
-
-      if(newCourseName !== ''){
-        setCourseNames([...courseNames, newCourseName]);
-      } else {
-        alert('Course name can not be empty');
-      }
-
-      setNewCourseName('');
-        
-    };
-
-    const handleRemoveCourse = (name: string) => {
-        setCourseNames(courseNames.filter((courseName) => courseName !== name));
-    };
-
-    const handleAddingCoursesToUsers = async () => {
-      
-      // Creating Courses from CourseNames and Storing them in db
-      const ids: string[] = [];
-
-      try {
-
-        const promises = courseNames.map(async (courseName) => {
-            const id = await createCourse({title: courseName, color: 'gray'});
-            ids.push(id);
-
-        })
-
-        await Promise.all(promises);
-
-      
-        // Adding course Ids to user
-        await addUserCourseIdsAction(ids);
-        
-      } catch (error) {
-        console.error("Error adding courses:", error);
-        alert("Failed to add courses. Please try again.");
-      }
-
-        
-
-        
-
-        
-
+  // add course
+  const handleAddCourse = () => {
+    if (!newCourseName.trim()) {
+      alert("Course name cannot be empty");
+      return;
     }
+
+    setCourseTitles([...courseTitles, newCourseName.trim()]);
+    setNewCourseName("");
+  };
+
+  // remove course locally
+  const handleRemoveCourse = (index: number) => {
+    setCourseTitles(courseTitles.filter((_, i) => i !== index));
+  };
+
+  // Submit all courses
+  const handleSubmitCourses = async () => {
+    try {
+      // Convert titles to course objects
+      if (idToken) {
+        const courses = courseTitles.map((title) => ({ title, color: "gray" }));
+        await createCourses(idToken, courses);
+      }
+    } catch (error) {
+      console.error("Error submitting courses:", error);
+      alert("Failed to submit courses. Please try again.");
+    }
+  };
+
+  if (loading) {
+    return <Loading>Loading...</Loading>;
+  }
 
   return (
     <Box>
+      <Logo src="/logo.svg" alt="Logo" />
 
-    <Logo src="/logo.svg"></Logo>
+      <Form>
+        <div className="introduction">
+          <h2>Add your courses</h2>
+          <p>
+            Add the name of the courses you are taking, so we can find more
+            personalized information
+          </p>
+        </div>
 
+        <InputsContainer>
+          <InputCourseComponent
+            setVariable={setNewCourseName}
+            title="Course Name"
+            value={newCourseName}
+            placeHolder="Data Structures and algorithms"
+            type="text"
+          />
+          <AddButtonComponent f={handleAddCourse} />
+        </InputsContainer>
 
-        <Form>
+        <CourseList>
+          {courseTitles.map((title, index) => (
+            <CourseItem key={index}>
+              <p>{title}</p>
+              <RemoveButtonComponent onClick={() => handleRemoveCourse(index)}>
+                Remove
+              </RemoveButtonComponent>
+            </CourseItem>
+          ))}
+        </CourseList>
 
-            <div className="introduction">
-                <h2>Add your courses</h2>
-                <p>Add the name of the courses you are taking, so we can find more personalized information</p>
-            </div>
+        <NextButtonComponent event={handleSubmitCourses} />
+      </Form>
 
-            <InputsContainer>
-
-                <InputCourseComponent setVariable={setNewCourseName} title='Course Name' value={newCourseName} placeHolder='Data Structures and algorithms' type='text'></InputCourseComponent>
-                <AddButtonComponent f={handleAddCourse}></AddButtonComponent>
-
-            </InputsContainer>
-
-            <CourseList>
-                {courseNames.map((courseName: string, index: Key) => (
-                <CourseItem key={index}>
-                    <p>{courseName}</p>
-                    <RemoveButtonComponent onClick={()=>handleRemoveCourse(courseName)}>Remove</RemoveButtonComponent>
-                </CourseItem>
-                ))}
-            </CourseList>
-            
-            <NextButtonComponent event={() => handleAddingCoursesToUsers()}></NextButtonComponent>
-        </Form>
-
-       <Footer></Footer>
-        
-
+      <Footer />
     </Box>
   );
 }

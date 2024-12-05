@@ -1,0 +1,28 @@
+export enum AccountSetupStage {
+  PERSONAL_INFO = "personal-info",
+  ADD_COURSES = "add-courses",
+  ADD_SYLLABUS = "add-syllabus",
+  ADD_TIME_SLOTS = "add-time-slots",
+  CHOOSE_PLAN = "choose-plan",
+  COMPLETED = "completed"
+}
+
+export enum Plan {
+  BASIC = "Basic Plan",
+  PREMIUM = "Premium Plan"
+}
+
+export type AccountSetup = {
+  completed: boolean;
+  stage: AccountSetupStage;
+};
+
+export type User = {
+  uid: string;
+  name: string;
+  email: string;
+  photoUrl: string | null;
+  birthDate: string | null;
+  accountSetup: AccountSetup | null;
+  plan: Plan | null;
+};
