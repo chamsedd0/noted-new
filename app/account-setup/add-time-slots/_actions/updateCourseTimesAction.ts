@@ -1,7 +1,7 @@
 "use server";
 
-import { courseApi } from "@/api/FireBassCourseApi";
-import { userApi } from "@/api/FirebaseUserApi";
+import { courseApi } from "@/api/FireBaseCourseAPI";
+import { userApi } from "@/api/FireBaseUserAPI";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { AccountSetupStage } from "@/types/User";
 import { TimeSlot } from "@/types/Time";
@@ -13,11 +13,13 @@ export async function updateCourseTimes(
   timeslots: TimeSlot[]
 ): Promise<void> {
   try {
+    // Verify the id token
     const decodedToken = await verifyIdToken(idToken);
     if (!decodedToken) {
       redirect("/login");
     }
 
+    // Get existing courses
     const courses = await courseApi.getCoursesByUserId(decodedToken.uid);
     const course = courses.find((c) => c.uid === courseId);
 
@@ -25,11 +27,13 @@ export async function updateCourseTimes(
       throw new Error("Course not found");
     }
 
+    // Update the course times
     await courseApi.updateCourse(decodedToken.uid, {
       ...course,
       timeslots,
     });
 
+    // Update user account setup
     await userApi.updateUser(decodedToken.uid, {
       accountSetup: {
         completed: false,
