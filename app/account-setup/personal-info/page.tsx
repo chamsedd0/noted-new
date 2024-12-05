@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 import { Formik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import Footer from "@/app/components/preLoginFooter";
-import NextButtonComponent from "@/app/components/button/nextButton";
-import InputComponent from "@/app/components/input/input";
-import { createUser } from "./_actions/createUserAction";
+import NextButtonComponent from "@/app/components/buttons/nextButton";
+import InputComponent from "@/app/components/inputs/input";
 import { getUser } from "./_actions/getUserAction";
 import { personalInfoSchema, type PersonalInfoFormValues } from "./schema";
+import { updateUser } from "./_actions/updateUserAction";
+import { useAuth } from "@/app/hooks/useAuth";
 
 const Box = styled.div`
   background-color: #383838;
@@ -101,49 +102,51 @@ const Loading = styled.div`
 `;
 
 export default function PersonalInfo() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [initialValues, setInitialValues] = useState<PersonalInfoFormValues>({
+  const [formData, setFormData] = useState<PersonalInfoFormValues>({
     firstName: "",
     lastName: "",
     email: "",
-    birthDate: new Date(),
+    birthDate: new Date().toISOString().split("T")[0],
   });
+  const { idToken, loading } = useAuth();
 
   useEffect(() => {
-    getUser().then((userData) => {
+    const loadUserData = async () => {
+      if (!idToken) return;
+
+      const userData = await getUser(idToken);
       if (userData) {
         const nameParts = userData.name.split(" ");
-        setInitialValues({
+        setFormData({
           firstName: nameParts[0] || "",
           lastName: nameParts.slice(1).join(" ") || "",
           email: userData.email,
-          birthDate: new Date(),
+          birthDate: userData.birthDate
+            ? new Date(userData.birthDate).toISOString().split("T")[0]
+            : new Date().toISOString().split("T")[0],
         });
       }
-      setIsLoading(false);
-    });
-  }, []);
+    };
 
-  const handleFormSubmit = async (values: PersonalInfoFormValues) => {
-    try {
-      await createUser(values);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      // You might want to show an error message to the user here
-    }
-  };
+    loadUserData();
+  }, [idToken]);
 
-  if (isLoading) {
-    return <Loading>Loading ...</Loading>;
+  if (loading) {
+    return <Loading>Loading...</Loading>;
   }
 
   return (
     <Box>
       <Logo src="/logo.svg" alt="Logo" />
       <Formik
-        initialValues={initialValues}
+        initialValues={formData}
         validationSchema={toFormikValidationSchema(personalInfoSchema)}
-        onSubmit={handleFormSubmit}
+        onSubmit={async (values, { setSubmitting }) => {
+          if (idToken) {
+            await updateUser(idToken, values);
+            setSubmitting(false);
+          }
+        }}
         enableReinitialize
       >
         {({ values, errors, touched, setFieldValue, handleSubmit }) => (
@@ -176,11 +179,9 @@ export default function PersonalInfo() {
                 title="Your Birth Date"
                 placeHolder="your birth date"
                 type="date"
-                error={touched.birthDate && !!errors.birthDate}   
-                value={values.birthDate?.toISOString().split("T")[0]}
-                setVariable={(value) =>
-                  setFieldValue("birthDate", new Date(value))
-                }
+                error={touched.birthDate && !!errors.birthDate}
+                value={values.birthDate}
+                setVariable={(value) => setFieldValue("birthDate", value)}
               />
               <InputComponent
                 title="Your Email"

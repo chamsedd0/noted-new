@@ -1,15 +1,38 @@
-import { FirebaseUserRepository } from "@/src/persistence/FirebaseUserRepository";
-import { GetUserUseCase } from "@/src/use-cases/user/getUserUseCase";
+"use server";
 
-export async function isNewUserAction(userId: string): Promise<string | null> {
-  const userRepository = new FirebaseUserRepository();
-  const getUserUseCase = new GetUserUseCase(userRepository);
+import { redirect } from "next/navigation";
+import { User, AccountSetupStage, AccountSetup } from "@/types/User";
+import { userApi } from "@/api/FirebaseUserApi";
+import { verifyIdToken } from "@/lib/firebase-admin";
+export async function isNewUserAction(
+  user: User,
+  idToken: string
+): Promise<void> {
+  // Verify the ID token to get the user's UID from Firebase-admin SDK which runs on the server
+  const decodedToken = await verifyIdToken(idToken);
 
-  const userData = await getUserUseCase.execute(userId);
-
-  if (userData?.accountSetup?.accountSetupCompleted) {
-    return null; // User is fully set up
+  if (!decodedToken) {
+    throw new Error("Unauthorized");
   }
 
-  return userData?.accountSetup?.stage || "personal-info";
+  const existingUser = await userApi.getUser(decodedToken.uid);
+
+  if (!existingUser) {
+    const accountSetup: AccountSetup = {
+      completed: false,
+      stage: AccountSetupStage.PERSONAL_INFO,
+    };
+    await userApi.createUser({ ...user, accountSetup });
+
+    redirect("/account-setup/personal-info");
+  }
+
+  const stage =
+    existingUser.accountSetup?.stage ?? AccountSetupStage.PERSONAL_INFO;
+
+  if (existingUser.accountSetup?.completed) {
+    redirect("/dashboard");
+  }
+
+  redirect(`/account-setup/${stage}`);
 }
