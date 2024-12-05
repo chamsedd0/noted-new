@@ -56,11 +56,19 @@ const Text = styled.p<TextProps>`
   color: ${({ error }) => (error ? "#BE0505" : "white")};
 `;
 
+const ErrorMessage = styled.span`
+  color: #BE0505;
+  font-size: 14px;
+  margin-top: -8px;
+  margin-left: 20px;
+`;
+
 interface InputComponentProps {
   title: string;
   placeHolder: string;
   type: string;
   error?: boolean;
+  errorMesage?: string;
   value: string;
   setVariable: (value: string) => void;
 }
@@ -70,6 +78,7 @@ const InputComponent = ({
   placeHolder,
   type,
   error,
+  errorMesage,
   value,
   setVariable,
 }: InputComponentProps) => {
@@ -83,6 +92,11 @@ const InputComponent = ({
         type={type}
         error={error}
       />
+      {error && errorMesage && (
+        <ErrorMessage>
+          {errorMesage}
+        </ErrorMessage>
+      )}
     </Container>
   );
 };

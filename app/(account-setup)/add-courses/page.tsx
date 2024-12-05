@@ -1,13 +1,15 @@
 "use client";
 
 import styled from "styled-components";
-import { useState } from "react";
+import { Formik } from "formik";
 import { useAuthContext } from "../layout";
 import { createCourses } from "./_actions/createCoursesAction";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import AddButtonComponent from "@/app/components/buttons/addButton";
 import InputCourseComponent from "@/app/components/inputs/inputCourse";
 import Footer from "@/app/components/preLoginFooter";
+import { addCoursesSchema } from "./schema";
+import { z } from "zod";
 
 const Box = styled.div`
   background-color: #383838;
@@ -126,78 +128,141 @@ const RemoveButtonComponent = styled.button`
   }
 `;
 
+interface FormValues {
+  newCourseName: string;
+  courseTitles: string[];
+}
+
 export default function AddCoursePage() {
-  const [newCourseName, setNewCourseName] = useState<string>("");
-  const [courseTitles, setCourseTitles] = useState<string[]>([]);
   const { idToken } = useAuthContext();
 
-  // add course
-  const handleAddCourse = () => {
-    if (!newCourseName.trim()) {
-      alert("Course name cannot be empty");
-      return;
-    }
-
-    setCourseTitles([...courseTitles, newCourseName.trim()]);
-    setNewCourseName("");
-  };
-
-  // remove course locally
-  const handleRemoveCourse = (index: number) => {
-    setCourseTitles(courseTitles.filter((_, i) => i !== index));
-  };
-
-  // Submit all courses
-  const handleSubmitCourses = async () => {
-    try {
-      // Convert titles to course objects
-      if (idToken) {
-        const courses = courseTitles.map((title) => ({ title, color: "gray" }));
-        await createCourses(idToken, courses);
-      }
-    } catch (error) {
-      console.error("Error submitting courses:", error);
-      alert("Failed to submit courses. Please try again.");
-    }
+  const initialValues: FormValues = {
+    newCourseName: "",
+    courseTitles: [],
   };
 
   return (
     <Box>
       <Logo src="/logo.svg" alt="Logo" />
 
-      <Form>
-        <div className="introduction">
-          <h2>Add your courses</h2>
-          <p>
-            Add the name of the courses you are taking, so we can find more
-            personalized information
-          </p>
-        </div>
+      <Formik
+        initialValues={initialValues}
+        validate={(values) => {
+          try {
+            addCoursesSchema.parse({
+              courses: values.courseTitles.map((title) => ({ title })),
+            });
+            return {};
+          } catch (error) {
+            if (error instanceof z.ZodError) {
+              return error.issues.reduce((acc, issue) => {
+                if (issue.path[0] === "courses") {
+                  acc.courseTitles = issue.message;
+                }
+                return acc;
+              }, {} as Record<string, string>);
+            }
+            return {};
+          }
+        }}
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
+            if (!idToken) {
+              alert("You must be logged in to add courses");
+              return;
+            }
 
-        <InputsContainer>
-          <InputCourseComponent
-            setVariable={setNewCourseName}
-            title="Course Name"
-            value={newCourseName}
-            placeHolder="Data Structures and algorithms"
-            type="text"
-          />
-          <AddButtonComponent f={handleAddCourse} />
-        </InputsContainer>
+            if (values.courseTitles.length === 0) {
+              alert("Please add at least one course before continuing");
+              return;
+            }
 
-        <CourseList>
-          {courseTitles.map((title, index) => (
-            <CourseItem key={index}>
-              <p>{title}</p>
-              <RemoveButtonComponent onClick={() => handleRemoveCourse(index)}>
-                Remove
-              </RemoveButtonComponent>
-            </CourseItem>
-          ))}
-        </CourseList>
+            const courses = values.courseTitles.map((title) => ({
+              title,
+              color: "gray",
+            }));
 
-        <NextButtonComponent event={handleSubmitCourses} />
-      </Form>
+            await createCourses(idToken, courses);
+            setSubmitting(false);
+          } catch (error) {
+            console.error("Error submitting courses:", error);
+            alert("Failed to submit courses. Please try again.");
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({ values, setFieldValue, handleSubmit }) => (
+          <Form>
+            <div className="introduction">
+              <h2>Add your courses</h2>
+              <p>
+                Add the name of the courses you are taking, so we can find more
+                personalized information
+              </p>
+            </div>
+
+            <InputsContainer>
+              <InputCourseComponent
+                setVariable={(value) => setFieldValue("newCourseName", value)}
+                title="Course Name"
+                value={values.newCourseName}
+                placeHolder="Data Structures and algorithms"
+                type="text"
+              />
+              <AddButtonComponent
+                f={() => {
+                  if (!values.newCourseName.trim()) {
+                    alert("Course name cannot be empty");
+                    return;
+                  }
+
+                  if (
+                    values.courseTitles.includes(values.newCourseName.trimEnd())
+                  ) {
+                    alert("This course has already been added");
+                    return;
+                  }
+
+                  setFieldValue("courseTitles", [
+                    ...values.courseTitles,
+                    values.newCourseName.trimEnd(),
+                  ]);
+                  setFieldValue("newCourseName", "");
+                }}
+              />
+            </InputsContainer>
+
+            <CourseList>
+              {values.courseTitles.map((title, index) => (
+                <CourseItem key={index}>
+                  <p>{title}</p>
+                  <RemoveButtonComponent
+                    onClick={() => {
+                      setFieldValue(
+                        "courseTitles",
+                        values.courseTitles.filter((_, i) => i !== index)
+                      );
+                    }}
+                  >
+                    Remove
+                  </RemoveButtonComponent>
+                </CourseItem>
+              ))}
+            </CourseList>
+
+            <NextButtonComponent
+              event={(e) => {
+                e.preventDefault();
+                if (values.courseTitles.length === 0) {
+                  alert("Please add at least one course before continuing");
+                  return;
+                }
+                handleSubmit();
+              }}
+            />
+          </Form>
+        )}
+      </Formik>
 
       <Footer />
     </Box>

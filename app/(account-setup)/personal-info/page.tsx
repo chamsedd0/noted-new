@@ -3,7 +3,6 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { toFormikValidationSchema } from "zod-formik-adapter";
 import Footer from "@/app/components/preLoginFooter";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import InputComponent from "@/app/components/inputs/input";
@@ -11,6 +10,7 @@ import { getUser } from "./_actions/getUserAction";
 import { personalInfoSchema, type PersonalInfoFormValues } from "./schema";
 import { updateUser } from "./_actions/updateUserAction";
 import { useAuthContext } from "../layout";
+import { z } from "zod";
 
 const Box = styled.div`
   background-color: #383838;
@@ -138,13 +138,29 @@ export default function PersonalInfo() {
       <Logo src="/logo.svg" alt="Logo" />
       <Formik
         initialValues={formData}
-        validationSchema={toFormikValidationSchema(personalInfoSchema)}
+        validate={(values) => {
+          try {
+            personalInfoSchema.parse(values);
+            return {};
+          } catch (error) {
+            if (error instanceof z.ZodError) {
+              return error.issues.reduce((acc, issue) => {
+                const path = issue.path[0] as string;
+                acc[path] = issue.message;
+                return acc;
+              }, {} as Record<string, string>);
+            }
+            return {};
+          }
+        }}
         onSubmit={async (values, { setSubmitting }) => {
           if (idToken) {
             await updateUser(idToken, values);
             setSubmitting(false);
           }
         }}
+        validateOnChange={true}
+        validateOnBlur={true}
         enableReinitialize
       >
         {({ values, errors, touched, setFieldValue, handleSubmit }) => (
@@ -162,6 +178,7 @@ export default function PersonalInfo() {
                 placeHolder="your name"
                 type="text"
                 error={touched.firstName && !!errors.firstName}
+                errorMesage={touched.firstName ? errors.firstName : ''}
                 value={values.firstName}
                 setVariable={(value) => setFieldValue("firstName", value)}
               />
@@ -170,6 +187,7 @@ export default function PersonalInfo() {
                 placeHolder="your surname"
                 type="text"
                 error={touched.lastName && !!errors.lastName}
+                errorMesage={touched.lastName ? errors.lastName : ''}
                 value={values.lastName}
                 setVariable={(value) => setFieldValue("lastName", value)}
               />
@@ -178,6 +196,7 @@ export default function PersonalInfo() {
                 placeHolder="your birth date"
                 type="date"
                 error={touched.birthDate && !!errors.birthDate}
+                errorMesage={touched.birthDate ? errors.birthDate : ''}
                 value={values.birthDate}
                 setVariable={(value) => setFieldValue("birthDate", value)}
               />
@@ -186,6 +205,7 @@ export default function PersonalInfo() {
                 placeHolder="your email"
                 type="email"
                 error={touched.email && !!errors.email}
+                errorMesage={touched.email ? errors.email : ''}
                 value={values.email}
                 setVariable={(value) => setFieldValue("email", value)}
               />

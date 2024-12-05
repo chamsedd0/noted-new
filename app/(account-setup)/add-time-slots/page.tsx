@@ -9,6 +9,7 @@ import { updateCourseTimes } from "./_actions/updateCourseTimesAction";
 import { getCourses } from "../add-syllabus/_actions/getCoursesAction";
 import SelectComponent from "@/app/components/inputs/select";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
+import SaveTimeSlotButtonComponent from "./saveTimeSlotButton";
 import Footer from "@/app/components/preLoginFooter";
 import WeekdayCardComponent from "@/app/components/cards/weekDayCard";
 import CourseCardComponent from "@/app/components/cards/courseTimeSelectionCard";
@@ -174,10 +175,9 @@ interface CourseTime {
 // Add this helper function at the top level, outside the component
 function checkTimeConflicts(timeSlot1: TimeSlot, timeSlot2: TimeSlot): boolean {
   if (timeSlot1.day !== timeSlot2.day) return false;
-  
+
   return !(
-    timeSlot1.finish <= timeSlot2.start || 
-    timeSlot1.start >= timeSlot2.finish
+    timeSlot1.finish <= timeSlot2.start || timeSlot1.start >= timeSlot2.finish
   );
 }
 
@@ -241,22 +241,21 @@ export default function AddTimeSlots() {
   const handleSubmitAll = useCallback(async () => {
     if (!idToken) return;
 
-    // Check for conflicts before submitting
     const conflicts: string[] = [];
 
-    // Compare each course's time slots with every other course
     for (let i = 0; i < courseTimes.length; i++) {
       for (let j = i + 1; j < courseTimes.length; j++) {
-        const course1 = courses.find(c => c.uid === courseTimes[i].courseId);
-        const course2 = courses.find(c => c.uid === courseTimes[j].courseId);
-        
+        const course1 = courses.find((c) => c.uid === courseTimes[i].courseId);
+        const course2 = courses.find((c) => c.uid === courseTimes[j].courseId);
+
         if (!course1 || !course2) continue;
 
-        // Check each time slot combination between the two courses
         for (const slot1 of courseTimes[i].timeSlots) {
           for (const slot2 of courseTimes[j].timeSlots) {
             if (checkTimeConflicts(slot1, slot2)) {
-              conflicts.push(`${course1.title} conflicts with ${course2.title} on ${slot1.day}`);
+              conflicts.push(
+                `${course1.title} conflicts with ${course2.title} on ${slot1.day}`
+              );
             }
           }
         }
@@ -266,9 +265,9 @@ export default function AddTimeSlots() {
     // If there are conflicts, alert the user and don't submit
     if (conflicts.length > 0) {
       alert(
-        'Time Conflicts Detected:\n\n' + 
-        conflicts.join('\n') +
-        '\n\nPlease resolve these conflicts before continuing.'
+        "Time Conflicts Detected:\n\n" +
+          conflicts.join("\n") +
+          "\n\nPlease resolve these conflicts before continuing."
       );
       return;
     }
@@ -294,13 +293,16 @@ export default function AddTimeSlots() {
     <Box>
       <Logo src="/logo.svg" alt="Logo" />
       <Form>
-        <div className="introduction">
-          <h2>Add Time of your classes</h2>
-          <p>Choose times for all your courses</p>
-        </div>
-
         {!selectedCourse ? (
           <>
+            <div className="introduction">
+              <h2>Add Time of your classes</h2>
+              <p>
+                Choose the course and choose the time and day of the week when
+                you take this class. You will be able to add more classes after
+                the completion as well
+              </p>
+            </div>
             <Grid>
               {courses.map((course) => {
                 const courseTime = courseTimes.find(
@@ -312,17 +314,27 @@ export default function AddTimeSlots() {
                     title={course.title}
                     timestamps={courseTime?.timeSlots || []}
                     onSelect={() => setSelectedCourse(course)}
-                    completed={!!courseTime}
+                    completed={
+                      courseTime?.timeSlots?.length
+                        ? courseTime.timeSlots.length > 0
+                        : false
+                    }
                   />
                 );
               })}
             </Grid>
-            {courseTimes.length > 0 && (
-              <NextButtonComponent event={handleSubmitAll} />
-            )}
+
+            <NextButtonComponent event={handleSubmitAll} />
           </>
         ) : (
           <>
+            <div className="introduction">
+              <h2>Choose Time</h2>
+              <p>
+                Select which days you take <b>{selectedCourse.title}</b>. then
+                enter the time when you have the class
+              </p>
+            </div>
             <DaysWrapper>
               {WEEKDAYS.map((day) => (
                 <WeekdayCardComponent
@@ -345,7 +357,10 @@ export default function AddTimeSlots() {
               ))}
             </TimeWrapper>
 
-            <NextButtonComponent event={handleSaveCourse} />
+            <SaveTimeSlotButtonComponent
+              event={handleSaveCourse}
+              isEmpty={currentTimeSlots.length === 0}
+            />
           </>
         )}
       </Form>
