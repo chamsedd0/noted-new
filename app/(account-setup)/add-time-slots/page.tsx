@@ -171,6 +171,16 @@ interface CourseTime {
   timeSlots: TimeSlot[];
 }
 
+// Add this helper function at the top level, outside the component
+function checkTimeConflicts(timeSlot1: TimeSlot, timeSlot2: TimeSlot): boolean {
+  if (timeSlot1.day !== timeSlot2.day) return false;
+  
+  return !(
+    timeSlot1.finish <= timeSlot2.start || 
+    timeSlot1.start >= timeSlot2.finish
+  );
+}
+
 export default function AddTimeSlots() {
   const { idToken } = useAuthContext();
   const [loading, setLoading] = useState(true);
@@ -231,6 +241,39 @@ export default function AddTimeSlots() {
   const handleSubmitAll = useCallback(async () => {
     if (!idToken) return;
 
+    // Check for conflicts before submitting
+    const conflicts: string[] = [];
+
+    // Compare each course's time slots with every other course
+    for (let i = 0; i < courseTimes.length; i++) {
+      for (let j = i + 1; j < courseTimes.length; j++) {
+        const course1 = courses.find(c => c.uid === courseTimes[i].courseId);
+        const course2 = courses.find(c => c.uid === courseTimes[j].courseId);
+        
+        if (!course1 || !course2) continue;
+
+        // Check each time slot combination between the two courses
+        for (const slot1 of courseTimes[i].timeSlots) {
+          for (const slot2 of courseTimes[j].timeSlots) {
+            if (checkTimeConflicts(slot1, slot2)) {
+              conflicts.push(`${course1.title} conflicts with ${course2.title} on ${slot1.day}`);
+            }
+          }
+        }
+      }
+    }
+
+    // If there are conflicts, alert the user and don't submit
+    if (conflicts.length > 0) {
+      alert(
+        'Time Conflicts Detected:\n\n' + 
+        conflicts.join('\n') +
+        '\n\nPlease resolve these conflicts before continuing.'
+      );
+      return;
+    }
+
+    // If no conflicts, proceed with submission
     try {
       for (const courseTime of courseTimes) {
         await updateCourseTimes(
@@ -243,7 +286,7 @@ export default function AddTimeSlots() {
       console.error("Error updating times:", error);
       alert("Failed to update course times. Please try again.");
     }
-  }, [idToken, courseTimes]);
+  }, [idToken, courseTimes, courses]);
 
   if (loading) return <Loading>Loading...</Loading>;
 
