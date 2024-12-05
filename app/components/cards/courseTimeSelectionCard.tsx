@@ -14,7 +14,7 @@ const Card = styled.div<{ completed?: boolean }>`
   text-align: left;
   transition: all 0.3s ease;
   cursor: pointer;
-  border: 2px solid ${(props) => (props.completed ? "#4CAF50" : "transparent")};
+  border: 2px solid ${(props) => (props.completed ? "white" : "transparent")};
 
   &:hover {
     background-color: #444444;

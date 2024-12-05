@@ -4,14 +4,13 @@ export enum AccountSetupStage {
   ADD_SYLLABUS = "add-syllabus",
   ADD_TIME_SLOTS = "add-time-slots",
   CHOOSE_PLAN = "choose-plan",
-  COMPLETED = "completed"
+  COMPLETED = "completed",
 }
 
 export enum Plan {
   BASIC = "Basic Plan",
-  PREMIUM = "Premium Plan"
+  PREMIUM = "Premium Plan",
 }
-
 
 export type User = {
   uid: string;
