@@ -65,7 +65,7 @@ export default function AccountSetupLayout({
   }, [idToken, loading, pathname]);
 
   if (loading || !isStageValidated) {
-    return <div>Loading...</div>;
+    return;
   }
 
   return (
