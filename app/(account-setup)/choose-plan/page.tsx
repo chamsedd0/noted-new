@@ -1,11 +1,11 @@
 "use client";
 
 import styled from "styled-components";
-import { useAuth } from "@/app/hooks/useAuth";
 import { Plan } from "@/types/User";
 import { updatePlan } from "./_actions/updatePlanAction";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import PlanCard from "@/app/components/cards/planChoosingCard";
+import { useAuthContext } from "../layout";
 
 const Box = styled.div`
   background-color: #383838;
@@ -71,15 +71,13 @@ const Logo = styled.img`
 `;
 
 export default function ChoosePlanPage() {
-  const { idToken, loading } = useAuth();
+  const { idToken } = useAuthContext();
 
   const handlePlanChoosing = async (planStr: string) => {
     if (!idToken) return;
     const plan = planStr as Plan;
     await updatePlan(idToken, plan);
   };
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <Box>

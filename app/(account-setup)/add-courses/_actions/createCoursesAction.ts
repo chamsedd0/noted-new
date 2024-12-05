@@ -23,13 +23,10 @@ export async function createCourses(
 
     // update user account setup
     await userApi.updateUser(decodedToken.uid, {
-      accountSetup: {
-        completed: false,
-        stage: AccountSetupStage.ADD_SYLLABUS,
-      },
+      accountSetupStage: AccountSetupStage.ADD_SYLLABUS,
     });
 
-    redirect("/account-setup/add-syllabus");
+    redirect("/add-syllabus");
   } catch (error) {
     console.error("Error creating course:", error);
     throw error;

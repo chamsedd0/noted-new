@@ -35,13 +35,10 @@ export async function updateCourseTimes(
 
     // Update user account setup
     await userApi.updateUser(decodedToken.uid, {
-      accountSetup: {
-        completed: false,
-        stage: AccountSetupStage.CHOOSE_PLAN,
-      },
+      accountSetupStage: AccountSetupStage.CHOOSE_PLAN,
     });
 
-    redirect("/account-setup/choose-plan");
+    redirect("/choose-plan");
   } catch (error) {
     console.error("Error updating course times:", error);
     throw error;

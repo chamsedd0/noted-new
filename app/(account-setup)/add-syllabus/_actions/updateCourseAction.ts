@@ -34,13 +34,10 @@ export async function updateCourseSyllabus(
 
     // Update user account setup
     await userApi.updateUser(decodedToken.uid, {
-      accountSetup: {
-        completed: true,
-        stage: AccountSetupStage.ADD_TIME_SLOTS,
-      },
+      accountSetupStage: AccountSetupStage.ADD_TIME_SLOTS,
     });
 
-    redirect("/account-setup/add-time-slots");
+    redirect("/add-time-slots");
   } catch (error) {
     console.error("Error updating course syllabus:", error);
     throw error;

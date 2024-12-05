@@ -15,10 +15,7 @@ export async function updatePlan(idToken: string, plan: Plan): Promise<void> {
   // Update the user's plan
   await userApi.updateUser(decodedToken.uid, {
     plan,
-    accountSetup: {
-      completed: true,
-      stage: AccountSetupStage.COMPLETED,
-    },
+    accountSetupStage: AccountSetupStage.COMPLETED,
   });
 
   // Redirect to the dashboard
