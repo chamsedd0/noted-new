@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 
 // Define the AuthContextValue interface
 interface AuthContextValue {
