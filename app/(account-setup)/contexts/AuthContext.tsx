@@ -18,4 +18,13 @@ export const useAuthContext = () => {
   return context;
 };
 
-export const AuthProvider = AuthContext.Provider; 
+export const AuthProvider = AuthContext.Provider;
+
+// Export the stage order
+export const STAGE_ORDER = [
+  "personal-info",
+  "add-courses",
+  "add-syllabus",
+  "add-time-slots",
+  "choose-plan",
+]; 
