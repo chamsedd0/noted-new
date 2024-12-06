@@ -1,33 +1,34 @@
-'use client'
+"use client";
 
-import AddCourseButtonComponent from './components/addCourseButton';
-import CourseDashboardCardComponent from './components/dashboardCourseCard';
+import AddCourseButtonComponent from "./components/addCourseButton";
+import CourseDashboardCardComponent from "./components/dashboardCourseCard";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 
-
-import { useEffect, useState } from 'react';
-import AddCourseModal from '@/app/components/popups/addCourseModal';
-import EditCourseModal from '../components/popups/editCourseModal';
-import { getUserCourses, addNewCourse, updateCourse, deleteCourse } from './_actions/courseActions';
-import { Course } from '@/types/Course';
-import CourseDeleteModal from '@/app/components/popups/deleteCourseModal';
-import Loading from '@/app/components/loading';
-
-
+import { useEffect, useState } from "react";
+import AddCourseModal from "@/app/components/popups/addCourseModal";
+import EditCourseModal from "../components/popups/editCourseModal";
+import {
+  getUserCourses,
+  addNewCourse,
+  updateCourse,
+  deleteCourse,
+} from "./_actions/courseActions";
+import { Course } from "@/types/Course";
+import CourseDeleteModal from "@/app/components/popups/deleteCourseModal";
+import Loading from "@/app/components/loading";
 
 const CoursesLayout = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background-color: #383838;
-  opacity: ${props => props.isLoading ? 0 : 1};
+  opacity: ${(props) => (props.isLoading ? 0 : 1)};
   transition: opacity 0.3s ease;
-  visibility: ${props => props.isLoading ? 'hidden' : 'visible'};
+  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
 `;
-
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -48,29 +49,25 @@ const CoursesSection = styled.div`
 
     @media (max-width: 1200px) {
       font-size: 24px;
-  }
+    }
   }
   padding: 20px;
 
   @media (max-width: 1200px) {
     max-width: 100%;
   }
-  
-  
 `;
 
 const TitleWrapper = styled.div`
-
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
-
-`
+`;
 
 const CoursesGrid = styled.div`
-    width: 95%;
+  width: 95%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
   gap: 30px 0px;
@@ -85,10 +82,9 @@ const CoursesGrid = styled.div`
 `;
 
 const RightBoxReplacement = styled.div`
-
   flex: 1;
-    min-width: 300px;
-    max-width: 300px;
+  min-width: 300px;
+  max-width: 300px;
 
   @media (max-width: 1200px) {
     max-width: none;
@@ -100,15 +96,9 @@ const RightBoxReplacement = styled.div`
   @media (max-width: 1100px) {
     display: none;
   }
-  
-`
-
-
+`;
 
 export default function CoursesPage() {
-
-
-  
   const [user, setUser] = useState<User | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [popupOpened, setPopupOpened] = useState(false);
@@ -116,47 +106,45 @@ export default function CoursesPage() {
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
-  const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean }>({});
+  const [openDropdowns, setOpenDropdowns] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [isLoading, setIsLoading] = useState(true);
 
-  
+  const auth = getAuth();
 
-    const auth = getAuth();
-
-    useEffect(() => {
-      const fetchUserData = async () => {
-        if (user) {
-          try {
-            const userCourses = await getUserCourses(user.uid);
-            setCourses(userCourses);
-          } catch (error) {
-            console.error("Error fetching courses:", error);
-          }
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const userCourses = await getUserCourses(user.uid);
+          setCourses(userCourses);
+        } catch (error) {
+          console.error("Error fetching courses:", error);
         }
-      };
+      }
+    };
 
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      });
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
 
-      fetchUserData();
+    fetchUserData();
 
-      return () => unsubscribe();
-    }, [auth, user, selectedCourse]);
+    return () => unsubscribe();
+  }, [auth, user, selectedCourse]);
 
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
 
-      return () => clearTimeout(timer);
-    }, []);
-
-    
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleCourseClick = (title: string) => {
     console.log(title);
@@ -173,7 +161,10 @@ export default function CoursesPage() {
     }
   };
 
-  const handleUpdateCourse = async (oldTitle: string, updatedCourse: Course) => {
+  const handleUpdateCourse = async (
+    oldTitle: string,
+    updatedCourse: Course
+  ) => {
     if (!user) return;
     try {
       await updateCourse(user.uid, oldTitle, updatedCourse);
@@ -186,7 +177,7 @@ export default function CoursesPage() {
 
   const handleDeleteCourse = async () => {
     if (!user || !courseToDelete) return;
-    
+
     try {
       await deleteCourse(user.uid, courseToDelete);
       const updatedCourses = await getUserCourses(user.uid);
@@ -203,52 +194,48 @@ export default function CoursesPage() {
     <>
       <Loading isLoading={isLoading} />
       <CoursesLayout isLoading={isLoading}>
-        <AddCourseModal 
-          onClose={setPopupOpened} 
+        <AddCourseModal
+          onClose={setPopupOpened}
           popupOpened={popupOpened}
           onAdd={handleAddCourse}
         />
-        <EditCourseModal 
-          setSelected={setSelectedCourse} 
-          courseTitle={selectedCourse} 
-          onClose={setEditPopupOpened} 
+        <EditCourseModal
+          setSelected={setSelectedCourse}
+          courseTitle={selectedCourse}
+          onClose={setEditPopupOpened}
           popupOpened={editPopupOpened}
           onUpdate={handleUpdateCourse}
           courses={courses}
         />
-        <CourseDeleteModal 
+        <CourseDeleteModal
           isOpen={deleteModalOpen}
           onConfirm={handleDeleteCourse}
           onCancel={() => {
             setDeleteModalOpen(false);
             setCourseToDelete(null);
           }}
-          courseTitle={courseToDelete || ''}
+          courseTitle={courseToDelete || ""}
         />
-      <ContentWrapper>
-        <CoursesSection>
+        <ContentWrapper>
+          <CoursesSection>
+            <TitleWrapper>
+              <h1>Courses</h1>
+              <AddCourseButtonComponent
+                action={setPopupOpened}
+              ></AddCourseButtonComponent>
+            </TitleWrapper>
 
-
-          <TitleWrapper>
-            <h1>Courses</h1>
-            <AddCourseButtonComponent action={setPopupOpened}></AddCourseButtonComponent>
-          </TitleWrapper>
-
-
-          <CoursesGrid>
-    
-            
-            {
-              courses
+            <CoursesGrid>
+              {courses
                 .sort((a, b) => a.title.localeCompare(b.title))
                 .map((course) => (
-                  <CourseDashboardCardComponent 
+                  <CourseDashboardCardComponent
                     key={course.uid}
                     clickFunction={handleCourseClick}
                     title={course.title}
                     regularNotes={3}
                     smartNotes={4}
-                    color={course.color || '#BE0505'}
+                    color={course.color || "#BE0505"}
                     lastModified={course.lastModified}
                     setEdit={setEditPopupOpened}
                     setSelectedCourse={setSelectedCourse}
@@ -258,23 +245,18 @@ export default function CoursesPage() {
                     }}
                     isDropdownOpen={openDropdowns[course.title] || false}
                     setDropdownOpen={(isOpen) => {
-                      setOpenDropdowns(prev => ({
+                      setOpenDropdowns((prev) => ({
                         ...prev,
-                        [course.title]: isOpen
+                        [course.title]: isOpen,
                       }));
                     }}
                   />
-                ))
-            }
-            
-            
+                ))}
+            </CoursesGrid>
+          </CoursesSection>
 
-          </CoursesGrid>
-        </CoursesSection>
-
-        <RightBoxReplacement></RightBoxReplacement>
-
-      </ContentWrapper>
+          <RightBoxReplacement></RightBoxReplacement>
+        </ContentWrapper>
       </CoursesLayout>
     </>
   );

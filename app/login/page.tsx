@@ -50,9 +50,6 @@ export default function LoginPage() {
           name: auth.currentUser!.displayName ?? "",
           email: auth.currentUser!.email ?? "",
           photoUrl: auth.currentUser!.photoURL ?? "",
-          birthDate: null,
-          accountSetupStage: null,
-          plan: null,
         },
         idToken
       );

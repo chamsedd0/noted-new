@@ -12,12 +12,12 @@ export enum Plan {
   PREMIUM = "Premium Plan",
 }
 
-export type User = {
+export interface User {
   uid: string;
   name: string;
   email: string;
   photoUrl: string | null;
-  birthDate: string | null;
-  accountSetupStage: AccountSetupStage | null;
-  plan: Plan | null;
-};
+  birthDate?: string;
+  accountSetupStage?: string;
+  plan?: string;
+}
