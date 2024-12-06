@@ -1,21 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useState, useEffect } from "react";
 import { redirect } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { useAuth } from "../hooks/useAuth";
 import { checkUserStage } from "./_actions/checkUserStage";
-import { AccountSetupStage } from "@/types/User";
-import { AuthProvider } from "./contexts/AuthContext";
-
-// Define the stage order based on AccountSetupStage
-const STAGE_ORDER = [
-  AccountSetupStage.PERSONAL_INFO,
-  AccountSetupStage.ADD_COURSES,
-  AccountSetupStage.ADD_SYLLABUS,
-  AccountSetupStage.ADD_TIME_SLOTS,
-  AccountSetupStage.CHOOSE_PLAN,
-];
+import { AuthProvider, STAGE_ORDER } from "./contexts/AuthContext";
 
 export default function AccountSetupLayout({
   children,
@@ -49,14 +39,12 @@ export default function AccountSetupLayout({
   }, [idToken, loading, pathname]);
 
   if (loading || !isStageValidated) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   return (
     <AuthProvider value={{ idToken, loading }}>
-      <div>
-        {children}
-      </div>
+      {children}
     </AuthProvider>
   );
 }

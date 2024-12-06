@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { Formik } from "formik";
-import { useAuthContext } from "../layout";
+import { useAuthContext } from "../contexts/AuthContext";
 import { createCourses } from "./_actions/createCoursesAction";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import AddButtonComponent from "@/app/components/buttons/addButton";
