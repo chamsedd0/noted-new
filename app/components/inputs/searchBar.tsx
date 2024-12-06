@@ -52,7 +52,6 @@ const SearchBarComponent = () => {
     <SearchContainer>
       <img src="/search.svg"></img>
       <SearchInput
-        isFocused={focused}
         type="text"
         placeholder="Search"
         onFocus={() => setFocused(true)}

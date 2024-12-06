@@ -1,7 +1,7 @@
 "use server";
 
 import { courseApi } from "@/api/FireBaseCourseAPI";
-import { userApi } from "@/api/FireBaseUserAPI";
+import { userApi } from "@/api/FirebaseUserApi";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { Course } from "@/types/Course";
 import { AccountSetupStage } from "@/types/User";

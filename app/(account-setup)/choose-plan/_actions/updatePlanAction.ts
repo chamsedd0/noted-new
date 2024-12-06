@@ -1,6 +1,6 @@
 "use server";
 
-import { userApi } from "@/api/FireBaseUserAPI";
+import { userApi } from "@/api/FirebaseUserApi";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { Plan, AccountSetupStage } from "@/types/User";
 import { redirect } from "next/navigation";

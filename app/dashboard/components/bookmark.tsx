@@ -1,0 +1,27 @@
+interface BookMarkProps {
+  color: string;
+}
+
+const BookMark = ({ color }: BookMarkProps) => {
+  return (
+    <svg width="87" height="120" viewBox="0 0 87 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g filter="url(#filter0_d_32_252)">
+        <path  d="M7 8C7 3.58172 10.5817 0 15 0H79C83.4183 0 87 3.58172 87 8V104.368C87 110.891 79.6118 114.672 74.3206 110.856L51.6794 94.5284C48.8852 92.5134 45.1148 92.5134 42.3206 94.5284L19.6794 110.856C14.3882 114.672 7 110.891 7 104.368V8Z" fill={color}/>
+      </g>
+      <defs>
+        <filter id="filter0_d_32_252" x="0" y="0" width="87" height="119.382" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB" fill={color}>
+          <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset dx="-5" dy="5"/>
+          <feGaussianBlur stdDeviation="1"/>
+          <feComposite in2="hardAlpha" operator="out"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"/>
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_32_252"/>
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_32_252" result="shape"/>
+        </filter>
+      </defs>
+    </svg>
+  )
+}
+
+export default BookMark;

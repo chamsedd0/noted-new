@@ -1,7 +1,7 @@
 "use server";
 
 import { courseApi } from "@/api/FireBaseCourseAPI";
-import { userApi } from "@/api/FireBaseUserAPI";
+import { userApi } from "@/api/FirebaseUserApi";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { AccountSetupStage } from "@/types/User";
 import { TimeSlot } from "@/types/Time";
@@ -30,7 +30,7 @@ export async function updateCourseTimes(
     // Update the course times
     await courseApi.updateCourse(decodedToken.uid, {
       ...course,
-      timeslots,
+      timeSlots: timeslots,
     });
 
     // Update user account setup

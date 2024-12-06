@@ -9,7 +9,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Noted",
+  title: "Noted Ai",
   description: "",
 };
 
