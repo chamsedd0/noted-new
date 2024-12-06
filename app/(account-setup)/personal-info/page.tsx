@@ -9,7 +9,7 @@ import InputComponent from "@/app/components/inputs/input";
 import { getUser } from "./_actions/getUserAction";
 import { personalInfoSchema, type PersonalInfoFormValues } from "./schema";
 import { updateUser } from "./_actions/updateUserAction";
-import { useAuthContext } from "../layout";
+import { useAuthContext } from "../contexts/AuthContext";
 import { z } from "zod";
 
 const Box = styled.div`

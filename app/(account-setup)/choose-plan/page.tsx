@@ -5,7 +5,7 @@ import { Plan } from "@/types/User";
 import { updatePlan } from "./_actions/updatePlanAction";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import PlanCard from "@/app/components/cards/planChoosingCard";
-import { useAuthContext } from "../layout";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const Box = styled.div`
   background-color: #383838;
