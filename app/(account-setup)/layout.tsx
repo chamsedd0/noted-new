@@ -1,10 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { redirect } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { checkUserStage } from "./_actions/checkUserStage";
 import { AccountSetupStage } from "@/types/User";
 
@@ -65,12 +64,15 @@ export default function AccountSetupLayout({
   }, [idToken, loading, pathname]);
 
   if (loading || !isStageValidated) {
-    return;
+    return <div>Loading...</div>; // Render something instead of returning nothing
   }
 
   return (
     <AuthContext.Provider value={{ idToken, loading }}>
-      {children}
+      <div>
+        {/* Optional: Add layout-specific elements */}
+        {children}
+      </div>
     </AuthContext.Provider>
   );
 }
