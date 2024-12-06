@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { useState, useEffect, useCallback } from "react";
-import { useAuthContext } from "../layout";
+import { useAuthContext } from "../contexts/AuthContext";
 import { Course } from "@/types/Course";
 import { TimeSlot } from "@/types/Time";
 import { updateCourseTimes } from "./_actions/updateCourseTimesAction";

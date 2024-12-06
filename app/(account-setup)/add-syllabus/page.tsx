@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useAuthContext } from "../layout";
+import { useAuthContext } from "../contexts/AuthContext";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import UploadButtonComponent from "@/app/components/buttons/uploadButton";
