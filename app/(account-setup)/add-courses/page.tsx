@@ -178,8 +178,10 @@ export default function AddCoursePage() {
             }
 
             const courses = values.courseTitles.map((title) => ({
+              uid: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
               title,
               color: "gray",
+              lastModified: new Date().toLocaleString()
             }));
 
             await createCourses(idToken, courses);

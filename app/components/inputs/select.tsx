@@ -99,8 +99,8 @@ const Chevron = styled.span<{ isOpen: boolean }>`
   transition: all 0.3s ease;
 
   img {
-    width: 24px;
-    height: 24px;
+    width: 12px;
+    height: 12px;
   }
 `;
 

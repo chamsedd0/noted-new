@@ -1,5 +1,5 @@
 "use server";
-import { userApi } from "@/api/FireBaseUserAPI";
+import { userApi } from "@/api/FirebaseUserApi";
 import { verifyIdToken } from "@/lib/firebase-admin";
 
 export async function getUser(idToken: string) {

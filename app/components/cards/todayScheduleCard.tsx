@@ -38,13 +38,9 @@ type ScheduleCardProps = {
   timestamp: string;
 };
 
-const ScheduleCardComponent = ({
-  color,
-  title,
-  timestamp,
-}: ScheduleCardProps) => {
+const ScheduleCardComponent = ({ color, title, timestamp }: ScheduleCardProps) => {
   return (
-    <ScheduleCard color={color}>
+    <ScheduleCard color={color} title={title} timestamp={timestamp}>
       <div className="title">{title}</div>
       <div className="time">{timestamp}</div>
     </ScheduleCard>

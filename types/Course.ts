@@ -1,9 +1,10 @@
-import { TimeStamp } from "./Time";
+import { TimeSlot } from "./Time";
 
 export type Course = {
-  uid?: string;
+  uid: string;
   title: string;
-  color?: string;
+  color: string;
+  timeSlots?: TimeSlot[];
+  lastModified: string;
   syllabus?: string;
-  timeslots?: TimeStamp[];
 };
