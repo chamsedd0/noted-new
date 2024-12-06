@@ -149,7 +149,7 @@ const DropdownMenu = styled.div<DropdownMenuProps>`
 `;
 
 interface HeaderProps {
-  hightlighted: "coursenotes" | "scheduler" | string;
+  hightlighted: "profile" | "coursenotes" | "scheduler";
 }
 
 interface UserProfile {
@@ -220,12 +220,12 @@ const Header = ({ hightlighted }: HeaderProps) => {
         $hightlightSchedule={hightlighted === "scheduler"}
       >
         <span className="courses">
-          <Link href="/pages/dashboard" prefetch={true}>
+          <Link href="/dashboard" prefetch={true}>
             Course Notes
           </Link>
         </span>
         <span className="scheduler">
-          <Link href="/pages/dashboard/scheduler" prefetch={true}>
+          <Link href="/dashboard/scheduler" prefetch={true}>
             Scheduler
           </Link>
         </span>
@@ -250,12 +250,12 @@ const Header = ({ hightlighted }: HeaderProps) => {
         </UserProfile>
 
         <DropdownMenu $isOpen={isDropdownOpen}>
-          <Link href="/pages/profile">
+          <Link href="/profile">
             <Image src="/profile.svg" width={24} height={24} alt="profile" />
             Profile
           </Link>
 
-          <Link href="/pages/settings">
+          <Link href="/settings">
             <Image src="/settings.svg" width={24} height={24} alt="settings" />
             Preferences
           </Link>
