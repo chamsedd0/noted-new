@@ -22,6 +22,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import Header from "@/app/dashboard/header";
 import { Plan } from "@/types/User";
+import Loading from "@/app/components/loading";
 
 const CoursesLayout = styled.div`
   display: flex;
@@ -324,6 +325,7 @@ export default function ProfilePage() {
   const profileRef = useRef<HTMLElement>(null);
   const subscriptionRef = useRef<HTMLElement>(null);
   const supportRef = useRef<HTMLElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -354,17 +356,17 @@ export default function ProfilePage() {
             day,
             month,
             year,
-            loading: false,
           }));
         } else {
           alert(error || "Failed to load profile data");
-          setState((prev) => ({ ...prev, loading: false }));
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
         alert("Failed to load profile data");
-        setState((prev) => ({ ...prev, loading: false }));
       }
+
+      // Set loading to false after minimum 0.5s
+      setTimeout(() => setIsLoading(false), 500);
     };
 
     // Set up intersection observer
@@ -455,142 +457,145 @@ export default function ProfilePage() {
   };
 
   return (
-    <CoursesLayout>
-      <Header hightlighted="profile" />
+    <>
+      <Loading isLoading={isLoading} />
+      <CoursesLayout>
+        <Header hightlighted="profile" />
 
-      <ContentWrapper>
-        {/* Left Sidebar */}
-        <BoxReplacement></BoxReplacement>
-        <ProfileSidebar>
-          <h2>Navigation</h2>
-          <Button
-            active={activeSection === "profile"}
-            onClick={() => scrollToSection(profileRef)}
-          >
-            <img src="/profileIcon.svg"></img>
-            <span>Manage Profile</span>
-          </Button>
-          <Button
-            active={activeSection === "subscription"}
-            onClick={() => scrollToSection(subscriptionRef)}
-          >
-            <img src="/subs.svg"></img>
-            <span>Manage Subscription</span>
-          </Button>
-          <Button
-            active={activeSection === "support"}
-            onClick={() => scrollToSection(supportRef)}
-          >
-            <img src="/support.svg"></img>
-            <span>Contact Support</span>
-          </Button>
-          <Button id="logout" onClick={() => setModalOpen(true)}>
-            <img src="/logout.svg"></img>
-            <span>Log Out</span>
-          </Button>
-        </ProfileSidebar>
-
-        {/* Main Content */}
-        <div style={{ flex: 3 }}>
-          <Section ref={profileRef}>
-            <h2>Your Profile</h2>
-            <p>
-              Make sure your information is correct. You can change your email
-              or name whenever you want.
-            </p>
-            <ProfilePicture>
-              <img src="/defaultProfile.png"></img>
-              <span>
-                Choose profile picture<img src="/editCourses.svg"></img>
-              </span>
-            </ProfilePicture>
-            <Link
-              className="outlook"
-              href="https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=fee14eef-b619-4b47-b916-6101e89a4d3a&response_type=code&response_mode=query&scope=openid email Mail.Read offline_access"
+        <ContentWrapper>
+          {/* Left Sidebar */}
+          <BoxReplacement></BoxReplacement>
+          <ProfileSidebar>
+            <h2>Navigation</h2>
+            <Button
+              active={activeSection === "profile"}
+              onClick={() => scrollToSection(profileRef)}
             >
-              <img src="/outlook.svg"></img>Connect Your University Email
-            </Link>
-            <InputsContainer>
-              <InputComponent
-                title="Your name"
-                placeHolder={state.firstName || "your name"}
-                type="text"
-                error={false}
-                value={state.firstName}
-                setVariable={(value) =>
-                  setState((prev) => ({ ...prev, firstName: value }))
-                }
-              ></InputComponent>
-              <InputComponent
-                title="Your surname"
-                placeHolder={state.lastName || "your surname"}
-                type="text"
-                error={false}
-                value={state.lastName}
-                setVariable={(value) =>
-                  setState((prev) => ({ ...prev, lastName: value }))
-                }
-              ></InputComponent>
-              <SelectDateComponent
-                title="Your Birth Date"
-                day={state.day}
-                setDay={(value) =>
-                  setState((prev) => ({ ...prev, day: value }))
-                }
-                month={state.month}
-                setMonth={(value) =>
-                  setState((prev) => ({ ...prev, month: value }))
-                }
-                setYear={(value) =>
-                  setState((prev) => ({ ...prev, year: value }))
-                }
-                year={state.year}
-              ></SelectDateComponent>
-              <InputComponent
-                title="Your Email"
-                placeHolder={state.email || "your email"}
-                type="email"
-                error={false}
-                value={state.email}
-                setVariable={(value) =>
-                  setState((prev) => ({ ...prev, email: value }))
-                }
-              ></InputComponent>
-            </InputsContainer>
-            <SaveButtonComponent event={handleSave} />
-          </Section>
+              <img src="/profileIcon.svg"></img>
+              <span>Manage Profile</span>
+            </Button>
+            <Button
+              active={activeSection === "subscription"}
+              onClick={() => scrollToSection(subscriptionRef)}
+            >
+              <img src="/subs.svg"></img>
+              <span>Manage Subscription</span>
+            </Button>
+            <Button
+              active={activeSection === "support"}
+              onClick={() => scrollToSection(supportRef)}
+            >
+              <img src="/support.svg"></img>
+              <span>Contact Support</span>
+            </Button>
+            <Button id="logout" onClick={() => setModalOpen(true)}>
+              <img src="/logout.svg"></img>
+              <span>Log Out</span>
+            </Button>
+          </ProfileSidebar>
 
-          <Section ref={subscriptionRef}>
-            <h2>Your Subscription</h2>
-            <p>Manage your subscription, upgrade or cancel it here.</p>
-            <PlanDashboardCard plan={state.chosenPlan}></PlanDashboardCard>
-            <ChangePlanButtonComponent></ChangePlanButtonComponent>
-          </Section>
+          {/* Main Content */}
+          <div style={{ flex: 3 }}>
+            <Section ref={profileRef}>
+              <h2>Your Profile</h2>
+              <p>
+                Make sure your information is correct. You can change your email
+                or name whenever you want.
+              </p>
+              <ProfilePicture>
+                <img src="/defaultProfile.png"></img>
+                <span>
+                  Choose profile picture<img src="/editCourses.svg"></img>
+                </span>
+              </ProfilePicture>
+              <Link
+                className="outlook"
+                href="https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=fee14eef-b619-4b47-b916-6101e89a4d3a&response_type=code&response_mode=query&scope=openid email Mail.Read offline_access"
+              >
+                <img src="/outlook.svg"></img>Connect Your University Email
+              </Link>
+              <InputsContainer>
+                <InputComponent
+                  title="Your name"
+                  placeHolder={state.firstName || "your name"}
+                  type="text"
+                  error={false}
+                  value={state.firstName}
+                  setVariable={(value) =>
+                    setState((prev) => ({ ...prev, firstName: value }))
+                  }
+                ></InputComponent>
+                <InputComponent
+                  title="Your surname"
+                  placeHolder={state.lastName || "your surname"}
+                  type="text"
+                  error={false}
+                  value={state.lastName}
+                  setVariable={(value) =>
+                    setState((prev) => ({ ...prev, lastName: value }))
+                  }
+                ></InputComponent>
+                <SelectDateComponent
+                  title="Your Birth Date"
+                  day={state.day}
+                  setDay={(value) =>
+                    setState((prev) => ({ ...prev, day: value }))
+                  }
+                  month={state.month}
+                  setMonth={(value) =>
+                    setState((prev) => ({ ...prev, month: value }))
+                  }
+                  setYear={(value) =>
+                    setState((prev) => ({ ...prev, year: value }))
+                  }
+                  year={state.year}
+                ></SelectDateComponent>
+                <InputComponent
+                  title="Your Email"
+                  placeHolder={state.email || "your email"}
+                  type="email"
+                  error={false}
+                  value={state.email}
+                  setVariable={(value) =>
+                    setState((prev) => ({ ...prev, email: value }))
+                  }
+                ></InputComponent>
+              </InputsContainer>
+              <SaveButtonComponent event={handleSave} />
+            </Section>
 
-          <Section ref={supportRef}>
-            <h2>Contact Support</h2>
-            <p>
-              If you are facing any problems with the website or the
-              application, please, send us an email and we will handle your
-              problem as soon as possible.
-            </p>
-            <p>
-              <b>support@noted.ai</b>
-            </p>
-            <ContactButtonComponent></ContactButtonComponent>
-          </Section>
-        </div>
+            <Section ref={subscriptionRef}>
+              <h2>Your Subscription</h2>
+              <p>Manage your subscription, upgrade or cancel it here.</p>
+              <PlanDashboardCard plan={state.chosenPlan}></PlanDashboardCard>
+              <ChangePlanButtonComponent></ChangePlanButtonComponent>
+            </Section>
 
-        <RightBoxReplacement></RightBoxReplacement>
+            <Section ref={supportRef}>
+              <h2>Contact Support</h2>
+              <p>
+                If you are facing any problems with the website or the
+                application, please, send us an email and we will handle your
+                problem as soon as possible.
+              </p>
+              <p>
+                <b>support@noted.ai</b>
+              </p>
+              <ContactButtonComponent></ContactButtonComponent>
+            </Section>
+          </div>
 
-        <SideBarComponent page={"profile"}></SideBarComponent>
+          <RightBoxReplacement></RightBoxReplacement>
 
-        <LogoutModal
-          isOpen={isModalOpen}
-          onCancel={setModalOpen}
-          onConfirm={handleLogout}
-        />
-      </ContentWrapper>
-    </CoursesLayout>
+          <SideBarComponent page={"profile"}></SideBarComponent>
+
+          <LogoutModal
+            isOpen={isModalOpen}
+            onCancel={setModalOpen}
+            onConfirm={handleLogout}
+          />
+        </ContentWrapper>
+      </CoursesLayout>
+    </>
   );
 }

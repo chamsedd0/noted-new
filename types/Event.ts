@@ -4,4 +4,5 @@ export type Event = {
   finish: number;
   title: string;
   color: string;
+  type: string;
 };

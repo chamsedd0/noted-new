@@ -2,18 +2,20 @@
 
 import { useAuth } from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Event } from "@/types/Event";
-import { 
-  getSchedulerEvents, 
-  deleteSchedulerEvent 
+import {
+  getSchedulerEvents,
+  deleteSchedulerEvent,
 } from "./_actions/schedulerActions";
-import AddEventModal from "@/app/components/popups/addEvent";
-import EditEventModal from "@/app/components/popups/editEvent";
+
 import ConfirmationModal from "@/app/components/popups/deletePopUp";
 import Header from "@/app/dashboard/header";
 import styled from "styled-components";
 import AddEventButtonComponent from "@/app/components/buttons/addEventButton";
+import SchedulerComponent from "@/app/components/scheduler";
+import { Hydrated } from "@/app/components/hydrated";
+import Loading from "@/app/components/loading";
 
 const CoursesLayout = styled.div`
   display: flex;
@@ -75,7 +77,25 @@ const Controls = styled.div<ControlsProps>`
 
   .delete {
     opacity: ${({ activitySelected }) => (activitySelected ? 1 : 0.5)};
-    pointer-events: ${({ activitySelected }) => (activitySelected ? "all" : "none")};
+    pointer-events: ${({ activitySelected }) =>
+      activitySelected ? "all" : "none"};
+  }
+`;
+
+const RightBoxReplacement = styled.div`
+  flex: 1;
+  min-width: 300px;
+  max-width: 300px;
+
+  @media (max-width: 1200px) {
+    max-width: none;
+  }
+
+  @media (max-width: 1200px) {
+    min-width: 250px;
+  }
+  @media (max-width: 1100px) {
+    display: none;
   }
 `;
 
@@ -93,7 +113,7 @@ interface SchedulerState {
 export default function SchedulerPage() {
   const { idToken, loading } = useAuth();
   const router = useRouter();
-  
+
   const [state, setState] = useState<SchedulerState>({
     events: [],
     selected: null,
@@ -102,54 +122,58 @@ export default function SchedulerPage() {
     addPopupOpened: false,
     type: "",
     loading: true,
-    isChecked: false
+    isChecked: false,
   });
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (loading) return;
-      
-      if (!idToken) {
-        router.replace("/login");
-        return;
-      }
+  const [isLoading, setIsLoading] = useState(true);
 
-      try {
-        const { success, data, error } = await getSchedulerEvents(idToken);
-        if (success && data) {
-          setState(prev => ({ ...prev, events: data, loading: false }));
-        } else {
-          console.error(error);
-          setState(prev => ({ ...prev, loading: false }));
-        }
-      } catch (error) {
-        console.error("Error fetching events:", error);
-        setState(prev => ({ ...prev, loading: false }));
-      }
-    };
+  const fetchEvents = useCallback(async () => {
+    if (loading) return;
 
-    fetchEvents();
+    if (!idToken) {
+      router.replace("/login");
+      return;
+    }
+
+    try {
+      const { success, data, error } = await getSchedulerEvents(idToken);
+      if (success && data) {
+        setState((prev) => ({ ...prev, events: data }));
+      } else {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+
+    setTimeout(() => setIsLoading(false), 500);
   }, [idToken, loading, router]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   const handleDeleteClick = async () => {
     if (!state.selected || !idToken) return;
-    setState(prev => ({ ...prev, isModalOpen: true }));
+    setState((prev) => ({ ...prev, isModalOpen: true }));
   };
 
   const handleConfirmDelete = async () => {
     if (!state.selected || !idToken) return;
 
-    const eventIndex = state.events.findIndex(e => e.title === state.selected);
+    const eventIndex = state.events.findIndex(
+      (e) => e.title === state.selected
+    );
     if (eventIndex === -1) return;
 
     const { success, error } = await deleteSchedulerEvent(idToken, eventIndex);
-    
+
     if (success) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        events: prev.events.filter(e => e.title !== state.selected),
+        events: prev.events.filter((e) => e.title !== state.selected),
         selected: null,
-        isModalOpen: false
+        isModalOpen: false,
       }));
     } else {
       console.error(error);
@@ -157,75 +181,85 @@ export default function SchedulerPage() {
   };
 
   return (
-    <CoursesLayout>
-      <Header hightlighted="scheduler" />
-      
-      <ConfirmationModal
-        isOpen={state.isModalOpen}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setState(prev => ({ ...prev, isModalOpen: false }))}
-      />
+    <>
+      <Loading isLoading={isLoading} />
+      <Hydrated>
+        <CoursesLayout>
+          <Header hightlighted="scheduler" />
 
-      <EditEventModal
-        onClose={(value: boolean) => setState(prev => ({ ...prev, popupOpened: value }))}
-        popupOpened={state.popupOpened}
-        courseTitle={state.selected}
-        eventType={state.type}
-      />
+          <ConfirmationModal
+            isOpen={state.isModalOpen}
+            onConfirm={handleConfirmDelete}
+            onCancel={() =>
+              setState((prev) => ({ ...prev, isModalOpen: false }))
+            }
+          />
 
-      <AddEventModal
-        onClose={(value: boolean) => setState(prev => ({ ...prev, addPopupOpened: value }))}
-        popupOpened={state.addPopupOpened}
-        eventType={state.type}
-      />
+          <ContentWrapper>
+            <SchedulerSection>
+              <TitleWrapper>
+                <h1>Scheduler</h1>
+                <Controls
+                  isSelected={state.selected === null}
+                  activitySelected={
+                    state.selected !== null && state.type === "activity"
+                  }
+                >
+                  <img
+                    src="/trash.svg"
+                    className="delete"
+                    onClick={handleDeleteClick}
+                    alt="delete"
+                  />
+                  <img
+                    src="/editCourses.svg"
+                    className="edit"
+                    onClick={() =>
+                      setState((prev) => ({ ...prev, popupOpened: true }))
+                    }
+                    alt="edit"
+                  />
+                  <img
+                    src={
+                      !state.isChecked
+                        ? "/emptyCheckBox.svg"
+                        : "/fullCheckBox.svg"
+                    }
+                    onClick={() =>
+                      setState((prev) => ({
+                        ...prev,
+                        isChecked: !prev.isChecked,
+                      }))
+                    }
+                    alt="checkbox"
+                  />
+                  <AddEventButtonComponent
+                    action={() =>
+                      setState((prev) => ({ ...prev, addPopupOpened: true }))
+                    }
+                  />
+                </Controls>
+              </TitleWrapper>
 
-      <ContentWrapper>
-        <SchedulerSection>
-          <TitleWrapper>
-            <h1>Scheduler</h1>
-            <Controls
-              isSelected={state.selected === null}
-              activitySelected={state.selected !== null && state.type === "activity"}
-            >
-              <img
-                src="/trash.svg"
-                className="delete"
-                onClick={handleDeleteClick}
-                alt="delete"
+              <SchedulerComponent
+                isChecked={state.isChecked}
+                setIsChecked={(value) =>
+                  setState((prev) => ({ ...prev, isChecked: value }))
+                }
+                selected={state.selected}
+                setSelected={(value) =>
+                  setState((prev) => ({ ...prev, selected: value }))
+                }
+                setEventType={(value) =>
+                  setState((prev) => ({ ...prev, type: value }))
+                }
               />
-              <img
-                src="/editCourses.svg"
-                className="edit"
-                onClick={() => setState(prev => ({ ...prev, popupOpened: true }))}
-                alt="edit"
-              />
-              <img
-                src={!state.isChecked ? "/emptyCheckBox.svg" : "/fullCheckBox.svg"}
-                onClick={() => setState(prev => ({ ...prev, isChecked: !prev.isChecked }))}
-                alt="checkbox"
-              />
-              <AddEventButtonComponent
-                action={() => setState(prev => ({ ...prev, addPopupOpened: true }))}
-              />
-            </Controls>
-          </TitleWrapper>
+            </SchedulerSection>
 
-          <div>
-            {state.events.map((event, index) => (
-              <div key={index} onClick={() => {
-                setState(prev => ({
-                  ...prev,
-                  selected: event.title,
-                  type: "activity"
-                }));
-              }}>
-                {event.title} - {event.day} ({event.start}-{event.finish})
-              </div>
-            ))}
-          </div>
-
-        </SchedulerSection>
-      </ContentWrapper>
-    </CoursesLayout>
+            <RightBoxReplacement />
+          </ContentWrapper>
+        </CoursesLayout>
+      </Hydrated>
+    </>
   );
 }

@@ -1,10 +1,10 @@
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+"use client";
 
-import { db } from "../../../firebase"; // Adjust the path as needed
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/useAuth";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Event } from "@/types/Event";
+import { getSchedulerData } from "@/app/dashboard/scheduler/_actions/schedulerDataActions";
 
 const ScheduleWrapper = styled.div`
   width: 100%;
@@ -59,7 +59,7 @@ const TimeLabel = styled.div`
 `;
 
 // Time block
-const TimeBlock = styled.div`
+const TimeBlock = styled.div<TimeBlockProps>`
   font-size: 12px;
   font-weight: 600;
   display: flex;
@@ -103,104 +103,77 @@ const TimeBlock = styled.div`
   }
 `;
 
+interface SchedulerComponentProps {
+  isChecked: boolean;
+  setIsChecked: (value: boolean) => void;
+  selected: string | null;
+  setSelected: (value: string | null) => void;
+  setEventType: (value: string) => void;
+}
+
+interface TimeBlockProps {
+  bgColor: string;
+  day: number;
+  timeStart: number;
+  timeFinish: number;
+  isChecked: boolean;
+  isSelected: boolean;
+}
+
 const generateTimeSlots = () => {
-  const times = [];
+  const times: string[] = [];
   for (let hour = 7; hour <= 22; hour++) {
     times.push(`${String(hour).padStart(2, "0")}:00`);
   }
   return times;
 };
 
-function transformCoursesToEvents(courses, eventType) {
-  return courses.flatMap((course) => {
-    const { timestamps, title, color } = course;
-
-    return timestamps.map((timestamp) => {
-      const day = timestamp.day;
-
-      const start = timestamp.start;
-      const finish = timestamp.finish;
-      const type = eventType;
-
-      return {
-        day,
-        start,
-        finish,
-        title,
-        color,
-        type,
-      };
-    });
-  });
-}
-
-const SchedulerComponent = ({
+const SchedulerComponent: React.FC<SchedulerComponentProps> = ({
   isChecked,
   setIsChecked,
   selected,
   setSelected,
   setEventType,
 }) => {
+  const { idToken, loading } = useAuth();
   const timeSlots = generateTimeSlots();
   const dayCodes = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-  const [events, setEvents] = useState([]);
-
-  const [user, setUser] = useState(null);
-
-  const router = useRouter();
-
-  const auth = getAuth();
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          let temp = transformCoursesToEvents(userDoc.data().courses, "course");
-          let temp2 = transformCoursesToEvents(
-            userDoc.data().activities,
-            "activity"
-          );
-          setEvents(temp.concat(temp2));
-          await updateDoc(userDocRef, { events: temp.concat(temp2) });
-        }
+    const fetchData = async () => {
+      if (loading || !idToken) return;
+
+      const { success, data, error } = await getSchedulerData(idToken);
+      if (success && data) {
+        setEvents(data as Event[]);
+      } else {
+        console.error(error);
       }
     };
 
-    fetchUserData();
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    fetchUserData();
-
-    return () => unsubscribe(); // Cleanup on unmount
-  }, [auth, user, db, events]); // Runs whenever the user changes
+    fetchData();
+  }, [idToken, loading]);
 
   return (
     <ScheduleWrapper onClick={() => setSelected(null)}>
       <Grid>
         {dayCodes.map((daycode, index) => (
-          <div style={{ gridColumn: index + 2 + "/" + (index + 3) }}>
+          <div key={index} style={{ gridColumn: index + 2 + "/" + (index + 3) }}>
             <DayLabel>{daycode}</DayLabel>
-            <img src="/verticalLine.svg"></img>
+            <img src="/verticalLine.svg" alt="vertical line" />
           </div>
         ))}
 
         {timeSlots.map((timeSlot, index) => (
           <TimeLabel
+            key={index}
             style={{
               gridRow: index + 2 + "/" + (index + 3),
               gridColumn: "1 / 2",
             }}
           >
-            {timeSlot} <img src="/horizontalLine.svg"></img>
+            {timeSlot} <img src="/horizontalLine.svg" alt="horizontal line" />
           </TimeLabel>
         ))}
 
@@ -225,7 +198,6 @@ const SchedulerComponent = ({
               <span>
                 {event.start.toString() + (event.start <= 12 ? "AM-" : "PM-")}
               </span>
-
               <span>
                 {event.finish.toString() + (event.finish <= 12 ? "AM" : "PM")}
               </span>
