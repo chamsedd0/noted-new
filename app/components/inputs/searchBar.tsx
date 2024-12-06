@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import styled from "styled-components";
 
 const SearchContainer = styled.div`
@@ -46,7 +45,6 @@ const SearchInput = styled.input`
 `;
 
 const SearchBarComponent = () => {
-  const [focused, setFocused] = useState(false);
 
   return (
     <SearchContainer>
@@ -54,8 +52,6 @@ const SearchBarComponent = () => {
       <SearchInput
         type="text"
         placeholder="Search"
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
       />
     </SearchContainer>
   );

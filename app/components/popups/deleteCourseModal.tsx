@@ -149,7 +149,7 @@ const CourseDeleteModal = ({ onConfirm, onCancel, isOpen, courseTitle }: DeleteC
             <img src='/close.svg' alt="close" />
           </CloseButton>
         </ModalHeader>
-        <h2>Do you really want to delete "{courseTitle}" from your List?</h2>
+        <h2>Do you really want to delete {courseTitle} from your List?</h2>
         <p>
           The course cannot be brought back unless you add it manually after deletion.
           All the notes in the course will also be deleted. Your Schedule will automatically be cleared.

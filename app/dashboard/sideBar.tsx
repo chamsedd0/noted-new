@@ -177,7 +177,6 @@ const EmptyMessage = styled.p`
 const SideBarComponent = ({ page }: SideBarProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
   const auth = getAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isNavigating, setIsNavigating] = useState(false);
@@ -186,7 +185,6 @@ const SideBarComponent = ({ page }: SideBarProps) => {
   const updateData = async () => {
     if (user?.uid) {
       const userCourses = await getUserCourses(user.uid);
-      setCourses(userCourses);
       
       const dayCode = getDayCode(selectedDate);
       const allEvents = convertCoursesToEvents(userCourses);
