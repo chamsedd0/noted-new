@@ -1,17 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { redirect } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { checkUserStage } from "./_actions/checkUserStage";
 import { AccountSetupStage } from "@/types/User";
-
-// Define the AuthContextValue interface
-interface AuthContextValue {
-  idToken: string | null;
-  loading: boolean;
-}
+import { AuthProvider } from "./contexts/AuthContext";
 
 // Define the stage order based on AccountSetupStage
 const STAGE_ORDER = [
@@ -21,16 +16,6 @@ const STAGE_ORDER = [
   AccountSetupStage.ADD_TIME_SLOTS,
   AccountSetupStage.CHOOSE_PLAN,
 ];
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-export const useAuthContext = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuthContext must be used within an AuthProvider");
-  }
-  return context;
-};
 
 export default function AccountSetupLayout({
   children,
@@ -64,15 +49,14 @@ export default function AccountSetupLayout({
   }, [idToken, loading, pathname]);
 
   if (loading || !isStageValidated) {
-    return <div>Loading...</div>; // Render something instead of returning nothing
+    return <div>Loading...</div>;
   }
 
   return (
-    <AuthContext.Provider value={{ idToken, loading }}>
+    <AuthProvider value={{ idToken, loading }}>
       <div>
-        {/* Optional: Add layout-specific elements */}
         {children}
       </div>
-    </AuthContext.Provider>
+    </AuthProvider>
   );
 }
