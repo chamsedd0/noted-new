@@ -2,101 +2,28 @@
 
 import AddCourseButtonComponent from "./components/addCourseButton";
 import CourseDashboardCardComponent from "./components/dashboardCourseCard";
-
-import styled from "styled-components";
-
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-
 import { useEffect, useState } from "react";
-import AddCourseModal from "@/app/components/popups/addCourseModal";
-import EditCourseModal from "../components/popups/editCourseModal";
+import AddCourseModal from "./components/addCourseModal";
+import EditCourseModal from "./components/editCourseModal";
+import { Course } from "@/types/Course";
+import CourseDeleteModal from "./components/deleteCourseModal";
+import Loading from "@/app/components/loading";
+import {
+  ContentWrapper,
+  CoursesGrid,
+  CoursesLayout,
+  CoursesSection,
+  RightBoxReplacement,
+  TitleWrapper,
+} from "./_styles";
+
 import {
   getUserCourses,
   addNewCourse,
   updateCourse,
   deleteCourse,
 } from "./_actions/courseActions";
-import { Course } from "@/types/Course";
-import CourseDeleteModal from "@/app/components/popups/deleteCourseModal";
-import Loading from "@/app/components/loading";
-
-const CoursesLayout = styled.div<{ isLoading: boolean }>`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #383838;
-  opacity: ${(props) => (props.isLoading ? 0 : 1)};
-  transition: opacity 0.3s ease;
-  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  flex: 1;
-  margin-top: 70px;
-  gap: 40px;
-  overflow: hidden;
-`;
-
-const CoursesSection = styled.div`
-  flex: 3;
-  max-width: 85%;
-  color: #fff;
-  h1 {
-    font-size: 32px;
-
-    @media (max-width: 1200px) {
-      font-size: 24px;
-    }
-  }
-  padding: 20px;
-
-  @media (max-width: 1200px) {
-    max-width: 100%;
-  }
-`;
-
-const TitleWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-`;
-
-const CoursesGrid = styled.div`
-  width: 95%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
-  gap: 30px 0px;
-
-  @media (max-width: 1470px) {
-    gap: 20px 20px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 100%;
-  }
-`;
-
-const RightBoxReplacement = styled.div`
-  flex: 1;
-  min-width: 300px;
-  max-width: 300px;
-
-  @media (max-width: 1200px) {
-    max-width: none;
-  }
-
-  @media (max-width: 1200px) {
-    min-width: 250px;
-  }
-  @media (max-width: 1100px) {
-    display: none;
-  }
-`;
 
 export default function CoursesPage() {
   const [user, setUser] = useState<User | null>(null);
