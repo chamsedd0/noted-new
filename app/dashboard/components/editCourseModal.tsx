@@ -1,11 +1,10 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import InputComponent from '@/app/components/inputs/input';
-import { EditCourseModalProps } from '../../dashboard/types';
-import { TimeSlot } from '@/types/Time';
-import SelectComponent from '../../dashboard/components/popupTimeSelect';
+import { useState, useEffect } from "react";
+import InputComponent from "@/app/components/inputs/input";
+import { EditCourseModalProps } from "../../dashboard/types";
+import { TimeSlot } from "@/types/Time";
+import SelectComponent from "../../dashboard/components/popupTimeSelect";
 import {
   BlackenScreen,
   ModalContainer,
@@ -18,97 +17,106 @@ import {
   WeekdayOptions,
   WeekdayButton,
   TimeSelectContainer,
-  SaveButton
+  SaveButton,
 } from "./_styles/editCourseModal";
+import { Course } from "@/types/Course";
+import { colors } from "@/app/colors";
 
-
-const EditCourseModal = ({ onClose, popupOpened, courseTitle, setSelected, onUpdate, courses }: EditCourseModalProps) => {
+const EditCourseModal = ({
+  onClose,
+  popupOpened,
+  courseTitle,
+  setSelected,
+  onUpdate,
+  courses,
+}: EditCourseModalProps) => {
   const [activeDays, setActiveDays] = useState<string[]>([]);
-  const [selectedColor, setSelectedColor] = useState('#BE0505');
-  const [newCourseTitle, setNewCourseTitle] = useState('');
-  const [user, setUser] = useState<User | null>(null);
+  const [selectedColor, setSelectedColor] = useState("#BE0505");
+  const [newCourseTitle, setNewCourseTitle] = useState("");
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-
-  const colors = ['#BE0505', '#FF6B35', '#FFAB35', '#3C9437', '#4B6EE3', '#244BCB', '#9747FF', '#840000'];
-  const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
   const handleDayClick = (day: string) => {
-    setActiveDays(prev => {
-      const newDays = prev.includes(day) 
-        ? prev.filter(d => d !== day)
+    setActiveDays((prev) => {
+      const newDays = prev.includes(day)
+        ? prev.filter((d) => d !== day)
         : [...prev, day];
-      
+
       if (!prev.includes(day)) {
         // Don't add any default time slots
         return newDays;
       } else {
         // Remove time slots for removed day
-        setTimeSlots(prev => prev.filter(slot => slot.day !== day));
+        setTimeSlots((prev) => prev.filter((slot) => slot.day !== day));
       }
-      
+
       return newDays;
     });
   };
 
   const checkConflicts = (newTimeSlots: TimeSlot[]) => {
     const conflicts: string[] = [];
-    
+
     // Get all time slots from other courses
-    const otherCourses = courses.filter(course => course.title !== courseTitle);
-    
-    newTimeSlots.forEach(newSlot => {
-      otherCourses.forEach(course => {
-        course.timeSlots?.forEach(existingSlot => {
-          if (existingSlot.day === newSlot.day && 
-            ((newSlot.start >= existingSlot.start && newSlot.start < existingSlot.finish) ||
-             (newSlot.finish > existingSlot.start && newSlot.finish <= existingSlot.finish) ||
-             (newSlot.start <= existingSlot.start && newSlot.finish >= existingSlot.finish))) {
+    const otherCourses = courses.filter(
+      (course) => course.title !== courseTitle
+    );
+
+    newTimeSlots.forEach((newSlot) => {
+      otherCourses.forEach((course) => {
+        course.timeSlots?.forEach((existingSlot) => {
+          if (
+            existingSlot.day === newSlot.day &&
+            ((newSlot.start >= existingSlot.start &&
+              newSlot.start < existingSlot.finish) ||
+              (newSlot.finish > existingSlot.start &&
+                newSlot.finish <= existingSlot.finish) ||
+              (newSlot.start <= existingSlot.start &&
+                newSlot.finish >= existingSlot.finish))
+          ) {
             conflicts.push(
               `Conflict with "${course.title}" on ${existingSlot.day} ` +
-              `(${existingSlot.start}:00-${existingSlot.finish}:00)`
+                `(${existingSlot.start}:00-${existingSlot.finish}:00)`
             );
           }
         });
       });
     });
-    
+
     return conflicts;
   };
 
   const isTitleTaken = (title: string) => {
-    return courses.some(course => 
-      course.title.toLowerCase() === title.toLowerCase() && 
-      course.title !== courseTitle  // Exclude current course
+    return courses.some(
+      (course) =>
+        course.title.toLowerCase() === title.toLowerCase() &&
+        course.title !== courseTitle // Exclude current course
     );
   };
 
   const handleSave = async () => {
-    if (!user || !courseTitle || !selectedColor) {
-      alert('Please fill in all required fields (title and color)');
-      return;
-    }
-
     if (newCourseTitle && isTitleTaken(newCourseTitle)) {
-      alert('A course with this name already exists');
+      alert("A course with this name already exists");
       return;
     }
 
     const conflicts = checkConflicts(timeSlots);
+
     if (conflicts.length > 0) {
-      alert('Schedule conflicts found:\n\n' + conflicts.join('\n'));
+      alert("Schedule conflicts found:\n\n" + conflicts.join("\n"));
       return;
     }
 
     try {
-      const course = courses.find(c => c.title === courseTitle);
+      const course = courses.find((c) => c.title === courseTitle);
       const updatedCourse = {
-        uid: course?.uid || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        uid: course?.uid,
         title: newCourseTitle || courseTitle,
         color: selectedColor,
         timeSlots,
-        lastModified: new Date().toLocaleString()
+        lastModified: new Date().toLocaleString(),
       };
-      await onUpdate(courseTitle, updatedCourse);
+      await onUpdate(updatedCourse as Course);
       setSelected(null);
       onClose(false);
     } catch (error) {
@@ -117,31 +125,22 @@ const EditCourseModal = ({ onClose, popupOpened, courseTitle, setSelected, onUpd
   };
 
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (courseTitle && user && popupOpened) {
-      const course = courses.find(c => c.title === courseTitle);
+    if (courseTitle && popupOpened) {
+      const course = courses.find((c) => c.title === courseTitle);
       if (course) {
-        setNewCourseTitle(course.title || '');
-        setSelectedColor(course.color || '');
+        setNewCourseTitle(course.title || "");
+        setSelectedColor(course.color || "");
         const slots = course.timeSlots || [];
         setTimeSlots(slots);
-        const days = slots.map(slot => slot.day);
+        const days = slots.map((slot) => slot.day);
         setActiveDays([...new Set(days)]);
       }
     }
-  }, [courseTitle, user, courses, popupOpened]);
+  }, [courseTitle, courses, popupOpened]);
 
   const isColorTaken = (color: string) => {
-    return courses.some(course => 
-      course.color === color && course.title !== courseTitle
+    return courses.some(
+      (course) => course.color === color && course.title !== courseTitle
     );
   };
 
@@ -149,16 +148,21 @@ const EditCourseModal = ({ onClose, popupOpened, courseTitle, setSelected, onUpd
     <BlackenScreen popupOpened={popupOpened} onClick={() => onClose(false)}>
       <ModalContainer onClick={(e: React.MouseEvent) => e.stopPropagation()}>
         <ModalHeader>
-          <h2><img src='/bookmark.svg' alt="bookmark"/>Edit Course</h2>
-          <CloseButton onClick={() => onClose(false)}><img src='/close.svg' alt="close"/></CloseButton>
+          <h2>
+            <img src="/bookmark.svg" alt="bookmark" />
+            Edit Course
+          </h2>
+          <CloseButton onClick={() => onClose(false)}>
+            <img src="/close.svg" alt="close" />
+          </CloseButton>
         </ModalHeader>
 
         <InputContainer>
-          <InputComponent 
-            title='Course Name'
-            placeHolder='Data Structures'
-            type='text'
-            value={newCourseTitle || courseTitle || ''}
+          <InputComponent
+            title="Course Name"
+            placeHolder="Data Structures"
+            type="text"
+            value={newCourseTitle || courseTitle || ""}
             setVariable={setNewCourseTitle}
           />
         </InputContainer>
@@ -168,18 +172,18 @@ const EditCourseModal = ({ onClose, popupOpened, courseTitle, setSelected, onUpd
             <span>Color</span>
             <ColorOptions>
               {colors.map((color) => (
-                <ColorCircle 
-                  key={color} 
-                  color={color} 
+                <ColorCircle
+                  key={color}
+                  color={color}
                   selected={color === selectedColor}
                   taken={isColorTaken(color)}
                   onClick={() => {
                     if (!isColorTaken(color)) {
                       setSelectedColor(color);
                     } else {
-                      alert('This color is already used by another course');
+                      alert("This color is already used by another course");
                     }
-                  }} 
+                  }}
                 />
               ))}
             </ColorOptions>
@@ -189,9 +193,9 @@ const EditCourseModal = ({ onClose, popupOpened, courseTitle, setSelected, onUpd
             <span>Weekday</span>
             <WeekdayOptions>
               {weekdays.map((day) => (
-                <WeekdayButton 
-                  key={day} 
-                  active={activeDays.includes(day)} 
+                <WeekdayButton
+                  key={day}
+                  active={activeDays.includes(day)}
                   onClick={() => handleDayClick(day)}
                 >
                   {day.charAt(0)}
@@ -203,10 +207,10 @@ const EditCourseModal = ({ onClose, popupOpened, courseTitle, setSelected, onUpd
 
         <TimeSelectContainer>
           {activeDays.map((activeDay, index) => (
-            <SelectComponent 
-              key={index} 
-              title={activeDay} 
-              timeSlots={timeSlots} 
+            <SelectComponent
+              key={index}
+              title={activeDay}
+              timeSlots={timeSlots}
               setTimeSlots={setTimeSlots}
               currentCourseTitle={courseTitle || undefined}
               allCourses={courses}

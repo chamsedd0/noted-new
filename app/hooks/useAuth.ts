@@ -53,7 +53,7 @@ export function useAuth() {
   }, []);
 
   return {
-    user: authState.user,
+    userId: authState.user?.uid,
     idToken: authState.idToken,
     loading: authState.loading,
   };

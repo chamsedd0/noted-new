@@ -1,4 +1,4 @@
-import { Course } from '@/types/Course';
+import { Course } from "@/types/Course";
 
 export interface TimeStamp {
   day: string;
@@ -22,7 +22,8 @@ export interface CourseCardProps {
 export interface AddCourseModalProps {
   onClose: (value: boolean) => void;
   popupOpened: boolean;
-  onAdd: (course: Course) => Promise<void>;
+  existingCourses: Course[];
+  addCourse: (course: Course) => Promise<void>;
 }
 
 export interface EditCourseModalProps {
@@ -30,6 +31,6 @@ export interface EditCourseModalProps {
   popupOpened: boolean;
   courseTitle: string | null;
   setSelected: (value: string | null) => void;
-  onUpdate: (oldTitle: string, course: Course) => Promise<void>;
+  onUpdate: (course: Course) => Promise<void>;
   courses: Course[];
-} 
+}
