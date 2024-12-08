@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-
 const CoursesLayout = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex-direction: column;
@@ -50,12 +49,12 @@ const TitleWrapper = styled.div`
 const CoursesGrid = styled.div`
   width: 98%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-  gap: 30px 20px;
+  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  gap: 20px 20px;
 
   @media (max-width: 1470px) {
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-    gap: 20px 20px;
+    gap: 30px 20px;
   }
 
   @media (max-width: 1460px) {
@@ -64,7 +63,6 @@ const CoursesGrid = styled.div`
   }
   @media (max-width: 1350px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-    
   }
 `;
 
@@ -85,13 +83,11 @@ const RightBoxReplacement = styled.div`
   }
 `;
 
-
-
 export {
-    CoursesLayout,
-    ContentWrapper,
-    CoursesSection,
-    TitleWrapper,
-    CoursesGrid,
-    RightBoxReplacement,
-}
+  CoursesLayout,
+  ContentWrapper,
+  CoursesSection,
+  TitleWrapper,
+  CoursesGrid,
+  RightBoxReplacement,
+};

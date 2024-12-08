@@ -101,14 +101,20 @@ async function updateCourseEvents(
 ): Promise<void> {
   try {
     const userRef = getUserRef(userId);
-    const events = await getUserEvents(userId);
-    const updatedEvents = [
-      ...events.filter(
-        (e: Event) => !(e.type === "course" && e.courseId === courseId)
-      ),
-      ...newEvents,
-    ];
-    await userRef.update({ events: updatedEvents });
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User not found");
+
+    const currentEvents = userDoc.data()?.events || [];
+
+    // Filter out old events for this course
+    const otherEvents = currentEvents.filter(
+      (e: Event) => !(e.type === "course" && e.courseId === courseId)
+    );
+
+    // Add new course events
+    await userRef.update({
+      events: [...otherEvents, ...newEvents],
+    });
   } catch (error) {
     throw new Error((error as Error).message);
   }

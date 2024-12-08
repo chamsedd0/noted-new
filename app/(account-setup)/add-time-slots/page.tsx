@@ -272,19 +272,20 @@ export default function AddTimeSlots() {
       return;
     }
 
-    // If no conflicts, proceed with submission
-    try {
-      for (const courseTime of courseTimes) {
-        await updateCourseTimes(
-          idToken,
-          courseTime.courseId,
-          courseTime.timeSlots
-        );
-      }
-    } catch (error) {
-      console.error("Error updating times:", error);
-      alert("Failed to update course times. Please try again.");
-    }
+        // If no conflicts, proceed with submission
+        try {
+          for (const courseTime of courseTimes) {
+            await updateCourseTimes(
+              idToken,
+              courseTime.courseId,
+              courseTime.timeSlots
+            );
+            console.log(courseTime);
+          }
+        } catch (error) {
+          console.error("Error updating times:", error);
+          alert("Failed to update course times. Please try again.");
+        }
   }, [idToken, courseTimes, courses]);
 
   if (loading) return <Loading>Loading...</Loading>;
