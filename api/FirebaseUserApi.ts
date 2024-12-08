@@ -5,6 +5,7 @@ import { User } from "@/types/User";
 async function createUser(user: User): Promise<void> {
   const userRef = db.collection("users").doc(user.uid);
   await userRef.set({
+    uid: user.uid,
     name: user.name,
     email: user.email,
     photoUrl: user.photoUrl,

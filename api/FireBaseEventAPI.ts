@@ -2,76 +2,124 @@ import "server-only";
 import { db } from "@/lib/firebase-admin";
 import { Event } from "@/types/Event";
 
+// Helper function to get user reference
+const getUserRef = (userId: string) => db.collection("users").doc(userId);
+
 async function getUserEvents(userId: string): Promise<Event[]> {
-  const userDoc = await db.collection("users").doc(userId).get();
+  try {
+    const userRef = getUserRef(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) return [];
+    return userDoc.data()?.events || [];
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}
 
-  if (!userDoc.exists) return [];
-
-  const userData = userDoc.data();
-  return userData?.events || [];
+async function addEvents(userId: string, events: Event[]): Promise<void> {
+  try {
+    const userRef = getUserRef(userId);
+    await userRef.update({ events });
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 }
 
 async function addEvent(userId: string, event: Event): Promise<void> {
-  const userRef = db.collection("users").doc(userId);
-  const userDoc = await userRef.get();
+  try {
+    const userRef = getUserRef(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User not found");
 
-  if (!userDoc.exists) {
-    throw new Error("User not found");
+    const events = userDoc.data()?.events || [];
+    await userRef.update({ events: [...events, event] });
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
-
-  const userData = userDoc.data();
-  const events = userData?.events || [];
-
-  await userRef.update({
-    events: [...events, event],
-  });
 }
 
 async function updateEvent(
   userId: string,
-  eventIndex: number,
   updates: Partial<Event>
 ): Promise<void> {
-  const userRef = db.collection("users").doc(userId);
-  const userDoc = await userRef.get();
+  try {
+    const userRef = getUserRef(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User not found");
 
-  if (!userDoc.exists) {
-    throw new Error("User not found");
-  }
-
-  const userData = userDoc.data();
-  const events = [...(userData?.events || [])];
-
-  if (eventIndex >= 0 && eventIndex < events.length) {
-    events[eventIndex] = { ...events[eventIndex], ...updates };
-    await userRef.update({ events });
-  } else {
-    throw new Error("Event not found");
+    const events = [...(userDoc.data()?.events || [])];
+    const eventToUpdate = events.find((e: Event) => e.uid === updates.uid);
+    if (eventToUpdate) {
+      events[events.indexOf(eventToUpdate)] = { ...eventToUpdate, ...updates };
+      await userRef.update({ events });
+    }
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
 }
 
-async function deleteEvent(userId: string, eventIndex: number): Promise<void> {
-  const userRef = db.collection("users").doc(userId);
-  const userDoc = await userRef.get();
+async function deleteEvent(userId: string, eventId: string): Promise<void> {
+  try {
+    const userRef = getUserRef(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User not found");
 
-  if (!userDoc.exists) {
-    throw new Error("User not found");
+    const events = [...(userDoc.data()?.events || [])];
+    const eventToDelete = events.find((e: Event) => e.uid === eventId);
+
+    if (eventToDelete) {
+      await userRef.update({
+        events: events.filter((e: Event) => e.uid !== eventId),
+      });
+    }
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
+}
 
-  const userData = userDoc.data();
-  const events = [...(userData?.events || [])];
+async function deleteCourseEvents(
+  userId: string,
+  courseId: string
+): Promise<void> {
+  try {
+    const userRef = getUserRef(userId);
+    const events = await getUserEvents(userId);
+    await userRef.update({
+      events: events.filter(
+        (e: Event) => !(e.type === "course" && e.courseId === courseId)
+      ),
+    });
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}
 
-  if (eventIndex >= 0 && eventIndex < events.length) {
-    events.splice(eventIndex, 1);
-    await userRef.update({ events });
-  } else {
-    throw new Error("Event not found");
+async function updateCourseEvents(
+  userId: string,
+  courseId: string,
+  newEvents: Event[]
+): Promise<void> {
+  try {
+    const userRef = getUserRef(userId);
+    const events = await getUserEvents(userId);
+    const updatedEvents = [
+      ...events.filter(
+        (e: Event) => !(e.type === "course" && e.courseId === courseId)
+      ),
+      ...newEvents,
+    ];
+    await userRef.update({ events: updatedEvents });
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
 }
 
 export const eventApi = {
-  getUserEvents,
+  addEvents,
   addEvent,
+  getUserEvents,
   updateEvent,
+  updateCourseEvents,
   deleteEvent,
+  deleteCourseEvents,
 };
