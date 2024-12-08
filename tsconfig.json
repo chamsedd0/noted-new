@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/colors.ts",
+    "app/constants.ts",
     "next.config.mts"
   ],
   "exclude": ["node_modules"]

@@ -1,11 +1,13 @@
 "use server";
 
-import { courseApi } from "@/api/FireBaseCourseAPI";
 import { userApi } from "@/api/FirebaseUserApi";
+import { courseApi } from "@/api/FireBaseCourseAPI";
+import { eventApi } from "@/api/FireBaseEventAPI";
 import { verifyIdToken } from "@/lib/firebase-admin";
 import { AccountSetupStage } from "@/types/User";
 import { TimeSlot } from "@/types/Time";
 import { redirect } from "next/navigation";
+import { convertCourseToEvents } from "@/app/utils";
 
 export async function updateCourseTimes(
   idToken: string,
@@ -26,17 +28,23 @@ export async function updateCourseTimes(
     if (!course) {
       throw new Error("Course not found");
     }
-
-    // Update the course times
-    await courseApi.updateCourse(decodedToken.uid, {
+    const courseWithNewTimes = {
       ...course,
       timeSlots: timeslots,
-    });
+    };
+    // Update the course times
+    await courseApi.updateCourse(decodedToken.uid, courseWithNewTimes);
 
     // Update user account setup
     await userApi.updateUser(decodedToken.uid, {
       accountSetupStage: AccountSetupStage.CHOOSE_PLAN,
     });
+
+    // Make events for the course times
+    const courseEvents = convertCourseToEvents(courseWithNewTimes);
+
+    // Update the events
+    await eventApi.addEvents(decodedToken.uid, courseEvents);
 
     redirect("/choose-plan");
   } catch (error) {

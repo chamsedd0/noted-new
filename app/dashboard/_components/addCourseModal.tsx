@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import SelectComponent from "../../dashboard/components/popupTimeSelect";
+import SelectComponent from "./popupTimeSelect";
 import InputComponent from "@/app/components/inputs/input";
-import { AddCourseModalProps } from "../../dashboard/types";
+import { AddCourseModalProps } from "../types";
 import { TimeSlot } from "@/types/Time";
 import {
   BlackenScreen,
@@ -19,7 +19,7 @@ import {
   TimeSelectContainer,
   SaveButton,
 } from "./_styles/addCourseModal";
-import { colors, weekdays } from "@/app/colors";
+import { colors, weekdays } from "@/app/utils/constants";
 import { Course } from "@/types/Course";
 
 const AddCourseModal = ({
