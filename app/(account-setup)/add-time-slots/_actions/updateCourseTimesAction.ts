@@ -15,7 +15,6 @@ export async function updateCourseTimes(
   timeslots: TimeSlot[]
 ): Promise<void> {
   try {
-    // Verify the id token
     const decodedToken = await verifyIdToken(idToken);
     if (!decodedToken) {
       redirect("/login");
@@ -28,23 +27,26 @@ export async function updateCourseTimes(
     if (!course) {
       throw new Error("Course not found");
     }
+
+    // Update the course with new timeslots
     const courseWithNewTimes = {
       ...course,
       timeSlots: timeslots,
     };
-    // Update the course times
+
+    // Update the course in database
     await courseApi.updateCourse(decodedToken.uid, courseWithNewTimes);
 
-    // Update user account setup
+    // Convert all courses' timeslots to events
+    const courseEvents = convertCourseToEvents(courseWithNewTimes);
+
+    // Update events for this course
+    await eventApi.updateCourseEvents(decodedToken.uid, courseId, courseEvents);
+
+    // Update user account setup stage
     await userApi.updateUser(decodedToken.uid, {
       accountSetupStage: AccountSetupStage.CHOOSE_PLAN,
     });
-
-    // Make events for the course times
-    const courseEvents = convertCourseToEvents(courseWithNewTimes);
-
-    // Update the events
-    await eventApi.addEvents(decodedToken.uid, courseEvents);
 
     redirect("/choose-plan");
   } catch (error) {

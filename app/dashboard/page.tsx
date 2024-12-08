@@ -31,7 +31,7 @@ interface DashboardState {
 
 export default function CoursesPage() {
   const { user } = useAuth();
-  const { courses, getUserData } = globalStore();
+  const { courses, getUserData, addCourse, updateCourse, deleteCourse } = globalStore();
   const [state, setState] = useState<DashboardState>({
     popupOpened: false,
     editPopupOpened: false,
