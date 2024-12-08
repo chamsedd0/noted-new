@@ -5,4 +5,4 @@ export type Event = {
   title: string;
   color: string;
   type: string;
-};
+}; 

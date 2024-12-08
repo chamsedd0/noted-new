@@ -1,58 +1,86 @@
 "use server";
 
-import { courseApi } from "@/api/FireBaseCourseAPI";
-import { eventApi } from "@/api/FireBaseEventAPI";
+import { db } from "@/lib/firebase-admin";
 import { Course } from "@/types/Course";
-import { Event } from "@/types/Event";
 
-// Helper function to convert courses to events
-function convertCourseToEvents(course: Course): Event[] {
-  return (course.timeSlots || []).map((slot) => ({
-    uid: `${course.uid}-${slot.day}-${slot.start}-${slot.finish}`,
-    title: course.title,
-    day: slot.day,
-    start: slot.start,
-    finish: slot.finish,
-    color: course.color,
-    type: "course",
-    courseId: course.uid,
-  }));
-}
-
-async function getUserCourses(userId: string) {
+async function getUserCourses(userId: string): Promise<Course[]> {
   try {
-    return await courseApi.getCoursesByUserId(userId);
+    const userDoc = await db.collection("users").doc(userId).get();
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      return userData?.courses || [];
+    }
+    return [];
   } catch (error) {
-    throw new Error((error as Error).message);
+    console.error("Error fetching courses:", error);
+    throw error;
   }
 }
 
-async function addNewCourse(userId: string, course: Course) {
+async function addNewCourse(userId: string, course: Course): Promise<void> {
   try {
-    await courseApi.addCourse(userId, course);
-    const courseEvents = convertCourseToEvents(course);
-    await eventApi.addEvents(userId, courseEvents);
+    const now = new Date().toLocaleString();
+    const courseWithTimestamp = {
+      ...course,
+      lastModified: now,
+    };
+    const userRef = db.collection("users").doc(userId);
+    const userDoc = await userRef.get();
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      const courses = userData?.courses || [];
+      courses.push(courseWithTimestamp);
+      await userRef.update({ courses });
+    }
   } catch (error) {
-    throw new Error((error as Error).message);
+    console.error("Error adding course:", error);
+    throw error;
   }
 }
 
-async function updateCourse(userId: string, updatedCourse: Course) {
+async function updateCourse(
+  userId: string,
+  oldTitle: string,
+  updatedCourse: Course
+): Promise<void> {
   try {
-    await courseApi.updateCourse(userId, updatedCourse);
-    const courseEvents = convertCourseToEvents(updatedCourse);
-    await eventApi.updateCourseEvents(userId, updatedCourse.uid, courseEvents);
+    const userRef = db.collection("users").doc(userId);
+    const userDoc = await userRef.get();
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      const courses = userData?.courses || [];
+      const updatedCourses = courses.map((course: Course) =>
+        course.title === oldTitle ? updatedCourse : course
+      );
+      await userRef.update({ courses: updatedCourses });
+    }
   } catch (error) {
-    throw new Error((error as Error).message);
+    console.error("Error updating course:", error);
+    throw error;
   }
 }
 
-async function deleteCourse(userId: string, courseId: string) {
+async function deleteCourse(
+  userId: string,
+  courseTitle: string
+): Promise<void> {
   try {
-    await courseApi.deleteCourse(userId, courseId);
-    await eventApi.deleteCourseEvents(userId, courseId);
+    const userRef = db.collection("users").doc(userId);
+    const userDoc = await userRef.get();
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      const updatedCourses = userData?.courses.filter(
+        (course: Course) => course.title !== courseTitle
+      );
+      await userRef.update({ courses: updatedCourses });
+    }
   } catch (error) {
-    throw new Error((error as Error).message);
+    console.error("Error deleting course:", error);
+    throw error;
   }
 }
 
