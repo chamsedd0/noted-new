@@ -2,7 +2,8 @@
 
 import AddCourseButtonComponent from "./components/addCourseButton";
 import CourseDashboardCardComponent from "./components/dashboardCourseCard";
-import { useEffect, useState, useRef } from "react";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { useEffect, useState } from "react";
 import AddCourseModal from "./components/addCourseModal";
 import EditCourseModal from "./components/editCourseModal";
 import { Course } from "@/types/Course";
@@ -16,133 +17,138 @@ import {
   RightBoxReplacement,
   TitleWrapper,
 } from "./_styles";
-import globalStore from "./_store";
-import { useAuth } from "@/app/hooks/useAuth";
 
-interface DashboardState {
-  popupOpened: boolean;
-  editPopupOpened: boolean;
-  selectedCourse: string | null;
-  deleteModalOpen: boolean;
-  courseToDelete: string | null;
-  openDropdowns: Record<string, boolean>;
-  isLoading: boolean;
-}
+import {
+  getUserCourses,
+  addNewCourse,
+  updateCourse,
+  deleteCourse,
+} from "./_actions/courseActions";
 
 export default function CoursesPage() {
-  const { userId } = useAuth();
-  const { courses } = globalStore.getState();
-  const { getUserData, addCourse, updateCourse, deleteCourse } =
-    globalStore.getState();
-  const [state, setState] = useState<DashboardState>({
-    popupOpened: false,
-    editPopupOpened: false,
-    selectedCourse: null,
-    deleteModalOpen: false,
-    courseToDelete: null,
-    openDropdowns: {},
-    isLoading: true,
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [popupOpened, setPopupOpened] = useState(false);
+  const [editPopupOpened, setEditPopupOpened] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
+  const [openDropdowns, setOpenDropdowns] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Add this to track initial load
-  const isInitialMount = useRef(true);
+  const auth = getAuth();
 
   useEffect(() => {
-    if (userId && isInitialMount.current) {
-      getUserData(userId);
-      const timer = setTimeout(() => {
-        setState((prev) => ({ ...prev, isLoading: false }));
-      }, 500);
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const userCourses = await getUserCourses(user.uid);
+          setCourses(userCourses);
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      }
+    };
 
-      isInitialMount.current = false;
-      return () => clearTimeout(timer);
-    }
-  }); // Remove getUserData from dependencies
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    fetchUserData();
+
+    return () => unsubscribe();
+  }, [auth, user, selectedCourse]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleCourseClick = (title: string) => {
     console.log(title);
   };
 
   const handleAddCourse = async (newCourse: Course) => {
-    if (!userId) return;
+    if (!user) return;
     try {
-      await addCourse(newCourse);
+      await addNewCourse(user.uid, newCourse);
+      const updatedCourses = await getUserCourses(user.uid);
+      setCourses(updatedCourses);
     } catch (error) {
       console.error("Error adding course:", error);
     }
   };
 
-  const handleUpdateCourse = async (updatedCourse: Course) => {
+  const handleUpdateCourse = async (
+    oldTitle: string,
+    updatedCourse: Course
+  ) => {
+    if (!user) return;
     try {
-      await updateCourse(updatedCourse);
+      await updateCourse(user.uid, oldTitle, updatedCourse);
+      const updatedCourses = await getUserCourses(user.uid);
+      setCourses(updatedCourses);
     } catch (error) {
-      throw new Error((error as Error).message);
+      console.error("Error updating course:", error);
     }
   };
 
   const handleDeleteCourse = async () => {
-    try {
-      // Find the course to get its title for display
-      const courseToDelete = courses.find(
-        (c) => c.uid === state.courseToDelete
-      );
-      if (!courseToDelete) return;
+    if (!user || !courseToDelete) return;
 
-      await deleteCourse(state.courseToDelete || "");
-      setState((prev) => ({
-        ...prev,
-        deleteModalOpen: false,
-        courseToDelete: null,
-      }));
+    try {
+      await deleteCourse(user.uid, courseToDelete);
+      const updatedCourses = await getUserCourses(user.uid);
+      setCourses(updatedCourses);
+      setDeleteModalOpen(false);
+      setCourseToDelete(null);
+      setOpenDropdowns({});
     } catch (error) {
-      throw new Error((error as Error).message);
+      console.error("Error deleting course:", error);
     }
   };
 
   return (
     <>
-      <Loading isLoading={state.isLoading} />
-      <CoursesLayout isLoading={state.isLoading}>
+      <Loading isLoading={isLoading} />
+      <CoursesLayout isLoading={isLoading}>
         <AddCourseModal
-          onClose={() => setState((prev) => ({ ...prev, popupOpened: false }))}
-          popupOpened={state.popupOpened}
-          addCourse={handleAddCourse}
-          existingCourses={courses}
+          onClose={setPopupOpened}
+          popupOpened={popupOpened}
+          onAdd={handleAddCourse}
         />
         <EditCourseModal
-          setSelected={(value) =>
-            setState((prev) => ({ ...prev, selectedCourse: value }))
-          }
-          courseTitle={state.selectedCourse}
-          onClose={() =>
-            setState((prev) => ({ ...prev, editPopupOpened: false }))
-          }
-          popupOpened={state.editPopupOpened}
+          setSelected={setSelectedCourse}
+          courseTitle={selectedCourse}
+          onClose={setEditPopupOpened}
+          popupOpened={editPopupOpened}
           onUpdate={handleUpdateCourse}
           courses={courses}
         />
         <CourseDeleteModal
-          isOpen={state.deleteModalOpen}
+          isOpen={deleteModalOpen}
           onConfirm={handleDeleteCourse}
           onCancel={() => {
-            setState((prev) => ({
-              ...prev,
-              deleteModalOpen: false,
-              courseToDelete: null,
-            }));
+            setDeleteModalOpen(false);
+            setCourseToDelete(null);
           }}
-          courseTitle={
-            courses.find((c) => c.uid === state.courseToDelete)?.title || ""
-          }
+          courseTitle={courseToDelete || ""}
         />
         <ContentWrapper>
           <CoursesSection>
             <TitleWrapper>
               <h1>Courses</h1>
               <AddCourseButtonComponent
-                action={() =>
-                  setState((prev) => ({ ...prev, popupOpened: true }))
-                }
+                action={setPopupOpened}
               ></AddCourseButtonComponent>
             </TitleWrapper>
 
@@ -158,31 +164,17 @@ export default function CoursesPage() {
                     smartNotes={4}
                     color={course.color || "#BE0505"}
                     lastModified={course.lastModified}
-                    setEdit={() =>
-                      setState((prev) => ({
-                        ...prev,
-                        editPopupOpened: true,
-                        selectedCourse: course.title,
-                      }))
-                    }
-                    setSelectedCourse={(value) =>
-                      setState((prev) => ({ ...prev, selectedCourse: value }))
-                    }
+                    setEdit={setEditPopupOpened}
+                    setSelectedCourse={setSelectedCourse}
                     onDelete={() => {
-                      setState((prev) => ({
-                        ...prev,
-                        deleteModalOpen: true,
-                        courseToDelete: course.uid,
-                      }));
+                      setCourseToDelete(course.title);
+                      setDeleteModalOpen(true);
                     }}
-                    isDropdownOpen={state.openDropdowns[course.title] || false}
+                    isDropdownOpen={openDropdowns[course.title] || false}
                     setDropdownOpen={(isOpen) => {
-                      setState((prev) => ({
+                      setOpenDropdowns((prev) => ({
                         ...prev,
-                        openDropdowns: {
-                          ...prev.openDropdowns,
-                          [course.title]: isOpen,
-                        },
+                        [course.title]: isOpen,
                       }));
                     }}
                   />

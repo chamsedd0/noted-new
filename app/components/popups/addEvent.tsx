@@ -1,12 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
-import { addNewEvent } from "@/app/dashboard/_actions/eventModalActions";
-import {
-  ModalProps,
-  ColorCircleProps,
-  WeekdayButtonProps,
-} from "./shared/types";
+import { addNewEvent } from "@/app/dashboard/scheduler/_actions/eventModalActions";
+import { ModalProps, ColorCircleProps, WeekdayButtonProps } from "./shared/types";
 import InputCourseComponent from "../inputs/popupInput";
 import SelectComponent from "../inputs/popupTimeSelect";
 import SelectTextComponent from "../inputs/popupTextSelect";
@@ -211,11 +207,11 @@ interface TimeStamp {
   finish: number;
 }
 
-const AddEventModal: React.FC<AddEventModalProps> = ({
-  onClose,
-  popupOpened,
+const AddEventModal: React.FC<AddEventModalProps> = ({ 
+  onClose, 
+  popupOpened, 
   eventType,
-  onEventAdded,
+  onEventAdded 
 }) => {
   const { idToken } = useAuth();
   const [activeDays, setActiveDays] = useState<string[]>([]);
@@ -230,7 +226,7 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
       title: newEventTitle,
       timestamps: timeStamps,
       color: selectedColor,
-      type: eventType,
+      type: eventType
     });
 
     if (success) {

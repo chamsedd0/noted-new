@@ -1,12 +1,12 @@
-export const colors = [
-  "#BE0505",
-  "#3C9437",
-  "#FFAB35",
-  "#FF6B35",
-  "#4B6EE3",
-  "#9747FF",
-  "#244BCB",
-]; // Example brand colors
+// const colors = [
+//   "#BE0505",
+//   "#3C9437",
+//   "#FFAB35",
+//   "#FF6B35",
+//   "#4B6EE3",
+//   "#9747FF",
+//   "#244BCB",
+// ]; // Example brand colors
 
 // function shuffleArray(array) {
 //   const shuffled = array.slice(); // Make a copy of the array
@@ -34,5 +34,3 @@ export const colors = [
 
 //   return assignedColors;
 // }
-
-export const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];

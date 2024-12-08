@@ -1,14 +1,6 @@
 import BookMark from "./bookmark";
-import { CourseCardProps } from "../types";
-import {
-  CourseDashboardCard,
-  CardHeader,
-  Title,
-  NotesInfo,
-  CardFooter,
-  LastModified,
-  DropdownMenu,
-} from "./_styles/dashboardCouseCard";
+import { CourseCardProps } from '../types';
+import { CourseDashboardCard, CardHeader, Title, NotesInfo, CardFooter, LastModified, DropdownMenu } from "./_styles/dashboardCouseCard";
 
 const CourseDashboardCardComponent = ({
   title,
@@ -21,7 +13,7 @@ const CourseDashboardCardComponent = ({
   setSelectedCourse,
   onDelete,
   isDropdownOpen,
-  setDropdownOpen,
+  setDropdownOpen
 }: CourseCardProps) => {
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
@@ -30,45 +22,51 @@ const CourseDashboardCardComponent = ({
 
   return (
     <CourseDashboardCard onClick={() => clickFunction(title)}>
+        
       <CardHeader>
         <div>
-          <Title>{title}</Title>
-          <NotesInfo>
+            <Title>{title}</Title>
+            <NotesInfo>
             {smartNotes} Smart Notes, {regularNotes} Regular Notes
-          </NotesInfo>
+            </NotesInfo>
         </div>
-        <div id="bookmark">
-          <BookMark color={color}></BookMark>
-        </div>
-      </CardHeader>
+        <div id="bookmark"><BookMark color={color}></BookMark></div>
 
-      <CardFooter onClick={(e) => e.stopPropagation()}>
-        <LastModified>
-          Last modified: <span>{lastModified}</span>
-        </LastModified>
+      </CardHeader>
+      
+
+      <CardFooter onClick={(e) => e.stopPropagation()} >
+        <LastModified>Last modified: <span>{lastModified}</span></LastModified>
         <div className="dots" onClick={() => setDropdownOpen(!isDropdownOpen)}>
-          <img src="/menuDots.svg" alt="menu" />
+            <img src="/menuDots.svg" alt="menu" />
+            
         </div>
         <DropdownMenu isOpen={isDropdownOpen}>
-          <button
-            onClick={() => {
-              setDropdownOpen(false);
-              setSelectedCourse(title);
-              setEdit(true);
-            }}
-          >
-            <img src="/editCourses.svg" />
-            Edit
-          </button>
+            <button onClick={
+              () => {
+                setDropdownOpen(false);
+                setSelectedCourse(title);
+                setEdit(true);
+              }
+            }>
+                <img src="/editCourses.svg"/>
+                Edit
+            </button>
 
-          <button id="delete" onClick={handleDelete}>
-            <img src="/trash.svg" />
-            Delete
-          </button>
-        </DropdownMenu>
+            <button id="delete" onClick={handleDelete}>
+                <img src="/trash.svg"/>
+                Delete
+            </button>
+            
+            
+          </DropdownMenu>
       </CardFooter>
+      
+      
+      
     </CourseDashboardCard>
   );
 };
 
 export default CourseDashboardCardComponent;
+  
