@@ -1,7 +1,7 @@
 "use client";
 
 import { Event } from "@/types/Event";
-import { colors, weekdays } from "@/app/colors";
+import { colors, weekdays } from "@/app/utils/constants";
 import globalStore from "@/app/dashboard/_store";
 import PopUpInput from "./popUpInput";
 import PopUpTimeSelect from "./popUpTimeSelect";
@@ -43,18 +43,22 @@ interface AddEventModalProps {
   onClose: () => void;
 }
 
-export default function AddEventModal({ state, updateState, onClose }: AddEventModalProps) {
+export default function AddEventModal({
+  state,
+  updateState,
+  onClose,
+}: AddEventModalProps) {
   const { events, addEvent } = globalStore();
 
   const handleDayClick = (day: string) => {
     if (state.activeDays.includes(day)) {
       updateState({
         activeDays: state.activeDays.filter((activeDay) => activeDay !== day),
-        timeSlots: state.timeSlots.filter((slot) => slot.day !== day)
+        timeSlots: state.timeSlots.filter((slot) => slot.day !== day),
       });
     } else {
       updateState({
-        activeDays: [...state.activeDays, day]
+        activeDays: [...state.activeDays, day],
       });
     }
   };
@@ -83,7 +87,6 @@ export default function AddEventModal({ state, updateState, onClose }: AddEventM
           type: "activity",
         };
 
-        console.log('Adding event:', newEvent); // Debug log
         await addEvent(newEvent);
       }
 
@@ -94,11 +97,14 @@ export default function AddEventModal({ state, updateState, onClose }: AddEventM
         timeSlots: [],
         error: false,
         notify: false,
-        addPopupOpened: false // Close modal through state
+        addPopupOpened: false, // Close modal through state
       });
     } catch (error) {
-      console.error("Error details:", error); // More detailed error logging
-      alert(`Failed to add event: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Failed to add event: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   };
 
@@ -122,7 +128,9 @@ export default function AddEventModal({ state, updateState, onClose }: AddEventM
             type="text"
             error={state.error}
             value={state.newEventTitle}
-            setVariable={(value) => updateState({ newEventTitle: value, error: false })}
+            setVariable={(value) =>
+              updateState({ newEventTitle: value, error: false })
+            }
           />
         </InputContainer>
 

@@ -1,12 +1,12 @@
 "use client";
 
-import AddCourseButtonComponent from "./components/addCourseButton";
-import CourseDashboardCardComponent from "./components/dashboardCourseCard";
+import AddCourseButtonComponent from "./_components/addCourseButton";
+import CourseDashboardCardComponent from "./_components/dashboardCourseCard";
 import { useEffect, useState, useRef } from "react";
-import AddCourseModal from "./components/addCourseModal";
-import EditCourseModal from "./components/editCourseModal";
+import AddCourseModal from "./_components/addCourseModal";
+import EditCourseModal from "./_components/editCourseModal";
 import { Course } from "@/types/Course";
-import CourseDeleteModal from "./components/deleteCourseModal";
+import CourseDeleteModal from "./_components/deleteCourseModal";
 import Loading from "@/app/components/loading";
 import {
   ContentWrapper,
@@ -30,10 +30,8 @@ interface DashboardState {
 }
 
 export default function CoursesPage() {
-  const userId = useAuth().user?.uid;
-  const { courses } = globalStore.getState();
-  const { getUserData, addCourse, updateCourse, deleteCourse } =
-    globalStore.getState();
+  const { user } = useAuth();
+  const { courses, getUserData } = globalStore();
   const [state, setState] = useState<DashboardState>({
     popupOpened: false,
     editPopupOpened: false,
@@ -44,27 +42,26 @@ export default function CoursesPage() {
     isLoading: true,
   });
 
-  // Add this to track initial load
   const isInitialMount = useRef(true);
 
   useEffect(() => {
-    if (userId && isInitialMount.current) {
-      getUserData(userId);
+    if (user?.uid && isInitialMount.current) {
+      getUserData(user.uid);
       const timer = setTimeout(() => {
-        setState((prev) => ({ ...prev, isLoading: false }));
+        setState(prev => ({ ...prev, isLoading: false }));
       }, 500);
-
+      
       isInitialMount.current = false;
       return () => clearTimeout(timer);
     }
-  }); // Remove getUserData from dependencies
+  }, [user?.uid]);
 
   const handleCourseClick = (title: string) => {
     console.log(title);
   };
 
   const handleAddCourse = async (newCourse: Course) => {
-    if (!userId) return;
+    if (!user?.uid) return;
     try {
       await addCourse(newCourse);
     } catch (error) {

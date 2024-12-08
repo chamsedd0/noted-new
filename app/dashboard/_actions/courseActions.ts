@@ -3,21 +3,7 @@
 import { courseApi } from "@/api/FireBaseCourseAPI";
 import { eventApi } from "@/api/FireBaseEventAPI";
 import { Course } from "@/types/Course";
-import { Event } from "@/types/Event";
-
-// Helper function to convert courses to events
-function convertCourseToEvents(course: Course): Event[] {
-  return (course.timeSlots || []).map((slot) => ({
-    uid: `${course.uid}-${slot.day}-${slot.start}-${slot.finish}`,
-    title: course.title,
-    day: slot.day,
-    start: slot.start,
-    finish: slot.finish,
-    color: course.color,
-    type: "course",
-    courseId: course.uid,
-  }));
-}
+import { convertCourseToEvents } from "@/app/utils";
 
 async function getUserCourses(userId: string) {
   try {

@@ -20,10 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
-        <body className={poppins.variable}>
-          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-        </body>
-      </html>
+    <html lang="en">
+      <body className={poppins.variable}>
+        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+      </body>
+    </html>
   );
 }

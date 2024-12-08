@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import InputComponent from "@/app/components/inputs/input";
-import { EditCourseModalProps } from "../../dashboard/types";
+import { EditCourseModalProps } from "../types";
 import { TimeSlot } from "@/types/Time";
-import SelectComponent from "../../dashboard/components/popupTimeSelect";
+import SelectComponent from "./popupTimeSelect";
 import {
   BlackenScreen,
   ModalContainer,
@@ -20,8 +20,7 @@ import {
   SaveButton,
 } from "./_styles/editCourseModal";
 import { Course } from "@/types/Course";
-import { colors } from "@/app/colors";
-
+import { colors, weekdays } from "@/app/utils/constants";
 const EditCourseModal = ({
   onClose,
   popupOpened,
@@ -34,7 +33,6 @@ const EditCourseModal = ({
   const [selectedColor, setSelectedColor] = useState("#BE0505");
   const [newCourseTitle, setNewCourseTitle] = useState("");
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-  const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
   const handleDayClick = (day: string) => {
     setActiveDays((prev) => {
