@@ -1,3 +1,6 @@
+import { Course } from "./Course";
+import { Event } from "./Event";
+
 export enum AccountSetupStage {
   PERSONAL_INFO = "personal-info",
   ADD_COURSES = "add-courses",
@@ -20,4 +23,6 @@ export interface User {
   birthDate?: string;
   accountSetupStage?: string;
   plan?: string;
+  courses?: Course[];
+  events?: Event[];
 }
