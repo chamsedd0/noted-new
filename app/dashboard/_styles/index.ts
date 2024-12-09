@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+
 const CoursesLayout = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex-direction: column;
@@ -63,6 +64,7 @@ const CoursesGrid = styled.div`
   }
   @media (max-width: 1350px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    
   }
 `;
 
@@ -83,11 +85,13 @@ const RightBoxReplacement = styled.div`
   }
 `;
 
+
+
 export {
-  CoursesLayout,
-  ContentWrapper,
-  CoursesSection,
-  TitleWrapper,
-  CoursesGrid,
-  RightBoxReplacement,
-};
+    CoursesLayout,
+    ContentWrapper,
+    CoursesSection,
+    TitleWrapper,
+    CoursesGrid,
+    RightBoxReplacement,
+}

@@ -10,7 +10,7 @@ const CourseDashboardCard = styled.div`
   padding: 24px;
   padding-top: 45px;
   border-radius: 15px;
-  max-width: 400px;
+  max-width: 100%;
   max-height: 250px;
   color: white;
   position: relative;
@@ -114,6 +114,11 @@ const DropdownMenu = styled.div<{ isOpen: boolean }>`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
   padding: 5px;
   width: 125px;
+
+  @media (max-width: 1350px) {
+    right: 0%;
+    
+  }
   
   z-index: 100;
   color: white;

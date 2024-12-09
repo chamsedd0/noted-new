@@ -11,7 +11,7 @@ import ChangePlanButtonComponent from "@/app/components/buttons/changePlanButton
 import PlanDashboardCard from "@/app/components/cards/dashboardPlanCard";
 import ContactButtonComponent from "@/app/components/buttons/contactButton";
 import SelectDateComponent from "@/app/components/inputs/smallSelect";
-import SideBarComponent from "@/app/dashboard/sideBar";
+import SideBarComponent from "../components/sidebar/sideBar";
 import Link from "next/link";
 import { useAuth } from "@/app/hooks/useAuth";
 import {
