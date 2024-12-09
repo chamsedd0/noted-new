@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { User, AccountSetupStage } from "@/types/User";
 import { userApi } from "@/api/FirebaseUserApi";
-import { verifyIdToken } from "@/lib/firebase-admin";
+import { verifyIdToken } from "@/app/lib/firebase-admin";
 export async function isNewUserAction(
   user: User,
   idToken: string

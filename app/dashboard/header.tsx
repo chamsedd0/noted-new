@@ -5,7 +5,7 @@ import SearchBarComponent from "../components/inputs/searchBar";
 import Link from "next/link";
 import LogoutModal from "../components/popups/logOutPopUp";
 import { useRouter } from "next/navigation";
-import { signOutUser } from "@/lib/firebase";
+import { signOutUser } from "@/app/lib/firebase";
 import Image from "next/image";
 import {
   HeaderContainer,

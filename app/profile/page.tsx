@@ -19,7 +19,7 @@ import {
   updateProfileAction,
 } from "@/app/profile/_actions/updateProfileAction";
 import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/app/lib/firebase";
 import Header from "@/app/dashboard/header";
 import { Plan } from "@/types/User";
 import Loading from "@/app/components/loading";

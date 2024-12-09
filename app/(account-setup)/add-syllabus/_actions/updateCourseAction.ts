@@ -3,7 +3,7 @@
 import { courseApi } from "@/api/FireBaseCourseAPI";
 import { userApi } from "@/api/FirebaseUserApi";
 import { AccountSetupStage } from "@/types/User";
-import { verifyIdToken } from "@/lib/firebase-admin";
+import { verifyIdToken } from "@/app/lib/firebase-admin";
 import { redirect } from "next/navigation";
 
 export async function updateCourseSyllabus(
