@@ -1,12 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
-import { addNewEvent } from "@/app/dashboard/scheduler/_actions/eventModalActions";
-import { ColorCircleProps, WeekdayButtonProps } from "./shared/types";
-import InputCourseComponent from "../inputs/popupInput";
-import SelectComponent from "../inputs/popupTimeSelect";
-import SelectTextComponent from "../inputs/popupTextSelect";
-import NotifyToggle from "../inputs/popupCheckBox";
+import { addEvent as addNewEvent } from "@/app/dashboard/_actions/eventActions";
+import InputCourseComponent from '../inputs/inputCourse'
+import SelectComponent from "../inputs/select";
+import { PopUpCheckBox } from "@/app/dashboard/scheduler/_components/popCheckBox";
 
 interface BlackenScreenProps {
   $popupOpened: boolean;
@@ -19,6 +17,11 @@ interface ColorCircleProps {
 
 interface WeekdayButtonProps {
   $active: boolean;
+}
+
+interface EventResponse {
+  success: boolean;
+  error?: string;
 }
 
 const BlackenScreen = styled.div<BlackenScreenProps>`
@@ -197,7 +200,7 @@ const InputContainer = styled.div`
 interface AddEventModalProps {
   onClose: (value: boolean) => void;
   popupOpened: boolean;
-  eventType: string;
+  eventType: "course" | "activity";
   onEventAdded?: () => void;
 }
 
@@ -222,18 +225,21 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
   const handleSave = async () => {
     if (!idToken || !newEventTitle.trim()) return;
 
-    const { success, error } = await addNewEvent(idToken, {
+    const result: EventResponse = await addNewEvent(idToken, {
+      uid: crypto.randomUUID(),
       title: newEventTitle,
-      timestamps: timeStamps,
+      day: activeDays[0],
+      start: timeStamps[0]?.start,
+      finish: timeStamps[0]?.finish,
       color: selectedColor,
       type: eventType
     });
 
-    if (success) {
+    if (result?.success) {
       onEventAdded?.();
       onClose(false);
     } else {
-      alert(error || "Failed to add event");
+      alert(result?.error || "Failed to add event");
     }
   };
 
@@ -249,7 +255,7 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
   ];
   const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
-  const handleDayClick = (day) => {
+  const handleDayClick = (day: string) => {
     if (activeDays.includes(day)) {
       setActiveDays(activeDays.filter((activeDay) => activeDay !== day));
     } else {
@@ -282,12 +288,11 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
             placeHolder="course or activity"
             type="text"
             value={eventType}
-            setVariable={setEventType}
+            setVariable={console.log}
           ></InputCourseComponent>
         </InputContainer>
 
         <Settings>
-          <SelectTextComponent title="Repeats on"></SelectTextComponent>
 
           <div>
             <span>Weekday</span>
@@ -320,10 +325,10 @@ const AddEventModal: React.FC<AddEventModalProps> = ({
             </ColorOptions>
           </div>
 
-          <NotifyToggle
+          <PopUpCheckBox
             title="Notify"
             message="Notify me before the event"
-          ></NotifyToggle>
+          ></PopUpCheckBox>
         </Settings>
 
         <TimeSelectContainer>

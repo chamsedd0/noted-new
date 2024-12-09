@@ -11,15 +11,24 @@ export async function getEvents(userId: string) {
   }
 }
 
-export async function addEvent(userId: string, event: Event) {
-  try {
-    console.log('Server action - Adding event:', { userId, event }); // Debug log
-    await eventApi.addEvent(userId, event);
-  } catch (error) {
-    console.error('Server action error:', error); // Debug log
-    throw new Error(error instanceof Error ? error.message : 'Failed to add event');
-  }
+export interface EventResponse {
+  success: boolean;
+  error?: string;
 }
+
+export const addEvent = async (idToken: string, event: Event): Promise<EventResponse> => {
+  try {
+    console.log('Server action - Adding event:', { idToken, event }); // Debug log
+    await eventApi.addEvent(idToken, event);
+    return { success: true };
+  } catch (error) {
+    console.error('Server action error:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
+    };
+  }
+};
 
 export async function updateEvent(userId: string, updates: Partial<Event>) {
   try {
