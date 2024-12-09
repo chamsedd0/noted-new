@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
 import { addNewEvent } from "@/app/dashboard/scheduler/_actions/eventModalActions";
-import { ModalProps, ColorCircleProps, WeekdayButtonProps } from "./shared/types";
+import { ColorCircleProps, WeekdayButtonProps } from "./shared/types";
 import InputCourseComponent from "../inputs/popupInput";
 import SelectComponent from "../inputs/popupTimeSelect";
 import SelectTextComponent from "../inputs/popupTextSelect";
