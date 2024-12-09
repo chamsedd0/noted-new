@@ -1,5 +1,5 @@
 import "server-only";
-import { db, FieldValue } from "@/lib/firebase-admin";
+import { db, FieldValue } from "@/app/lib/firebase-admin";
 import { Course } from "@/types/Course";
 
 // Helper function to get user reference

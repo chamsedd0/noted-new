@@ -3,7 +3,7 @@
 import { userApi } from "@/api/FirebaseUserApi";
 import { AccountSetupStage } from "@/types/User";
 import { redirect } from "next/navigation";
-import { verifyIdToken } from "@/lib/firebase-admin";
+import { verifyIdToken } from "@/app/lib/firebase-admin";
 import { PersonalInfoFormValues } from "../schema";
 
 export async function updateUser(

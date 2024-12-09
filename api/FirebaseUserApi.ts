@@ -1,5 +1,5 @@
 import "server-only";
-import { db } from "@/lib/firebase-admin";
+import { db } from "@/app/lib/firebase-admin";
 import { User } from "@/types/User";
 
 async function createUser(user: User): Promise<void> {

@@ -1,7 +1,7 @@
 "use server";
 
 import { courseApi } from "@/api/FireBaseCourseAPI";
-import { verifyIdToken } from "@/lib/firebase-admin";
+import { verifyIdToken } from "@/app/lib/firebase-admin";
 import { Course } from "@/types/Course";
 
 export async function getCourses(idToken: string): Promise<Course[]> {

@@ -1,5 +1,5 @@
 import "server-only";
-import { db } from "@/lib/firebase-admin";
+import { db } from "@/app/lib/firebase-admin";
 import { Event } from "@/types/Event";
 
 // Helper function to get user reference

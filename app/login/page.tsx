@@ -5,8 +5,8 @@ import styled from "styled-components";
 import AuthComponent from "./authContainer";
 import Footer from "../components/preLoginFooter";
 import logo from "@/public/logo.svg";
-import { signInWithGoogle } from "@/lib/firebase";
-import { auth } from "@/lib/firebase";
+import { signInWithGoogle } from "@/app/lib/firebase";
+import { auth } from "@/app/lib/firebase";
 import { isNewUserAction } from "./_actions/isNewUserAction";
 
 const Box = styled.div`

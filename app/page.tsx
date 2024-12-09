@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect } from "react";
-import { signOutUser } from "@/lib/firebase";
+import { signOutUser } from "@/app/lib/firebase";
 
 import styled from "styled-components";
 
