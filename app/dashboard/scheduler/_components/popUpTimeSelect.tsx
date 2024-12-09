@@ -85,18 +85,18 @@ export default function PopUpTimeSelect({
   };
 
   return (
-    <Wrapper>
+    <Wrapper isOpen={isOpen}>
       <h2>{title}</h2>
       <DropdownContainer>
         <DropdownHeader onClick={() => setIsOpen(!isOpen)}>
           <span>
             {selectedStartTime} - {selectedFinishTime}
           </span>
-          <Chevron>
+          <Chevron isOpen={isOpen}>
             <img src="/vector.svg" alt="toggle" />
           </Chevron>
         </DropdownHeader>
-        <DropdownList $isOpen={isOpen}>
+        <DropdownList isOpen={isOpen}>
           <ResetButton onClick={resetSelection}>
             <img src="/reset.svg" alt="reset" />
           </ResetButton>
