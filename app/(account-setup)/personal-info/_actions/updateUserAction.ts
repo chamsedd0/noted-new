@@ -3,32 +3,25 @@
 import { userApi } from "@/api/FirebaseUserApi";
 import { AccountSetupStage } from "@/types/User";
 import { redirect } from "next/navigation";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
-import { PersonalInfoFormValues } from "../schema";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/app/utils/jwt";
 
-export async function updateUser(
-  idToken: string,
-  user: PersonalInfoFormValues
-): Promise<void> {
+export async function updateUser(formData: FormData): Promise<void> {
   try {
-    const decodedToken = await verifyIdToken(idToken);
-
-    if (!decodedToken) {
+    const token = cookies().get("token");
+    if (!token) {
       redirect("/login");
     }
 
-    const updates = {
-      ...(user.firstName || user.lastName
-        ? {
-            name: `${user.firstName} ${user.lastName}`.trim(),
-          }
-        : {}),
-      ...(user.email ? { email: user.email } : {}),
-      ...(user.birthDate ? { birthDate: user.birthDate } : {}),
-      accountSetupStage: AccountSetupStage.ADD_COURSES,
-    };
+    const { userId } = await verifyToken(token.value);
 
-    await userApi.updateUser(decodedToken.uid, updates);
+    // Update user in database
+    await userApi.updateUser(userId, {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      birthDate: formData.get("birthDate") as string,
+      accountSetupStage: AccountSetupStage.ADD_COURSES,
+    });
 
     redirect("/add-courses");
   } catch (error) {

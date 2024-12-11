@@ -2,7 +2,6 @@
 
 import { Event } from "@/types/Event";
 import { colors, weekdays } from "@/app/utils/constants";
-import globalStore from "@/app/dashboard/_store";
 import PopUpInput from "./popUpInput";
 import PopUpTimeSelect from "./popUpTimeSelect";
 import { PopUpCheckBox } from "./popCheckBox";
@@ -20,6 +19,8 @@ import {
   ColorOptions,
   ColorCircle,
 } from "./_styles/addEventPopUp";
+import globalStore from "@/app/(user-area)/_store";
+
 
 interface TimeSlot {
   day: string;

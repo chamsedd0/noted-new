@@ -27,20 +27,4 @@ const db = admin.firestore();
 const auth = admin.auth();
 const FieldValue = admin.firestore.FieldValue;
 
-const verifyIdToken = async (idToken: string) => {
-  try {
-    const decodedToken = await auth.verifyIdToken(idToken);
-    // Get user data to include account setup status
-    const user = await db.collection('users').doc(decodedToken.uid).get();
-    const userData = user.data();
-    
-    return {
-      ...decodedToken,
-      accountSetup: userData?.accountSetup || null
-    };
-  } catch {
-    throw new Error("Unauthorized");
-  }
-};
-
-export { auth, db, verifyIdToken, FieldValue };
+export { auth, db, FieldValue };

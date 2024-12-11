@@ -1,7 +1,5 @@
 "use client";
-
-import styled from "styled-components";
-
+import Header from "@/app/components/header";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import LogoutModal from "@/app/components/popups/logOutPopUp";
@@ -11,281 +9,23 @@ import ChangePlanButtonComponent from "@/app/components/buttons/changePlanButton
 import PlanDashboardCard from "@/app/components/cards/dashboardPlanCard";
 import ContactButtonComponent from "@/app/components/buttons/contactButton";
 import SelectDateComponent from "@/app/components/inputs/smallSelect";
-import SideBarComponent from "../components/sidebar/sideBar";
+import SideBarComponent from "@/app/components/sidebar";
 import Link from "next/link";
-import { useAuth } from "@/app/hooks/useAuth";
-import {
-  getUserProfile,
-  updateProfileAction,
-} from "@/app/profile/_actions/updateProfileAction";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/lib/firebase";
-import Header from "@/app/dashboard/header";
 import { Plan } from "@/types/User";
-import Loading from "@/app/components/loading";
-
-const CoursesLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #383838;
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
-  padding: 40px;
-  flex: 1;
-  margin-top: 70px;
-
-  @media (max-width: 900px) {
-    gap: 20px;
-  }
-`;
-
-const BoxReplacement = styled.div`
-  flex: 1;
-  min-width: 445px;
-
-  @media (max-width: 1470px) {
-    min-width: 360px;
-  }
-
-  @media (max-width: 1200px) {
-    min-width: 300px;
-  }
-
-  @media (max-width: 1020px) {
-    min-width: 170px;
-  }
-
-  @media (max-width: 900px) {
-    min-width: 80px;
-  }
-
-  @media (max-width: 700px) {
-    display: none;
-  }
-`;
-
-const ProfileSidebar = styled.div`
-  position: fixed;
-  width: 445px;
-  max-height: 400px;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-
-  background-color: #444444;
-  color: white;
-  padding: 20px;
-
-  @media (max-width: 1470px) {
-    width: 360px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 300px;
-  }
-
-  @media (max-width: 1020px) {
-    width: 170px;
-  }
-
-  @media (max-width: 900px) {
-    width: 80px;
-    gap: 10px;
-    left: 20px;
-  }
-
-  @media (max-width: 700px) {
-    right: 20px;
-    left: auto;
-  }
-
-  h2 {
-    align-self: start;
-    margin-bottom: 20px;
-
-    @media (max-width: 1100px) {
-      display: none;
-    }
-  }
-
-  #logout {
-    color: #fe8686;
-  }
-`;
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  active?: boolean;
-}
-
-const Button = styled.button<ButtonProps>`
-  background: ${({ active }) => (active ? "#545454" : "transparent")};
-  width: 100%;
-  height: 60px;
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-radius: 16px;
-  justify-content: start;
-  color: #fff;
-  border: none;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: left;
-  overflow: hidden;
-
-  @media (max-width: 1020px) {
-    padding: 0px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @media (max-width: 900px) {
-    width: 60px;
-  }
-
-  span {
-    @media (max-width: 1020px) {
-      display: none;
-    }
-  }
-
-  &:hover {
-    background: #545454;
-  }
-`;
-
-const Section = styled.section`
-  margin-bottom: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: center;
-  gap: 20px;
-
-  @media (max-width: 700px) {
-    max-width: 80%;
-  }
-
-  h2 {
-    color: #fff;
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 16px;
-
-    @media (max-width: 700px) {
-      font-size: 28px;
-    }
-  }
-
-  p {
-    font-size: 16px;
-    color: white;
-    max-width: 588px;
-
-    @media (max-width: 700px) {
-      font-size: 14px;
-      max-width: 350px;
-    }
-
-    b {
-      font-size: 24px;
-    }
-  }
-
-  button {
-    margin-top: 20px;
-  }
-
-  .outlook {
-    margin-top: 10px;
-    color: white;
-    height: 48px;
-    padding: 0rem 2rem;
-    background-color: #127cd6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 100px;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 600;
-
-    img {
-      width: 24px;
-    }
-
-    &:hover {
-      background-color: #126ebc;
-    }
-  }
-`;
-
-const ProfilePicture = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  gap: 30px;
-
-  img {
-    border-radius: 100%;
-    width: 150px;
-
-    @media (max-width: 700px) {
-      width: 75px;
-    }
-  }
-
-  span {
-    font-size: 20px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    gap: 20px;
-    color: white;
-    cursor: pointer;
-
-    @media (max-width: 700px) {
-      font-size: 14px;
-    }
-
-    img {
-      width: 24px;
-      border-radius: 0px;
-    }
-  }
-`;
-
-const InputsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two equal columns */
-  gap: 20px; /* Space between form items */
-  max-width: 600px;
-  width: 100%;
-  margin-top: 16px;
-
-  @media (max-width: 700px) {
-    display: flex;
-    align-items: start;
-    justify-content: center;
-    flex-direction: column;
-  }
-`;
-
-const RightBoxReplacement = styled.div`
-  @media (max-width: 1400px) {
-    display: none;
-  }
-`;
+import {
+  BoxReplacement,
+  ContentWrapper,
+  ProfileSidebar,
+  RightBoxReplacement,
+  Section,
+  ProfilePicture,
+  InputsContainer,
+  Button,
+  CoursesLayout,
+} from "./_styles";
+import globalStore from "../_store";
 
 interface ProfileState {
   firstName: string;
@@ -305,7 +45,7 @@ interface SectionRef {
 }
 
 export default function ProfilePage() {
-  const { idToken, loading } = useAuth();
+  const { user, updateUserData } = globalStore();
   const router = useRouter();
 
   const [state, setState] = useState<ProfileState>({
@@ -325,50 +65,22 @@ export default function ProfilePage() {
   const profileRef = useRef<HTMLElement>(null);
   const subscriptionRef = useRef<HTMLElement>(null);
   const supportRef = useRef<HTMLElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (loading) return;
-
-      if (!idToken) {
-        router.replace("/login");
-        return;
-      }
-
-      try {
-        const { success, data, error } = await getUserProfile(idToken);
-        if (success && data) {
-          const [firstName, lastName] = data.name?.split(" ") ?? ["", ""];
-          const [year, month, day] = data.birthDate?.split("-").map(Number) ?? [
-            null,
-            null,
-            null,
-          ];
-
-          setState((prev) => ({
-            ...prev,
-            firstName,
-            lastName,
-            email: data.email,
-            profilePicture: data.photoUrl,
-            chosenPlan: data.plan as Plan,
-            day,
-            month,
-            year,
-          }));
-        } else {
-          alert(error || "Failed to load profile data");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        alert("Failed to load profile data");
-      }
-
-      // Set loading to false after minimum 0.5s
-      setTimeout(() => setIsLoading(false), 500);
+    const setData = async () => {
+      setState((prev) => ({
+        ...prev,
+        firstName: user?.name.split(" ")[0] || "",
+        lastName: user?.name.split(" ")[1] || "",
+        email: user?.email || "",
+        chosenPlan: (user?.plan as Plan) || "",
+        day: user?.birthDate ? parseInt(user?.birthDate.split("-")[2]) : null,
+        month: user?.birthDate ? parseInt(user?.birthDate.split("-")[1]) : null,
+        year: user?.birthDate ? parseInt(user?.birthDate.split("-")[0]) : null,
+        profilePicture: user?.photoUrl || null,
+        loading: false,
+      }));
     };
-
     // Set up intersection observer
     const sections: SectionRef[] = [
       { ref: profileRef, id: "profile" },
@@ -397,7 +109,7 @@ export default function ProfilePage() {
       }
     });
 
-    fetchData();
+    setData();
 
     return () => {
       sections.forEach((section) => {
@@ -406,7 +118,7 @@ export default function ProfilePage() {
         }
       });
     };
-  }, [idToken, loading, router]);
+  }, [user]);
 
   const handleLogout = async () => {
     setModalOpen(false);
@@ -420,7 +132,6 @@ export default function ProfilePage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!idToken) return;
 
     if (!state.firstName.trim() || !state.lastName.trim()) {
       alert("Name fields cannot be empty");
@@ -432,19 +143,16 @@ export default function ProfilePage() {
       return;
     }
 
-    const { success, error } = await updateProfileAction(idToken, {
-      name: `${state.firstName} ${state.lastName}`.trim(),
-      email: state.email.trim(),
-      birthDate:
-        state.year && state.month && state.day
-          ? `${state.year}-${state.month}-${state.day}`
-          : undefined,
-    });
-
-    if (success) {
+    try {
+      await updateUserData({
+        name: `${state.firstName} ${state.lastName}`,
+        email: state.email,
+        birthDate: `${state.year}-${state.month}-${state.day}`,
+      });
       alert("Profile updated successfully");
-    } else {
-      alert(error || "Failed to update profile");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Error updating profile");
     }
   };
 
@@ -458,7 +166,6 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Loading isLoading={isLoading} />
       <CoursesLayout>
         <Header hightlighted="profile" />
 

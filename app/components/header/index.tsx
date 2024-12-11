@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import SearchBarComponent from "../components/inputs/searchBar";
+import SearchBarComponent from "@/app/components/inputs/searchBar";
 import Link from "next/link";
-import LogoutModal from "../components/popups/logOutPopUp";
+import LogoutModal from "@/app/components/popups/logOutPopUp";
 import { useRouter } from "next/navigation";
 import { signOutUser } from "@/app/lib/firebase";
 import Image from "next/image";
@@ -13,8 +13,9 @@ import {
   NavItems,
   UserProfile,
   DropdownMenu,
-} from "./_styles/header";
-import globalStore from "./_store";
+} from "./styles";
+import globalStore from "@/app/(user-area)/_store";
+
 interface HeaderProps {
   hightlighted: "profile" | "coursenotes" | "scheduler";
 }
@@ -62,7 +63,7 @@ const Header = ({ hightlighted }: HeaderProps) => {
           </Link>
         </span>
         <span className="scheduler">
-          <Link href="/dashboard/scheduler" prefetch={true}>
+          <Link href="/scheduler" prefetch={true}>
             Scheduler
           </Link>
         </span>

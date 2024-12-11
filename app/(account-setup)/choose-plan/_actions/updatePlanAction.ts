@@ -1,23 +1,29 @@
 "use server";
 
 import { userApi } from "@/api/FirebaseUserApi";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
-import { Plan, AccountSetupStage } from "@/types/User";
+import { AccountSetupStage, Plan } from "@/types/User";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/app/utils/jwt";
 
-export async function updatePlan(idToken: string, plan: Plan): Promise<void> {
-  // Verify the id token
-  const decodedToken = await verifyIdToken(idToken);
-  if (!decodedToken) {
-    redirect("/login");
+export async function updatePlan(plan: Plan): Promise<void> {
+  try {
+    const token = cookies().get("token");
+
+    if (!token) {
+      redirect("/login");
+    }
+
+    const { userId } = await verifyToken(token.value);
+
+    await userApi.updateUser(userId, {
+      plan,
+      accountSetupStage: AccountSetupStage.COMPLETED,
+    });
+
+    redirect("/dashboard");
+  } catch (error) {
+    console.error("Error updating plan:", error);
+    throw error;
   }
-
-  // Update the user's plan
-  await userApi.updateUser(decodedToken.uid, {
-    plan,
-    accountSetupStage: AccountSetupStage.COMPLETED,
-  });
-
-  // Redirect to the dashboard
-  redirect("/dashboard");
 }

@@ -19,7 +19,8 @@ async function getUserEvents(userId: string): Promise<Event[]> {
 async function addEvents(userId: string, events: Event[]): Promise<void> {
   try {
     const userRef = getUserRef(userId);
-    await userRef.update({ events });
+    const oldEvents = await getUserEvents(userId);
+    await userRef.update({ events: [...oldEvents, ...events] });
   } catch (error) {
     throw new Error((error as Error).message);
   }

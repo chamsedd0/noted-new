@@ -2,7 +2,6 @@
 
 import styled from "styled-components";
 import { useState, useEffect, useCallback } from "react";
-import { useAuthContext } from "../contexts/AuthContext";
 import { Course } from "@/types/Course";
 import { TimeSlot } from "@/types/Time";
 import { updateCourseTimes } from "./_actions/updateCourseTimesAction";
@@ -172,17 +171,12 @@ interface CourseTime {
   timeSlots: TimeSlot[];
 }
 
-// Add this helper function at the top level, outside the component
 function checkTimeConflicts(timeSlot1: TimeSlot, timeSlot2: TimeSlot): boolean {
   if (timeSlot1.day !== timeSlot2.day) return false;
-
-  return !(
-    timeSlot1.finish <= timeSlot2.start || timeSlot1.start >= timeSlot2.finish
-  );
+  return !(timeSlot1.finish <= timeSlot2.start || timeSlot1.start >= timeSlot2.finish);
 }
 
 export default function AddTimeSlots() {
-  const { idToken } = useAuthContext();
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -192,9 +186,8 @@ export default function AddTimeSlots() {
 
   useEffect(() => {
     const loadCourses = async () => {
-      if (!idToken) return;
       try {
-        const userCourses = await getCourses(idToken);
+        const userCourses = await getCourses();
         setCourses(userCourses);
       } catch (error) {
         console.error("Error loading courses:", error);
@@ -204,21 +197,21 @@ export default function AddTimeSlots() {
     };
 
     loadCourses();
-  }, [idToken]);
+  }, []);
 
   const handleDayToggle = useCallback((day: Weekday) => {
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    setSelectedDays(prev =>
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
     );
   }, []);
 
   const handleSaveCourse = useCallback(() => {
     if (!selectedCourse?.uid) return;
 
-    setCourseTimes((prev) => {
+    setCourseTimes(prev => {
       const newTimes = [...prev];
       const existingIndex = newTimes.findIndex(
-        (ct) => ct.courseId === selectedCourse.uid!
+        ct => ct.courseId === selectedCourse.uid!
       );
 
       if (existingIndex >= 0) {
@@ -239,14 +232,12 @@ export default function AddTimeSlots() {
   }, [selectedCourse, currentTimeSlots]);
 
   const handleSubmitAll = useCallback(async () => {
-    if (!idToken) return;
-
     const conflicts: string[] = [];
 
     for (let i = 0; i < courseTimes.length; i++) {
       for (let j = i + 1; j < courseTimes.length; j++) {
-        const course1 = courses.find((c) => c.uid === courseTimes[i].courseId);
-        const course2 = courses.find((c) => c.uid === courseTimes[j].courseId);
+        const course1 = courses.find(c => c.uid === courseTimes[i].courseId);
+        const course2 = courses.find(c => c.uid === courseTimes[j].courseId);
 
         if (!course1 || !course2) continue;
 
@@ -262,31 +253,24 @@ export default function AddTimeSlots() {
       }
     }
 
-    // If there are conflicts, alert the user and don't submit
     if (conflicts.length > 0) {
       alert(
         "Time Conflicts Detected:\n\n" +
-          conflicts.join("\n") +
-          "\n\nPlease resolve these conflicts before continuing."
+        conflicts.join("\n") +
+        "\n\nPlease resolve these conflicts before continuing."
       );
       return;
     }
 
-        // If no conflicts, proceed with submission
-        try {
-          for (const courseTime of courseTimes) {
-            await updateCourseTimes(
-              idToken,
-              courseTime.courseId,
-              courseTime.timeSlots
-            );
-            console.log(courseTime);
-          }
-        } catch (error) {
-          console.error("Error updating times:", error);
-          alert("Failed to update course times. Please try again.");
-        }
-  }, [idToken, courseTimes, courses]);
+    try {
+      for (const courseTime of courseTimes) {
+        await updateCourseTimes(courseTime.courseId, courseTime.timeSlots);
+      }
+    } catch (error) {
+      console.error("Error updating times:", error);
+      alert("Failed to update course times. Please try again.");
+    }
+  }, [courseTimes, courses]);
 
   if (loading) return <Loading>Loading...</Loading>;
 

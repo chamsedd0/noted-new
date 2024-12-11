@@ -33,7 +33,6 @@ async function updateUser(uid: string, updates: Partial<User>): Promise<void> {
     throw new Error("User not found");
   }
 
-  // Only update fields that are provided and not undefined
   const validUpdates = Object.entries(updates).reduce((acc, [key, value]) => {
     if (value !== undefined) {
       acc[key] = value;

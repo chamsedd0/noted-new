@@ -1,39 +1,41 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { User, AccountSetupStage } from "@/types/User";
 import { userApi } from "@/api/FirebaseUserApi";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
-export async function isNewUserAction(
-  user: User,
-  idToken: string
-): Promise<void> {
-  // Verify the ID token to get the user's UID from Firebase-admin SDK which runs on the server
-  const decodedToken = await verifyIdToken(idToken);
+import { generateToken } from "@/app/utils/jwt";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-  if (!decodedToken) {
-    throw new Error("Unauthorized");
-  }
-
-  // Get existing user
-  const existingUser = await userApi.getUser(decodedToken.uid);
+export async function isNewUserAction(user: User): Promise<void> {
+  const existingUser = await userApi.getUser(user.uid);
+  let accountSetupStage = AccountSetupStage.PERSONAL_INFO;
 
   if (!existingUser) {
-    // Create new user
     await userApi.createUser({
       ...user,
       accountSetupStage: AccountSetupStage.PERSONAL_INFO,
     });
-
-    redirect("/personal-info");
+  } else {
+    accountSetupStage =
+      (existingUser.accountSetupStage as AccountSetupStage) ??
+      AccountSetupStage.PERSONAL_INFO;
   }
 
-  const stage =
-    existingUser.accountSetupStage ?? AccountSetupStage.PERSONAL_INFO;
+  const token = await generateToken(user.uid);
 
-  if (existingUser.accountSetupStage === AccountSetupStage.COMPLETED) {
+  cookies().set({
+    name: "token",
+    value: token,
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  });
+
+  if (accountSetupStage === AccountSetupStage.COMPLETED) {
     redirect("/dashboard");
   }
 
-  redirect(`/${stage}`);
+  redirect(`/${accountSetupStage}`);
 }

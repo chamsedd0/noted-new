@@ -5,7 +5,7 @@ import {
   Container,
   Input,
   Text,
-} from "@/app/dashboard/scheduler/_components/_styles/popUpInput";
+} from "@/app/(user-area)/scheduler/_components/_styles/popUpInput";
 
 interface PopUpInputProps {
   title: string;

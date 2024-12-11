@@ -5,7 +5,7 @@ import styled from "styled-components";
 import AuthComponent from "./authContainer";
 import Footer from "../components/preLoginFooter";
 import logo from "@/public/logo.svg";
-import { signInWithGoogle } from "@/app/lib/firebase";
+import { signInWithGoogle, signOutUser } from "@/app/lib/firebase";
 import { auth } from "@/app/lib/firebase";
 import { isNewUserAction } from "./_actions/isNewUserAction";
 
@@ -43,18 +43,21 @@ const Box = styled.div`
 export default function LoginPage() {
   const handleGoogleLogin = async () => {
     try {
-      const idToken = await signInWithGoogle();
-      await isNewUserAction(
-        {
-          uid: auth.currentUser!.uid,
-          name: auth.currentUser!.displayName ?? "",
-          email: auth.currentUser!.email ?? "",
-          photoUrl: auth.currentUser!.photoURL ?? "",
-        },
-        idToken
-      );
+      await signInWithGoogle();
+
+      if (!auth.currentUser) throw new Error("No user found");
+
+      const userData = {
+        uid: auth.currentUser.uid,
+        name: auth.currentUser.displayName ?? "",
+        email: auth.currentUser.email ?? "",
+        photoUrl: auth.currentUser.photoURL ?? "",
+      };
+
+      await isNewUserAction(userData);
+      await signOutUser();
     } catch (error) {
-      console.error(error);
+      console.error("Login failed:", error);
     }
   };
 

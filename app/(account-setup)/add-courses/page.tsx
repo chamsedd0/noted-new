@@ -2,7 +2,6 @@
 
 import styled from "styled-components";
 import { Formik } from "formik";
-import { useAuthContext } from "../contexts/AuthContext";
 import { createCourses } from "./_actions/createCoursesAction";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import AddButtonComponent from "@/app/components/buttons/addButton";
@@ -134,8 +133,6 @@ interface FormValues {
 }
 
 export default function AddCoursePage() {
-  const { idToken } = useAuthContext();
-
   const initialValues: FormValues = {
     newCourseName: "",
     courseTitles: [],
@@ -167,11 +164,6 @@ export default function AddCoursePage() {
         }}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            if (!idToken) {
-              alert("You must be logged in to add courses");
-              return;
-            }
-
             if (values.courseTitles.length === 0) {
               alert("Please add at least one course before continuing");
               return;
@@ -184,7 +176,7 @@ export default function AddCoursePage() {
               lastModified: new Date().toLocaleString()
             }));
 
-            await createCourses(idToken, courses);
+            await createCourses(courses);
             setSubmitting(false);
           } catch (error) {
             console.error("Error submitting courses:", error);

@@ -1,5 +1,5 @@
-import Header from "./header";
-import SideBarComponent from "../components/sidebar/sideBar";
+import Header from "@/app/components/header";
+import SideBarComponent from "@/app/components/sidebar";
 export default function Layout({
   children,
 }: Readonly<{
