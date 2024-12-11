@@ -16,7 +16,6 @@ import {
   TitleWrapper,
 } from "./_styles";
 import globalStore from "@/app/(user-area)/_store";
-import { useAuth } from "@/app/hooks/useAuth";
 
 interface DashboardState {
   popupOpened: boolean;
@@ -28,7 +27,6 @@ interface DashboardState {
 }
 
 export default function CoursesPage({}) {
-  const { user } = useAuth();
   const { courses, addCourse, updateCourse, deleteCourse } = globalStore();
   const [state, setState] = useState<DashboardState>({
     popupOpened: false,
@@ -43,7 +41,6 @@ export default function CoursesPage({}) {
   };
 
   const handleAddCourse = async (newCourse: Course) => {
-    if (!user?.uid) return;
     try {
       await addCourse(newCourse);
     } catch (error) {
