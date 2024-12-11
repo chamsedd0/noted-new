@@ -13,7 +13,7 @@ import {
   TitleWrapper,
   Controls,
   RightBoxReplacement,
-} from "./_styles/page";
+} from "./styles";
 import globalStore from "@/app/(user-area)/_store";
 
 interface TimeSlot {

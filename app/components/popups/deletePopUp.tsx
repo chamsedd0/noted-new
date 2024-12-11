@@ -1,10 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  title: string;
+  message: string;
 }
 
 interface ModalOverlayProps {
@@ -23,7 +25,7 @@ const ModalOverlay = styled.div<ModalOverlayProps>`
   justify-content: center;
   z-index: 1000;
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-  pointer-events: ${({ $isOpen }) => ($isOpen ? 'all' : 'none')};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? "all" : "none")};
 `;
 
 const ModalContent = styled.div`
@@ -58,8 +60,6 @@ const ModalContent = styled.div`
     margin-bottom: 40px;
     color: white;
     max-width: 410px;
-    
-
   }
 `;
 
@@ -88,10 +88,9 @@ const DeleteButton = styled.button`
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  
 
   &:hover {
-    background-color: #BCBCBC;
+    background-color: #bcbcbc;
   }
 `;
 
@@ -125,24 +124,29 @@ const CloseButton = styled.button`
     transition: all 0.3s ease;
 
     &:hover {
-        opacity: 1;
+      opacity: 1;
     }
   }
 `;
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ onConfirm, onCancel, isOpen }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  onConfirm,
+  onCancel,
+  isOpen,
+  title,
+  message,
+}) => {
   return (
     <ModalOverlay $isOpen={isOpen} onClick={onCancel}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-            <img src='/trash.svg'></img>
-            <CloseButton onClick={onCancel}><img src='/close.svg'></img></CloseButton>
+          <img src="/trash.svg"></img>
+          <CloseButton onClick={onCancel}>
+            <img src="/close.svg"></img>
+          </CloseButton>
         </ModalHeader>
-        <h2>Do you really want to delete this event from your schedule?</h2>
-        <p>
-          The event cannot be brought back unless you add it manually after deletion.
-          If the session has a second period of time on the schedule, it will not be deleted with the one you are deleting right now.
-        </p>
+        <h2>{title}</h2>
+        <p>{message}</p>
         <ButtonWrapper>
           <DeleteButton onClick={onConfirm}>Delete</DeleteButton>
           <CancelButton onClick={onCancel}>Cancel</CancelButton>

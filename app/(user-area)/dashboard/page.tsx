@@ -6,7 +6,6 @@ import { useState } from "react";
 import AddCourseModal from "./_components/addCourseModal";
 import EditCourseModal from "./_components/editCourseModal";
 import { Course } from "@/types/Course";
-import CourseDeleteModal from "./_components/deleteCourseModal";
 import {
   ContentWrapper,
   CoursesGrid,
@@ -15,6 +14,7 @@ import {
   RightBoxReplacement,
   TitleWrapper,
 } from "./_styles";
+import DeletePopUp from "@/app/components/popups/deletePopUp";
 import globalStore from "@/app/(user-area)/_store";
 
 interface DashboardState {
@@ -97,7 +97,7 @@ export default function CoursesPage({}) {
           onUpdate={handleUpdateCourse}
           courses={courses}
         />
-        <CourseDeleteModal
+        <DeletePopUp
           isOpen={state.deleteModalOpen}
           onConfirm={handleDeleteCourse}
           onCancel={() => {
@@ -107,9 +107,10 @@ export default function CoursesPage({}) {
               courseToDelete: null,
             }));
           }}
-          courseTitle={
-            courses.find((c) => c.uid === state.courseToDelete)?.title || ""
-          }
+          title={`Do you really want to delete ${
+            courses.find((c) => c.uid === state.courseToDelete)?.title
+          } from your courses?`}
+          message="The course cannot be brought back unless you add it manually after deletion."
         />
         <ContentWrapper>
           <CoursesSection>
