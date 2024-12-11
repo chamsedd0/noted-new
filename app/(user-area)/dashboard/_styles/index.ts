@@ -1,14 +1,11 @@
 import styled from "styled-components";
 
-
-const CoursesLayout = styled.div<{ isLoading: boolean }>`
+const CoursesLayout = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background-color: #383838;
-  opacity: ${(props) => (props.isLoading ? 0 : 1)};
   transition: opacity 0.3s ease;
-  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
 `;
 
 const ContentWrapper = styled.div`
@@ -64,7 +61,6 @@ const CoursesGrid = styled.div`
   }
   @media (max-width: 1350px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-    
   }
 `;
 
@@ -85,13 +81,11 @@ const RightBoxReplacement = styled.div`
   }
 `;
 
-
-
 export {
-    CoursesLayout,
-    ContentWrapper,
-    CoursesSection,
-    TitleWrapper,
-    CoursesGrid,
-    RightBoxReplacement,
-}
+  CoursesLayout,
+  ContentWrapper,
+  CoursesSection,
+  TitleWrapper,
+  CoursesGrid,
+  RightBoxReplacement,
+};

@@ -3,25 +3,27 @@
 import { userApi } from "@/api/FirebaseUserApi";
 import { courseApi } from "@/api/FireBaseCourseAPI";
 import { eventApi } from "@/api/FireBaseEventAPI";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
 import { AccountSetupStage } from "@/types/User";
 import { TimeSlot } from "@/types/Time";
 import { redirect } from "next/navigation";
 import { convertCourseToEvents } from "@/app/utils";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/app/utils/jwt";
 
 export async function updateCourseTimes(
-  idToken: string,
   courseId: string,
   timeslots: TimeSlot[]
 ): Promise<void> {
   try {
-    const decodedToken = await verifyIdToken(idToken);
-    if (!decodedToken) {
+    const token = cookies().get("token");
+    if (!token) {
       redirect("/login");
     }
 
+    const { userId } = await verifyToken(token.value);
+
     // Get existing courses
-    const courses = await courseApi.getCoursesByUserId(decodedToken.uid);
+    const courses = await courseApi.getCoursesByUserId(userId);
     const course = courses.find((c) => c.uid === courseId);
 
     if (!course) {
@@ -35,16 +37,16 @@ export async function updateCourseTimes(
     };
 
     // Update the course in database
-    await courseApi.updateCourse(decodedToken.uid, courseWithNewTimes);
+    await courseApi.updateCourse(userId, courseWithNewTimes);
 
     // Convert all courses' timeslots to events
     const courseEvents = convertCourseToEvents(courseWithNewTimes);
 
     // Update events for this course
-    await eventApi.updateCourseEvents(decodedToken.uid, courseId, courseEvents);
+    await eventApi.updateCourseEvents(userId, courseId, courseEvents);
 
     // Update user account setup stage
-    await userApi.updateUser(decodedToken.uid, {
+    await userApi.updateUser(userId, {
       accountSetupStage: AccountSetupStage.CHOOSE_PLAN,
     });
 

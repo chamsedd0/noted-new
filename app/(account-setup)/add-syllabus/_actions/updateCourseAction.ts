@@ -3,43 +3,44 @@
 import { courseApi } from "@/api/FireBaseCourseAPI";
 import { userApi } from "@/api/FirebaseUserApi";
 import { AccountSetupStage } from "@/types/User";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/app/utils/jwt";
 
 export async function updateCourseSyllabus(
-  idToken: string,
   courseId: string,
   syllabus: string
 ): Promise<void> {
   try {
-    // Verify the id token
-    const decodedToken = await verifyIdToken(idToken);
-    if (!decodedToken) {
+    const token = cookies().get("token");
+    if (!token) {
       redirect("/login");
     }
 
+    const { userId } = await verifyToken(token.value);
+
     // Get existing course first
-    const courses = await courseApi.getCoursesByUserId(decodedToken.uid);
+    const courses = await courseApi.getCoursesByUserId(userId);
     const existingCourse = courses.find((course) => course.uid === courseId);
 
     if (!existingCourse) {
       throw new Error("Course not found");
     }
 
-    // Update while maintaining required fields
-    await courseApi.updateCourse(decodedToken.uid, {
+    // Update course with syllabus
+    await courseApi.updateCourse(userId, {
       ...existingCourse,
       syllabus,
     });
 
-    // Update user account setup
-    await userApi.updateUser(decodedToken.uid, {
+    // Update user stage
+    await userApi.updateUser(userId, {
       accountSetupStage: AccountSetupStage.ADD_TIME_SLOTS,
     });
 
     redirect("/add-time-slots");
   } catch (error) {
-    console.error("Error updating course syllabus:", error);
+    console.error("Error updating syllabus:", error);
     throw error;
   }
 }

@@ -3,6 +3,8 @@
 import NotificationCardComponent from "@/app/components/cards/notificationCard";
 import ScheduleCardComponent from "@/app/components/cards/todayScheduleCard";
 import { useEffect, useState } from "react";
+import globalStore from "@/app/(user-area)/_store";
+import { Event } from "@/types/Event";
 import {
   NotifSidebar,
   NotificationSection,
@@ -11,11 +13,8 @@ import {
   AnimatedScheduleSection,
   EventsContainer,
   EmptyMessage,
-} from "../../dashboard/_styles/sideBar";
-import globalStore from "../../dashboard/_store";
-import { Event } from "@/types/Event";
+} from "./styles";
 
-// Helper functions
 const formatDayDisplay = (date: Date): string => {
   const today = new Date();
   const tomorrow = new Date(today);

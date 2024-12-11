@@ -2,12 +2,11 @@
 
 import AddCourseButtonComponent from "./_components/addCourseButton";
 import CourseDashboardCardComponent from "./_components/dashboardCourseCard";
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import AddCourseModal from "./_components/addCourseModal";
 import EditCourseModal from "./_components/editCourseModal";
 import { Course } from "@/types/Course";
 import CourseDeleteModal from "./_components/deleteCourseModal";
-import Loading from "@/app/components/loading";
 import {
   ContentWrapper,
   CoursesGrid,
@@ -16,7 +15,7 @@ import {
   RightBoxReplacement,
   TitleWrapper,
 } from "./_styles";
-import globalStore from "./_store";
+import globalStore from "@/app/(user-area)/_store";
 import { useAuth } from "@/app/hooks/useAuth";
 
 interface DashboardState {
@@ -26,12 +25,11 @@ interface DashboardState {
   deleteModalOpen: boolean;
   courseToDelete: string | null;
   openDropdowns: Record<string, boolean>;
-  isLoading: boolean;
 }
 
-export default function CoursesPage() {
+export default function CoursesPage({}) {
   const { user } = useAuth();
-  const { courses, getUserData, addCourse, updateCourse, deleteCourse } = globalStore();
+  const { courses, addCourse, updateCourse, deleteCourse } = globalStore();
   const [state, setState] = useState<DashboardState>({
     popupOpened: false,
     editPopupOpened: false,
@@ -39,23 +37,7 @@ export default function CoursesPage() {
     deleteModalOpen: false,
     courseToDelete: null,
     openDropdowns: {},
-    isLoading: true,
   });
-
-  const isInitialMount = useRef(true);
-
-  useEffect(() => {
-    if (user?.uid && isInitialMount.current) {
-      getUserData(user.uid);
-      const timer = setTimeout(() => {
-        setState(prev => ({ ...prev, isLoading: false }));
-      }, 500);
-      
-      isInitialMount.current = false;
-      return () => clearTimeout(timer);
-    }
-  }, [user?.uid]);
-
   const handleCourseClick = (title: string) => {
     console.log(title);
   };
@@ -98,8 +80,8 @@ export default function CoursesPage() {
 
   return (
     <>
-      <Loading isLoading={state.isLoading} />
-      <CoursesLayout isLoading={state.isLoading}>
+      ={" "}
+      <CoursesLayout>
         <AddCourseModal
           onClose={() => setState((prev) => ({ ...prev, popupOpened: false }))}
           popupOpened={state.popupOpened}

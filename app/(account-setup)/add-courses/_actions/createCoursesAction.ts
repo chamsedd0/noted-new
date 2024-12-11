@@ -2,27 +2,26 @@
 
 import { courseApi } from "@/api/FireBaseCourseAPI";
 import { userApi } from "@/api/FirebaseUserApi";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
 import { Course } from "@/types/Course";
 import { AccountSetupStage } from "@/types/User";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/app/utils/jwt";
 
-export async function createCourses(
-  idToken: string,
-  courses: Course[]
-): Promise<void> {
+export async function createCourses(courses: Course[]): Promise<void> {
   try {
-    // Verify the ID token to get the user's UID from Firebase-admin SDK which runs on the server
-    const decodedToken = await verifyIdToken(idToken);
-
-    if (!decodedToken) {
+    const token = cookies().get("token");
+    if (!token) {
       redirect("/login");
     }
+
+    const { userId } = await verifyToken(token.value);
+
     // create courses
-    await courseApi.createCourses(decodedToken.uid, courses);
+    await courseApi.createCourses(userId, courses);
 
     // update user account setup
-    await userApi.updateUser(decodedToken.uid, {
+    await userApi.updateUser(userId, {
       accountSetupStage: AccountSetupStage.ADD_SYLLABUS,
     });
 

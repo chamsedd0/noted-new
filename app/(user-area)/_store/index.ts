@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { User } from "@/types/User";
 import { Course } from "@/types/Course";
 import { Event } from "@/types/Event";
-import { getUser } from "../_actions/userActions";
+import { getUser, updateUser } from "@/app/(user-area)/_actions/userActions";
 import {
   addNewCourse,
   updateCourse,
@@ -22,7 +22,8 @@ interface GlobalStore {
   selectedEvent: string | null;
 
   // User Actions
-  getUserData: (userId: string) => Promise<void>;
+  getUserData: () => Promise<void>;
+  updateUserData: (userData: Partial<User>) => Promise<void>;
 
   // Course Actions
   updateCourse: (course: Course) => Promise<void>;
@@ -42,16 +43,28 @@ const globalStore = create<GlobalStore>((set, get) => ({
   events: [],
   selectedEvent: null,
 
-  getUserData: async (userId: string) => {
+  getUserData: async () => {
     try {
-      const user = await getUser(userId);
-      const events = await getEvents(userId);
+      const user = await getUser();
       set({
         user: user,
         courses: user.courses || [],
-        events: events || [],
+        events: user.events || [],
       });
     } catch (error) {
+      throw error;
+    }
+  },
+
+  updateUserData: async (userData: Partial<User>) => {
+    const oldUser = get().user;
+
+    try {
+      set({ user: oldUser ? { ...oldUser, ...userData } : null });
+
+      await updateUser(userData);
+    } catch (error) {
+      set({ user: oldUser });
       throw error;
     }
   },
@@ -63,13 +76,10 @@ const globalStore = create<GlobalStore>((set, get) => ({
     try {
       set({ courses: [...oldCourses, course] });
 
-      const userId = get().user?.uid;
-      if (!userId) throw new Error("User ID not found");
-
-      await addNewCourse(userId, course);
+      await addNewCourse(course);
 
       // Fetch updated events after course addition
-      const updatedEvents = await getEvents(userId);
+      const updatedEvents = await getEvents();
       set({ events: updatedEvents });
     } catch (error) {
       set({
@@ -89,13 +99,9 @@ const globalStore = create<GlobalStore>((set, get) => ({
         courses: oldCourses.map((c) => (c.uid === course.uid ? course : c)),
       });
 
-      const userId = get().user?.uid;
-      if (!userId) throw new Error("User ID not found");
+      await updateCourse(course);
 
-      await updateCourse(userId, course);
-
-      // Fetch updated events after course update
-      const updatedEvents = await getEvents(userId);
+      const updatedEvents = await getEvents();
       set({ events: updatedEvents });
     } catch (error) {
       set({
@@ -113,67 +119,15 @@ const globalStore = create<GlobalStore>((set, get) => ({
     try {
       set({ courses: oldCourses.filter((c) => c.uid !== courseId) });
 
-      const userId = get().user?.uid;
-      if (!userId) throw new Error("User ID not found");
-
-      await deleteCourse(userId, courseId);
+      await deleteCourse(courseId);
 
       // Fetch updated events after course deletion
-      const updatedEvents = await getEvents(userId);
+      const updatedEvents = await getEvents();
       set({ events: updatedEvents });
     } catch (error) {
       set({
         courses: oldCourses,
         events: oldEvents,
-      });
-      throw error;
-    }
-  },
-
-  deleteEvent: async (eventId: string) => {
-    const oldEvents = get().events;
-    const oldCourses = get().courses;
-    const eventToDelete = oldEvents.find((e) => e.uid === eventId);
-
-    if (!eventToDelete) return;
-
-    try {
-      set({
-        events: oldEvents.filter((e) => e.uid !== eventId),
-      });
-
-      const userId = get().user?.uid;
-      if (!userId) throw new Error("User ID not found");
-
-      await deleteEvent(userId, eventToDelete);
-
-      // If it's a course event, update the course
-      if (eventToDelete.type === "course" && eventToDelete.courseId) {
-        const course = oldCourses.find((c) => c.uid === eventToDelete.courseId);
-        if (course) {
-          const updatedCourse = {
-            ...course,
-            timeSlots: course.timeSlots?.filter(
-              (slot) =>
-                !(
-                  slot.day === eventToDelete.day &&
-                  slot.start === eventToDelete.start &&
-                  slot.finish === eventToDelete.finish
-                )
-            ),
-          };
-          await updateCourse(userId, updatedCourse);
-          set({
-            courses: oldCourses.map((c) =>
-              c.uid === updatedCourse.uid ? updatedCourse : c
-            ),
-          });
-        }
-      }
-    } catch (error) {
-      set({
-        events: oldEvents,
-        courses: oldCourses,
       });
       throw error;
     }
@@ -188,10 +142,7 @@ const globalStore = create<GlobalStore>((set, get) => ({
     try {
       set({ events: [...oldEvents, event] });
 
-      const userId = get().user?.uid;
-      if (!userId) throw new Error("User ID not found");
-
-      await addEvent(userId, event);
+      await addEvent(event);
     } catch (error) {
       set({ events: oldEvents });
       throw error;
@@ -216,12 +167,55 @@ const globalStore = create<GlobalStore>((set, get) => ({
       );
       set({ events: newEvents });
 
-      const userId = get().user?.uid;
-      if (!userId) throw new Error("User ID not found");
-
-      await updateEvent(userId, { ...updates, uid: eventUid });
+      await updateEvent({ ...updates, uid: eventUid });
     } catch (error) {
       set({ events: oldEvents });
+      throw error;
+    }
+  },
+
+  deleteEvent: async (eventId: string) => {
+    const oldEvents = get().events;
+    const oldCourses = get().courses;
+    const eventToDelete = oldEvents.find((e) => e.uid === eventId);
+
+    if (!eventToDelete) return;
+
+    try {
+      set({
+        events: oldEvents.filter((e) => e.uid !== eventId),
+      });
+
+      await deleteEvent(eventToDelete);
+
+      // If it's a course event, update the course
+      if (eventToDelete.type === "course" && eventToDelete.courseId) {
+        const course = oldCourses.find((c) => c.uid === eventToDelete.courseId);
+        if (course) {
+          const updatedCourse = {
+            ...course,
+            timeSlots: course.timeSlots?.filter(
+              (slot) =>
+                !(
+                  slot.day === eventToDelete.day &&
+                  slot.start === eventToDelete.start &&
+                  slot.finish === eventToDelete.finish
+                )
+            ),
+          };
+          await updateCourse(updatedCourse);
+          set({
+            courses: oldCourses.map((c) =>
+              c.uid === updatedCourse.uid ? updatedCourse : c
+            ),
+          });
+        }
+      }
+    } catch (error) {
+      set({
+        events: oldEvents,
+        courses: oldCourses,
+      });
       throw error;
     }
   },

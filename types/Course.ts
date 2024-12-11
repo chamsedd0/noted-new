@@ -8,3 +8,8 @@ export type Course = {
   lastModified: string;
   syllabus?: string;
 };
+
+export interface CourseTime {
+  courseId: string;
+  timeSlots: TimeSlot[];
+}

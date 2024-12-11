@@ -1,18 +1,28 @@
 "use server";
+
 import { userApi } from "@/api/FirebaseUserApi";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/app/utils/jwt";
+import { redirect } from "next/navigation";
 
-export async function getUser(idToken: string) {
+export async function getUser() {
   try {
-    const decodedToken = await verifyIdToken(idToken);
-    if (!decodedToken) return null;
+    const token = cookies().get("token");
 
-    const user = await userApi.getUser(decodedToken.uid);
-    if (!user) return null;
+    if (!token) {
+      redirect("/login");
+    }
+
+    const { userId } = await verifyToken(token.value);
+    const user = await userApi.getUser(userId);
+
+    if (!user) {
+      redirect("/login");
+    }
 
     return user;
   } catch (error) {
     console.error("Error getting user:", error);
-    return null;
+    redirect("/login");
   }
 }

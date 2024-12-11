@@ -1,21 +1,21 @@
 "use server";
 
 import { courseApi } from "@/api/FireBaseCourseAPI";
-import { verifyIdToken } from "@/app/lib/firebase-admin";
-import { Course } from "@/types/Course";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/app/utils/jwt";
+import { redirect } from "next/navigation";
 
-export async function getCourses(idToken: string): Promise<Course[]> {
+export async function getCourses() {
   try {
-    // Verify the id token
-    const decodedToken = await verifyIdToken(idToken);
-    if (!decodedToken) {
-      return [];
+    const token = cookies().get("token");
+    if (!token) {
+      redirect("/login");
     }
 
-    // Get existing courses
-    return await courseApi.getCoursesByUserId(decodedToken.uid);
+    const { userId } = await verifyToken(token.value);
+    return await courseApi.getCoursesByUserId(userId);
   } catch (error) {
     console.error("Error getting courses:", error);
-    return [];
+    redirect("/login");
   }
 }
