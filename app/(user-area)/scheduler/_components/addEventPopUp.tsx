@@ -21,7 +21,6 @@ import {
 } from "./_styles/addEventPopUp";
 import globalStore from "@/app/(user-area)/_store";
 
-
 interface TimeSlot {
   day: string;
   start: number;
@@ -52,16 +51,19 @@ export default function AddEventModal({
   const { events, addEvent } = globalStore();
 
   const handleDayClick = (day: string) => {
-    if (state.activeDays.includes(day)) {
-      updateState({
-        activeDays: state.activeDays.filter((activeDay) => activeDay !== day),
-        timeSlots: state.timeSlots.filter((slot) => slot.day !== day),
-      });
-    } else {
-      updateState({
-        activeDays: [...state.activeDays, day],
-      });
-    }
+    const newActiveDays = state.activeDays.includes(day)
+      ? state.activeDays.filter((activeDay) => activeDay !== day)
+      : [...state.activeDays, day];
+
+    // If we're removing the day, also remove its time slots
+    const newTimeSlots = state.activeDays.includes(day)
+      ? state.timeSlots.filter((slot) => slot.day !== day)
+      : state.timeSlots;
+
+    updateState({
+      activeDays: newActiveDays,
+      timeSlots: newTimeSlots,
+    });
   };
 
   const handleSave = async () => {

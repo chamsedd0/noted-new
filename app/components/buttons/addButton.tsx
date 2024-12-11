@@ -1,16 +1,14 @@
-
-// components/PrimaryButton.js
-import styled from 'styled-components';
-import Button from './button';
+import styled from "styled-components";
+import Button from "./button";
 
 const AddButton = styled(Button)`
-   background-color: white;
-    max-width: 90px !important;
-    min-width: 90px !important;
+  background-color: white;
+  max-width: 90px !important;
+  min-width: 90px !important;
 
-    &:hover {
-        background-color: #BCBCBC;  /* Slight background color change on hover */
-    }
+  &:hover {
+    background-color: #bcbcbc; /* Slight background color change on hover */
+  }
 `;
 
 interface ButtonComponentProps {
@@ -18,16 +16,15 @@ interface ButtonComponentProps {
 }
 
 const AddButtonComponent = ({ f }: ButtonComponentProps) => {
-    return (
-      <AddButton onClick={() => {
-        
-        
+  return (
+    <AddButton
+      onClick={() => {
         f();
-
-      }}>
-        Add
-      </AddButton>
-    );
-  };
+      }}
+    >
+      Add
+    </AddButton>
+  );
+};
 
 export default AddButtonComponent;
