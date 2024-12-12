@@ -1,15 +1,34 @@
 "use client";
 import { Box, Logo, ChoosePlanContainer, PlanCards } from "./styles";
 import { Plan } from "@/types/User";
-import { updatePlan } from "./_actions/updatePlanAction";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import PlanCard from "@/app/components/cards/planChoosingCard";
+import { accountSetupStore } from "../_store";
+import { useRouter } from "next/navigation";
 
 export default function ChoosePlanPage() {
+  const { updateUser, saveSetup } = accountSetupStore();
+  const router = useRouter();
 
   const handlePlanChoosing = async (planStr: string) => {
-    const plan = planStr as Plan;
-    await updatePlan(plan);
+    try {
+      const plan = planStr as Plan;
+
+      // Update plan in store
+      updateUser({
+        plan,
+        accountSetupStage: "COMPLETED",
+      });
+
+      // Save all accumulated data to database
+      await saveSetup();
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Error saving plan:", error);
+      alert("Failed to save plan. Please try again.");
+    }
   };
 
   return (
