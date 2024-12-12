@@ -8,6 +8,7 @@ import {
   TimeLabel,
   TimeBlock,
 } from "./_styles/scheduler";
+import { weekdays as dayCodes } from "@/app/utils/constants";
 
 interface SchedulerComponentProps {
   events: Event[];
@@ -33,7 +34,6 @@ const SchedulerComponent: React.FC<SchedulerComponentProps> = ({
   setSelectedEvent,
 }) => {
   const timeSlots = generateTimeSlots();
-  const dayCodes = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
   return (
     <ScheduleWrapper onClick={() => setSelectedEvent(null)}>

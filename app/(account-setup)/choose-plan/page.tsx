@@ -1,6 +1,6 @@
 "use client";
 import { Box, Logo, ChoosePlanContainer, PlanCards, ButtonContainer } from "./styles";
-import { Plan } from "@/types/User";
+import { AccountSetupStage, Plan } from "@/types/User";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import PlanCard from "@/app/components/cards/planChoosingCard";
 import { accountSetupStore } from "../_store";
@@ -18,7 +18,7 @@ export default function ChoosePlanPage() {
       // Update plan in store
       updateUser({
         plan,
-        accountSetupStage: "COMPLETED",
+        accountSetupStage: AccountSetupStage.COMPLETED,
       });
 
       // Save all accumulated data to database

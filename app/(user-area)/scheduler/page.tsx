@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Header from "@/app/components/header";
 import SideBarComponent from "@/app/components/sidebar";
-import AddEventButtonComponent from "@/app/components/buttons/addEventButton";
-import AddEventModal from "@/app/(user-area)/scheduler/_components/addEventPopUp"
+import AddEventButtonComponent from "@/app/(user-area)/scheduler/_components/addEventButton";
+import AddEventModal from "@/app/(user-area)/scheduler/_components/addEventPopUp";
 import SchedulerComponent from "./_components/scheduler";
 import {
   CoursesLayout,
