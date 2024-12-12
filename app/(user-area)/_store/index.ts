@@ -32,7 +32,7 @@ interface GlobalStore {
 
   // Event Actions
   addEvent: (event: Event) => Promise<void>;
-  updateEvent: (eventUid: string, updates: Partial<Event>) => Promise<void>;
+  updateEvent: (event: Event) => Promise<void>;
   deleteEvent: (eventId: string) => Promise<void>;
   setSelectedEvent: (event: string | null) => void;
 }
@@ -149,25 +149,20 @@ const globalStore = create<GlobalStore>((set, get) => ({
     }
   },
 
-  updateEvent: async (eventUid: string, updates: Partial<Event>) => {
+  updateEvent: async (event: Event) => {
     const oldEvents = get().events;
-    const eventToUpdate = oldEvents.find((e) => e.uid === eventUid);
-
-    if (!eventToUpdate) {
-      throw new Error("Event not found");
-    }
-
-    if (eventToUpdate.type === "course") {
-      throw new Error("Cannot directly update course events");
+    
+    if (!event.uid) {
+      throw new Error("Event must have a uid");
     }
 
     try {
       const newEvents = oldEvents.map((e) =>
-        e.uid === eventUid ? { ...e, ...updates } : e
+        e.uid === event.uid ? event : e
       );
       set({ events: newEvents });
 
-      await updateEvent({ ...updates, uid: eventUid });
+      await updateEvent(event);
     } catch (error) {
       set({ events: oldEvents });
       throw error;
