@@ -175,4 +175,12 @@ const Loading = styled.div`
   font-weight: 700;
 `;
 
-export { Box, Form, Logo, CourseList, CourseItem, Loading };
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+  margin-top: 1rem;
+`;
+
+export { Box, Form, Logo, CourseList, CourseItem, Loading, ButtonContainer };

@@ -1,12 +1,13 @@
 "use client";
 
-import { Box, Form, Logo, CourseList, CourseItem } from "./styles";
+import { Box, Form, Logo, CourseList, CourseItem, ButtonContainer } from "./styles";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import UploadButtonComponent from "@/app/components/buttons/uploadButton";
 import { accountSetupStore } from "../_store";
 import { useRouter } from "next/navigation";
 import { AccountSetupStage } from "@/types/User";
+import BackButtonComponent from "@/app/components/buttons/backButton";
 
 const DUMMY_SYLLABUS = "Sample syllabus content";
 
@@ -62,7 +63,12 @@ export default function AddSyllabusPage() {
           ))}
         </CourseList>
 
-        <NextButtonComponent event={handleSubmitAll} />
+        <ButtonContainer>
+          <BackButtonComponent 
+            event={() => router.push("/add-courses")} 
+          />
+          <NextButtonComponent event={handleSubmitAll} />
+        </ButtonContainer>
       </Form>
       <PreLoginFooter />
     </Box>

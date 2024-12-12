@@ -7,6 +7,7 @@ import {
   Grid,
   DaysWrapper,
   TimeWrapper,
+  ButtonContainer,
 } from "./styles";
 import { useState, useCallback } from "react";
 import { TimeSlot } from "@/types/Time";
@@ -20,6 +21,7 @@ import { accountSetupStore } from "../_store";
 import { useRouter } from "next/navigation";
 import { AccountSetupStage } from "@/types/User";
 import { WEEKDAYS, type Weekday } from "@/app/utils";
+import BackButtonComponent from "@/app/components/buttons/backButton";
 
 
 function checkTimeConflicts(timeSlot1: TimeSlot, timeSlot2: TimeSlot): boolean {
@@ -127,7 +129,12 @@ export default function AddTimeSlots() {
               ))}
             </Grid>
 
-            <NextButtonComponent event={handleSubmitAll} />
+            <ButtonContainer>
+              <BackButtonComponent 
+                event={() => router.push("/add-syllabus")} 
+              />
+              <NextButtonComponent event={handleSubmitAll} />
+            </ButtonContainer>
           </>
         ) : (
           <>
@@ -160,10 +167,15 @@ export default function AddTimeSlots() {
               ))}
             </TimeWrapper>
 
-            <SaveTimeSlotButtonComponent
-              event={handleSaveCourse}
-              isEmpty={currentTimeSlots.length === 0}
-            />
+            <ButtonContainer>
+              <BackButtonComponent 
+                event={() => setSelectedCourseId(null)} 
+              />
+              <SaveTimeSlotButtonComponent
+                event={handleSaveCourse}
+                isEmpty={currentTimeSlots.length === 0}
+              />
+            </ButtonContainer>
           </>
         )}
       </Form>

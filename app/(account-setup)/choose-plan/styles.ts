@@ -63,4 +63,12 @@ const Logo = styled.img`
   }
 `;
 
-export { Box, ChoosePlanContainer, PlanCards, Logo };
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  width: 100%;
+`;
+
+export { Box, ChoosePlanContainer, PlanCards, Logo, ButtonContainer };

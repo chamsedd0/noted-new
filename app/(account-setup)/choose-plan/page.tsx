@@ -1,10 +1,11 @@
 "use client";
-import { Box, Logo, ChoosePlanContainer, PlanCards } from "./styles";
+import { Box, Logo, ChoosePlanContainer, PlanCards, ButtonContainer } from "./styles";
 import { Plan } from "@/types/User";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import PlanCard from "@/app/components/cards/planChoosingCard";
 import { accountSetupStore } from "../_store";
 import { useRouter } from "next/navigation";
+import BackButtonComponent from "@/app/components/buttons/backButton";
 
 export default function ChoosePlanPage() {
   const { updateUser, saveSetup } = accountSetupStore();
@@ -51,6 +52,11 @@ export default function ChoosePlanPage() {
             setChosenPlan={handlePlanChoosing}
           />
         </PlanCards>
+        <ButtonContainer>
+          <BackButtonComponent 
+            event={() => router.push("/add-time-slots")} 
+          />
+        </ButtonContainer>
       </ChoosePlanContainer>
       <PreLoginFooter />
     </Box>
