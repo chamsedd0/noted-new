@@ -1,48 +1,25 @@
 "use client";
-import { Box, Form, Logo, InputsContainer, Loading } from "./styles";
-import { useEffect, useState } from "react";
+import { Box, Form, Logo, InputsContainer } from "./styles";
 import { Formik } from "formik";
 import Footer from "@/app/components/preLoginFooter";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import InputComponent from "@/app/components/inputs/input";
-import { getUser } from "./_actions/getUserAction";
 import { personalInfoSchema, type PersonalInfoFormValues } from "./schema";
-import { updateUser } from "./_actions/updateUserAction";
 import { z } from "zod";
+import { accountSetupStore } from "../_store";
+import { useRouter } from "next/navigation";
+import { AccountSetupStage } from "@/types/User";
 
 export default function PersonalInfo() {
-  const [loading, setLoading] = useState(true);
-  const [initialValues, setInitialValues] = useState<PersonalInfoFormValues>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    birthDate: new Date().toISOString().split("T")[0],
-  });
+  const { user, updateUser } = accountSetupStore();
+  const router = useRouter();
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const userData = await getUser();
-        if (userData) {
-          setInitialValues({
-            firstName: userData.name.split(" ")[0] || "",
-            lastName: userData.name.split(" ")[1] || "",
-            email: userData.email || "",
-            birthDate:
-              userData.birthDate || new Date().toISOString().split("T")[0],
-          });
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error loading user:", error);
-        setLoading(false);
-      }
-    };
-
-    loadUser();
-  }, []);
-
-  if (loading) return <Loading>Loading...</Loading>;
+  const initialValues: PersonalInfoFormValues = {
+    firstName: user?.name?.split(" ")[0] || "",
+    lastName: user?.name?.split(" ")[1] || "",
+    email: user?.email || "",
+    birthDate: user?.birthDate || new Date().toISOString().split("T")[0],
+  };
 
   return (
     <Box>
@@ -64,18 +41,14 @@ export default function PersonalInfo() {
             return {};
           }
         }}
-        onSubmit={async (values, { setSubmitting }) => {
-          try {
-            const formData = new FormData();
-            formData.append("name", `${values.firstName} ${values.lastName}`);
-            formData.append("email", values.email);
-            formData.append("birthDate", values.birthDate);
-            await updateUser(formData);
-          } catch (error) {
-            throw error;
-          } finally {
-            setSubmitting(false);
-          }
+        onSubmit={(values) => {
+          updateUser({
+            name: `${values.firstName} ${values.lastName}`,
+            email: values.email,
+            birthDate: values.birthDate,
+            accountSetupStage: AccountSetupStage.ADD_COURSES,
+          });
+          router.push("/add-courses");
         }}
         validateOnChange={true}
         validateOnBlur={true}

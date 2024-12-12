@@ -1,53 +1,42 @@
 "use client";
 
-import { Box, Form, Logo, CourseList, CourseItem, Loading } from "./styles";
-import { useEffect, useState } from "react";
+import { Box, Form, Logo, CourseList, CourseItem } from "./styles";
 import PreLoginFooter from "@/app/components/preLoginFooter";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
 import UploadButtonComponent from "@/app/components/buttons/uploadButton";
-import { Course } from "@/types/Course";
-import { getCourses } from "./_actions/getCoursesAction";
-import { updateCourseSyllabus } from "./_actions/updateCourseAction";
-
+import { accountSetupStore } from "../_store";
+import { useRouter } from "next/navigation";
+import { AccountSetupStage } from "@/types/User";
 
 const DUMMY_SYLLABUS = "Sample syllabus content";
 
 export default function AddSyllabusPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user, updateUser } = accountSetupStore();
+  const router = useRouter();
 
-  useEffect(() => {
-    const loadCourses = async () => {
-      try {
-        const userCourses = await getCourses();
-        setCourses(userCourses);
-      } catch (error) {
-        console.error("Error loading courses:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCourses();
-  }, []);
-
-  const handleSubmitAll = async () => {
-    try {
-      // Update all courses with dummy syllabus
-      for (const course of courses) {
-        if (course.uid) {
-          await updateCourseSyllabus(course.uid, DUMMY_SYLLABUS);
-        }
-      }
-    } catch (error) {
-      console.error("Error updating syllabi:", error);
-      alert("Failed to update syllabi. Please try again.");
-    }
+  const handleUploadSyllabus = (courseId: string) => {
+    updateUser({
+      courses: user?.courses?.map((course) =>
+        course.uid === courseId
+          ? { ...course, syllabus: DUMMY_SYLLABUS }
+          : course
+      ),
+    });
   };
 
-  if (loading) {
-    return <Loading>Loading...</Loading>;
-  }
+  const handleSubmitAll = () => {
+    const allHaveSyllabus = user?.courses?.every((course) => course.syllabus);
+
+    if (!allHaveSyllabus) {
+      alert("Please upload syllabus for all courses before continuing");
+      return;
+    }
+
+    updateUser({
+      accountSetupStage: AccountSetupStage.ADD_TIME_SLOTS,
+    });
+    router.push("/add-time-slots");
+  };
 
   return (
     <Box>
@@ -63,10 +52,12 @@ export default function AddSyllabusPage() {
 
         <CourseList>
           <h2>Add Syllabus</h2>
-          {courses.map((course) => (
+          {user?.courses?.map((course) => (
             <CourseItem key={course.uid}>
               <span>{course.title}</span>
-              <UploadButtonComponent onUpload={() => {}} />
+              <UploadButtonComponent
+                onUpload={() => handleUploadSyllabus(course.uid)}
+              />
             </CourseItem>
           ))}
         </CourseList>
