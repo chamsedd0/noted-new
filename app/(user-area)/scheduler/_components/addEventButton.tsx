@@ -3,11 +3,10 @@
 // components/PrimaryButton.js
 import styled from "styled-components";
 import Button from "@/app/components/buttons/button";
-
 const AddCard = styled(Button)`
   background-color: white;
-  max-width: 155px !important;
-  min-width: 155px !important;
+  max-width: 160px !important;
+  min-width: 160px !important;
   height: 48px !important;
   font-size: 16px !important;
 
@@ -31,8 +30,8 @@ interface AddEventButtonProps {
 const AddEventButtonComponent: React.FC<AddEventButtonProps> = ({ action }) => {
   return (
     <AddCard onClick={action}>
-      <img src="/addEventBlack.svg"></img>
-      Add Card
+        <img src="/addEventBlack.svg"></img>
+        Add Event 
     </AddCard>
   );
 };

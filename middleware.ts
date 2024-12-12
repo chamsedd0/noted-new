@@ -11,6 +11,7 @@ const protectedPaths = [
   "/dashboard",
   "/settings",
   "/profile",
+  "/scheduler",
 ];
 
 export default async function middleware(req: NextRequest) {
