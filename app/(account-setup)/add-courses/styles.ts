@@ -117,6 +117,14 @@ const RemoveButtonComponent = styled.button`
   }
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+  margin-top: 1rem;
+`;
+
 export {
   Box,
   Form,
@@ -125,4 +133,5 @@ export {
   CourseList,
   CourseItem,
   RemoveButtonComponent,
+  ButtonContainer,
 };

@@ -8,6 +8,7 @@ import {
   CourseList,
   CourseItem,
   RemoveButtonComponent,
+  ButtonContainer,
 } from "./styles";
 import { Formik } from "formik";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
@@ -19,6 +20,7 @@ import { z } from "zod";
 import { accountSetupStore } from "../_store";
 import { useRouter } from "next/navigation";
 import { AccountSetupStage } from "@/types/User";
+import BackButtonComponent from "@/app/components/buttons/backButton";
 
 interface FormValues {
   newCourseName: string;
@@ -138,16 +140,21 @@ export default function AddCoursePage() {
               ))}
             </CourseList>
 
-            <NextButtonComponent
-              event={(e) => {
-                e.preventDefault();
-                if (!user?.courses?.length) {
-                  alert("Please add at least one course before continuing");
-                  return;
-                }
-                handleSubmit();
-              }}
-            />
+            <ButtonContainer>
+              <BackButtonComponent 
+                event={() => router.push("/personal-info")} 
+              />
+              <NextButtonComponent
+                event={(e) => {
+                  e.preventDefault();
+                  if (!user?.courses?.length) {
+                    alert("Please add at least one course before continuing");
+                    return;
+                  }
+                  handleSubmit();
+                }}
+              />
+            </ButtonContainer>
           </Form>
         )}
       </Formik>
