@@ -15,6 +15,7 @@ import {
   RightBoxReplacement,
 } from "./styles";
 import globalStore from "@/app/(user-area)/_store";
+import EditEventModal from "./_components/editEventModal";
 
 interface TimeSlot {
   day: string;
@@ -35,8 +36,11 @@ interface SchedulerState {
 }
 
 export default function SchedulerPage() {
-  const { events, deleteEvent, selectedEvent, setSelectedEvent } =
+  const { events, deleteEvent, selectedEvent, setSelectedEvent, updateEvent } =
     globalStore();
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const selectedEventData = events.find(e => e.uid === selectedEvent) || null;
 
   const [state, setState] = useState<SchedulerState>({
     addPopupOpened: false,
@@ -50,11 +54,9 @@ export default function SchedulerPage() {
     notify: false,
   });
 
-  const handleDeleteClick = async () => {
+  const handleDeleteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!selectedEvent) return;
-    const event = events.find((e) => e.uid === selectedEvent);
-    if (!event) return;
-
     try {
       await deleteEvent(selectedEvent);
       setSelectedEvent(null);
@@ -75,8 +77,8 @@ export default function SchedulerPage() {
           <TitleWrapper>
             <h1>Scheduler</h1>
             <Controls
-              isSelected={!selectedEvent}
-              activitySelected={selectedEvent !== null}
+              $isSelected={!selectedEvent}
+              $activitySelected={selectedEvent !== null}
             >
               <img
                 src="/trash.svg"
@@ -87,7 +89,7 @@ export default function SchedulerPage() {
               <img
                 src="/editCourses.svg"
                 className="edit"
-                onClick={() => updateState({ editPopupOpened: true })}
+                onClick={() => selectedEvent && setEditModalOpen(true)}
                 alt="edit"
               />
               <img
@@ -118,6 +120,14 @@ export default function SchedulerPage() {
         state={state}
         updateState={updateState}
         onClose={() => updateState({ addPopupOpened: false })}
+      />
+
+      <EditEventModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        event={selectedEventData}
+        events={events}
+        onUpdate={updateEvent}
       />
     </CoursesLayout>
   );
