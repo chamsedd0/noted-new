@@ -23,7 +23,7 @@ const SearchInput = styled.input`
   min-height: 40px;
   border: none;
   border-radius: 25px;
-  background-color: #4a4a4a;
+  background-color: #413B44;
   color: #bcbcbc;
   font-size: 14px;
   transition: all 0.3s ease;

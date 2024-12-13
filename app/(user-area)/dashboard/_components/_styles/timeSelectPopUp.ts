@@ -42,7 +42,7 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownHeader = styled.div`
-  background-color: #545454;
+  background-color: #413B44;
   color: #fff;
   padding: 20px;
   height: 48px;

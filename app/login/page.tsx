@@ -10,7 +10,7 @@ import { auth } from "@/app/lib/firebase";
 import { isNewUserAction } from "./_actions/isNewUserAction";
 
 const Box = styled.div`
-  background-color: #383838;
+  background: linear-gradient(90deg, #8453C9, #4790AF);
   width: 100vw;
   height: 100vh;
   padding: 50px;
@@ -30,7 +30,7 @@ const Box = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 100px;
+    gap: 50px;
   }
 
   @media (max-width: 1470px) {

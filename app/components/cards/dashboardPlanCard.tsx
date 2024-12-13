@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Plan } from "@/types/User";
 
 const SubscriptionCard = styled.div`
-  background-color: #535353;
+  background-color: #413B44;
   padding: 20px;
   border-radius: 8px;
   display: flex;

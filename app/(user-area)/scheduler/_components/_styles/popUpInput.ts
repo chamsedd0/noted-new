@@ -19,10 +19,10 @@ export const Input = styled.input<{ $error: boolean }>`
   padding: 0 20px;
   border-radius: 100px;
   border: 2px solid ${({ $error }) => ($error ? "#FE8686" : "transparent")};
-  background-color: #545454;
+  background-color: #413B44;
   color: white;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 16px;
+  font-weight: 500;
 
   &:focus {
     outline: none;

@@ -20,7 +20,7 @@ const ModalContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #444444;
+  background-color: #2D282F;
   border-radius: 10px;
   padding: 20px;
   max-width: 620px;
@@ -110,8 +110,8 @@ const WeekdayOptions = styled.div`
 
 const WeekdayButton = styled.button<{ active: boolean }>`
   transition: all 0.3s ease;
-  background-color: ${props => (props.active ? '#282828' : '#545454')};
-  color: white;
+  background-color: ${props => (props.active ? 'white' : '#413B44')};
+  color: ${props => (props.active ? '#413B44' : 'white')};
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -122,9 +122,10 @@ const WeekdayButton = styled.button<{ active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: ${props => (props.active ? 'scale(1.1)' : 'scale(1)')};
 
   &:hover {
-    background-color: ${props => (props.active ? '#303030' : '#444444')};
+    background-color: ${props => (props.active ? 'white' : '#36303A')};
   }
 `;
 

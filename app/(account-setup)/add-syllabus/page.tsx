@@ -46,19 +46,20 @@ export default function AddSyllabusPage() {
         <div className="introduction">
           <h2>Add Syllabus of your courses</h2>
           <p>
-            Please upload the syllabus of the courses you take, so we can
-            arrange the information for your notes and your schedule
+            Please upload the syllabus of the courses you take
           </p>
         </div>
-
         <CourseList>
-          <h2>Add Syllabus</h2>
+          
           {user?.courses?.map((course) => (
             <CourseItem key={course.uid}>
               <span>{course.title}</span>
-              <UploadButtonComponent
+              <div className="upload">
+                <b>Max Size: 500 MB</b>
+                <UploadButtonComponent
                 onUpload={() => handleUploadSyllabus(course.uid)}
               />
+              </div>
             </CourseItem>
           ))}
         </CourseList>

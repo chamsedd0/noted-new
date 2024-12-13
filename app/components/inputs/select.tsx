@@ -33,7 +33,7 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownHeader = styled.div`
-  background-color: #545454;
+  background-color: #413B44;
   color: #fff;
   padding: 20px;
   height: 48px;
@@ -46,14 +46,12 @@ const DropdownHeader = styled.div`
   font-size: 16px;
   font-weight: 600;
 
-  &:hover {
-    background-color: #444;
-  }
+
 `;
 
 const DropdownList = styled.ul<{ isOpen: boolean }>`
   z-index: ${(props) => (props.isOpen ? 1000 : 1)};
-  background-color: #333;
+  background-color: #36303A;
   color: #fff;
   list-style: none;
   padding: 5px;
@@ -84,12 +82,12 @@ const DropdownListItem = styled.li`
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #545454;
+  background-color: #4e4752;
   font-size: 16px;
   font-weight: 600;
 
   &:hover {
-    background-color: #444;
+    background-color: #453f49;
   }
 `;
 
@@ -113,12 +111,12 @@ const ResetButton = styled.li`
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #545454;
+  background-color: #4e4752;
   font-size: 16px;
   font-weight: 600;
 
   &:hover {
-    background-color: #444;
+    background-color: #453f49;
   }
 
   img {

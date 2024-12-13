@@ -112,9 +112,7 @@ export default function AddTimeSlots() {
             <div className="introduction">
               <h2>Add Time of your classes</h2>
               <p>
-                Choose the course and choose the time and day of the week when
-                you take this class. You will be able to add more classes after
-                the completion as well
+                Choose the course and choose the time
               </p>
             </div>
             <Grid>

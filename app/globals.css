@@ -23,7 +23,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background-color: #383838;
+  background-color: #2D282F;
 }
 
 * {
@@ -46,24 +46,10 @@ a {
 
 /* styles/globals.css */
 
-/* Customize scrollbar for Chrome, Edge, and Safari */
-::-webkit-scrollbar {
-  width: 12px;
-}
 
-::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
-}
 
-::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 10px;
-}
-
-/* Firefox scrollbar customization */
 * {
   scrollbar-width: 5px;
-  scrollbar-color: #545454 #383838;
+  scrollbar-color: #625966 #413B44;
   transition: all 0.3s ease;
 }

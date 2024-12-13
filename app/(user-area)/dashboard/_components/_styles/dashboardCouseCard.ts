@@ -6,7 +6,7 @@ const CourseDashboardCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #545454;
+  background-color: #413B44;
   padding: 24px;
   padding-top: 45px;
   border-radius: 15px;
@@ -19,12 +19,12 @@ const CourseDashboardCard = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #444444;
+    background-color: #36303A;
     box-shadow: none;
   }
 
   &:active {
-    background-color: #282828;
+    background-color:rgb(48, 43, 53);
     box-shadow: none;
   }
 
@@ -109,7 +109,7 @@ const DropdownMenu = styled.div<{ isOpen: boolean }>`
   position: absolute;
   top: 41px;
   right: -25%;
-  background-color: #545454;
+  background-color: #413B44;
   border-radius: 8px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
   padding: 5px;
@@ -152,7 +152,7 @@ const DropdownMenu = styled.div<{ isOpen: boolean }>`
     border-radius: 8px;
 
     &:hover {
-      background-color: #5B5B5B;
+      background-color: rgb(78, 70, 82);
     }
   }
 

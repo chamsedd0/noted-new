@@ -1,15 +1,18 @@
 import styled from "styled-components";
 
 const Box = styled.div`
-  background-color: #383838;
-  width: 100vw;
-  height: 100vh;
+  background-color: #2D282F;
+  min-width: 100vw;
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
   padding: 50px;
+  gap: 10px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   color: white;
 `;
 
@@ -18,7 +21,7 @@ const ChoosePlanContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   width: 100%;
   margin-top: 10px;
 
@@ -50,6 +53,10 @@ const PlanCards = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
 `;
 
 const Logo = styled.img`
@@ -67,7 +74,7 @@ const ButtonContainer = styled.div`
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-top: 2rem;
+  margin: 2rem;
   width: 100%;
 `;
 

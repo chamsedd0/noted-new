@@ -5,7 +5,7 @@ const NotificationCard = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
-  background-color: #545454;
+  background-color: #413B44;
   padding: 16px;
   border-radius: 10px;
   width: 100%;

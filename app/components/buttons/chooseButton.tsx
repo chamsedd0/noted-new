@@ -3,10 +3,10 @@ import Button from "../buttons/button";
 
 const ChooseButton = styled(Button)`
   background-color: white;
-  min-width: 100%;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 800 !important;
+  font-size: 18px !important;
   margin: auto;
+  height: 48px !important;
 
   &:hover {
     background-color: #bcbcbc;
@@ -14,12 +14,11 @@ const ChooseButton = styled(Button)`
 `;
 
 interface ChooseButtonProps {
-  plan: string;
-  event: (plan: string) => void;
+  event: (value: void) => void;
 }
 
-const ChooseButtonComponent = ({ plan, event }: ChooseButtonProps) => {
-  return <ChooseButton onClick={() => event(plan)}>Choose</ChooseButton>;
+const ChooseButtonComponent = ({ event }: ChooseButtonProps) => {
+  return <ChooseButton onClick={() => event()}>Choose</ChooseButton>;
 };
 
 export default ChooseButtonComponent;

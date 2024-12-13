@@ -5,7 +5,7 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 40px;
-  background-color: #383838;
+  background-color: #2D282F;
   padding: 15px 40px;
   max-height: 70px;
   width: 100%;
@@ -84,10 +84,10 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: 60px;
   right: 40px;
-  background-color: #545454;
+  background-color: #413B44;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-  padding: 16px;
+  padding: 12px;
   width: 200px;
 
   z-index: 100;
@@ -121,7 +121,7 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
     border-radius: 10px;
 
     &:hover {
-      background-color: #5b5b5b;
+      background-color: rgb(78, 70, 82);
     }
   }
 

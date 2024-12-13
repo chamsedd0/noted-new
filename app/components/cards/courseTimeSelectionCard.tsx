@@ -5,19 +5,18 @@ const Card = styled.div<{ completed?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #545454;
-  padding: 20px;
-  border-radius: 10px;
+  background-color: #413B44;
+  padding: 16px;
+  border-radius: 16px;
   width: 188px;
   height: 188px;
   color: white;
   text-align: left;
   transition: all 0.3s ease;
   cursor: pointer;
-  border: 2px solid ${(props) => (props.completed ? "white" : "transparent")};
 
   &:hover {
-    background-color: #444444;
+    background-color: #36303A;
   }
 
   @media (max-width: 1470px) {
@@ -38,7 +37,8 @@ const TimeDisplay = styled.p`
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  color: white;
+  color: #A3A3A3;
+  
   width: 100%;
   display: flex;
   flex-direction: column;
