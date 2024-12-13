@@ -11,7 +11,7 @@ const Input = styled.input<InputProps>`
   padding-left: 20px;
   border: ${({ error }) => (error ? "#BE0505 1.5px solid" : "none")};
   outline: none;
-  background-color: #545454;
+  background-color: #413B44;
   border-radius: 100px;
   color: #c6c6c6;
   font-weight: 500;

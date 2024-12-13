@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import ChooseButtonComponent from "@/app/components/buttons/chooseButton";
 import { Plan } from "@/types/User";
 
 interface StyledProps {
@@ -7,18 +6,32 @@ interface StyledProps {
 }
 
 const PlanCardContainer = styled.div<StyledProps>`
+
+
   flex: 1;
-  max-width: 440px;
-  background-color: #545454;
+  max-width: 500px;
+  background: ${(props) =>
+    props.isRecommended ? "linear-gradient(90deg, #8453C9, #4790AF)" : "linear-gradient(90deg, #413B44, #413B44)"};
+  background-size: 200% 200%;
+  background-position: ${props => props.isRecommended ? "100% 0%" : "0% 0%"};
   color: #fff;
   padding: 24px;
   padding-top: 43px;
   border-radius: 12px;
-  border: ${(props) =>
-    props.isRecommended ? "2px solid #FFCD48" : "1.5px solid #A3A3A3"};
+  border: none;
   position: relative;
   margin: 20px;
-  transition: all 0.3s ease;
+  transition: all 1s ease;
+  cursor: pointer;
+
+  @media (max-width: 1200px) {
+    width: 90%;
+    max-width: unset;
+  }
+
+  .details {
+    display: flex;
+  }
 
   @media (max-width: 1470px) {
     transform: scale(0.9);
@@ -32,27 +45,52 @@ const PlanHeader = styled.div<StyledProps>`
   align-items: center;
   margin-bottom: 10px;
 
-  img {
+  .selected {
     position: absolute;
     top: 24px;
     right: 24px;
-    width: 40px;
-    opacity: ${(props) => (props.isRecommended ? 1 : 0)};
+    width: 32px;
+    height: 32px;
+    border-radius: 100px;
+    border: 3px solid white;
     transition: all 0.3s ease;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .inside-circle {
+    transition: all 0.3s ease;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border-radius: 100px;
+    opacity: ${(props) => props.isRecommended ? "1" : "0"};
+
+    &:hover {
+      opacity: 0.5;
+    }
   }
 `;
 
 const PlanTitle = styled.h3`
   font-size: 32px;
-  margin: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 15px;
 `;
 
 const PlanFeatures = styled.ul`
   list-style: none;
-  padding: 0;
-  margin: 15px 0;
+  padding: 0px 15px;
   line-height: 1.8;
   list-style: inside;
+  min-width: 350px;
 `;
 
 const PlanFeature = styled.li`
@@ -60,18 +98,26 @@ const PlanFeature = styled.li`
 `;
 
 const PlanPrice = styled.p`
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin: 15px 0;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: end;
+  flex-direction: column;
   justify-content: end;
-  font-size: 28px;
+
+  b {
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      margin-top: 10px;
+    }
+  }
 
   span {
-    margin-right: 10px;
-    text-decoration: line-through;
+    font-size: 16px;
+    font-weight: 700 !important;
   }
 `;
 
@@ -89,27 +135,27 @@ const PlanCard = ({
   setChosenPlan,
 }: PlanCardProps) => {
   return (
-    <PlanCardContainer isRecommended={isRecommended}>
+    <PlanCardContainer isRecommended={isRecommended} onClick={() => setChosenPlan(title)}>
       <PlanHeader isRecommended={isRecommended}>
-        <PlanTitle>{title}</PlanTitle>
-        <img src="/crown.svg" alt="crown" />
+        <PlanTitle><img src="/crown.svg"></img>{title}</PlanTitle>
+        <div className="selected">
+          <div className="inside-circle"></div>
+        </div>
       </PlanHeader>
-      <PlanFeatures>
-        <PlanFeature>10 PDF Uploads a month</PlanFeature>
-        <PlanFeature>Unlimited courses</PlanFeature>
-        <PlanFeature>Basic Smart Notes</PlanFeature>
-        <PlanFeature>Unlimited Scheduling</PlanFeature>
-        <PlanFeature>Limited documents space</PlanFeature>
-        <PlanFeature>GPT - 3.5</PlanFeature>
-      </PlanFeatures>
-      <PlanPrice>
-        <span>{price} TL</span>
-        {price - 40}TL/month
-      </PlanPrice>
-      <ChooseButtonComponent
-        plan={title.toString()}
-        event={(planStr: string) => setChosenPlan(planStr as Plan)}
-      />
+      <div className="details">
+        <PlanFeatures>
+          <PlanFeature>10 PDF Uploads a month</PlanFeature>
+          <PlanFeature>Unlimited courses</PlanFeature>
+          <PlanFeature>Basic Smart Notes</PlanFeature>
+          <PlanFeature>Unlimited Scheduling</PlanFeature>
+          <PlanFeature>GPT - 3.5</PlanFeature>
+        </PlanFeatures>
+        <PlanPrice>
+        <b>{price - 40}<img src="/turkish-lira.svg"></img></b> 
+        <span>monthly</span>
+        </PlanPrice>
+      </div>
+
     </PlanCardContainer>
   );
 };

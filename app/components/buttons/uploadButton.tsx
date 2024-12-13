@@ -11,8 +11,26 @@ interface UploadButtonProps {
 
 const UploadButton = styled(Button)<UploadButtonProps>`
   background-color: ${({ bgColor }) => bgColor || "#fffff"};
-  min-width: 155px;
-  color: ${({ fontColor }) => fontColor || "white"} !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+
+  max-width: 48px !important;
+  min-width: 48px !important;
+  width: 48px !important;
+
+  max-height: 48px !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  
+  img {
+    width: 24px !important;
+    height: 24px !important;
+    margin: auto !important;
+  }
+
 
   &:hover {
     background-color: ${({ bgHovered }) => bgHovered || "#BCBCBC"};
@@ -37,7 +55,7 @@ const UploadButtonComponent: React.FC<UploadButtonComponentProps> = ({
       fontColor="#383838"
       onClick={onUpload}
     >
-      Upload
+      <img src="/upload.svg"></img>
     </UploadButton>
   );
 };

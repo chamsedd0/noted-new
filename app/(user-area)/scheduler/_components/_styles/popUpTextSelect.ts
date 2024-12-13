@@ -19,7 +19,7 @@ export const DropdownContainer = styled.div`
 `;
 
 export const DropdownHeader = styled.div`
-  background-color: #545454;
+  background-color: #413B44;
   padding: 0 20px;
   height: 48px;
   border-radius: 100px;
@@ -39,7 +39,7 @@ export const DropdownList = styled.ul<{ $isOpen: boolean }>`
   top: 100%;
   left: 0;
   right: 0;
-  background-color: #545454;
+  background-color: #413B44;
   border-radius: 16px;
   margin-top: 8px;
   padding: 8px;

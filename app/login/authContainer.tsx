@@ -4,7 +4,7 @@ import GoogleButtonComponent from "./googleButton";
 
 const AuthContainer = styled.div`
   padding: 32px;
-  background: #545454;
+  background: #2D282F;
   border-radius: 16px;
   max-width: 600px;
   text-align: center;
@@ -17,7 +17,7 @@ const AuthContainer = styled.div`
   span {
     font-size: 16px;
     font-weight: 500;
-    max-width: 80%;
+    max-width: 400px;
   }
 
   h2 {
@@ -53,8 +53,7 @@ const AuthComponent = ({
     <AuthContainer>
       <h2>Login</h2>
       <span>
-        Please choose the platform on which you have your email. It can be both
-        university or personal account
+      Please choose the platform on which you have your email. It can be both university or personal account
       </span>
 
       <ButtonContainer>
@@ -62,7 +61,7 @@ const AuthComponent = ({
         <AppleButtonComponent appleAuth={appleAuth} />
       </ButtonContainer>
 
-      <span>Continue or Sign Up to Noted</span>
+      <span>Using unversity account?</span>
     </AuthContainer>
   );
 };

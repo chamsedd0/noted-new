@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
 const Box = styled.div`
-  background-color: #383838;
+  background-color: #2D282F;
   width: 100vw;
   min-height: 100vh;
+  height: 100%;
   padding: 60px;
   padding-bottom: 100px;
   display: flex;
@@ -20,7 +21,7 @@ const Box = styled.div`
   }
 
   @media (max-width: 1100px) {
-    gap: 0px;
+    padding-top: 100px;
   }
 `;
 
@@ -31,16 +32,16 @@ const Form = styled.div`
   align-items: center;
   justify-content: center;
   gap: 24px;
-  width: 50%;
+  width: 70%;
 
   @media (max-width: 1100px) {
     margin-bottom: 15px;
-    width: 60%;
+    width: 80%;
   }
 
   @media (max-width: 800px) {
     margin-bottom: 15px;
-    width: 80%;
+    width: 100%;
     margin-top: 15px;
   }
 
@@ -51,7 +52,7 @@ const Form = styled.div`
     align-items: center;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
 
     @media (max-width: 1470px) {
       margin-bottom: 0px;
@@ -99,27 +100,13 @@ const Logo = styled.img`
 `;
 
 const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, auto);
-  gap: 20px;
-  max-width: 800px;
-  margin-bottom: 50px;
-
-  @media (max-width: 1470px) {
-    margin-bottom: 0px;
-    gap: 0;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, auto);
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(6, auto);
-  }
+ max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 10px;
 `;
 
 const DaysWrapper = styled.div`
@@ -134,7 +121,8 @@ const TimeWrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  max-width: 100%;
+  max-width: 80%;
+  min-height: 100px;
   gap: 10px 30px;
   margin-bottom: 20px;
 `;

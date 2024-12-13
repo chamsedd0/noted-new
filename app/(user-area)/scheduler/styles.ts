@@ -3,7 +3,7 @@ import styled from "styled-components";
 const CoursesLayout = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #383838;
+  background-color: #2D282F;
 `;
 
 const ContentWrapper = styled.div`

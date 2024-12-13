@@ -4,7 +4,7 @@ import appleImage from "@/public/apple.svg";
 import Image from "next/image";
 
 const AppleButton = styled(Button)`
-  background-color: #282828; /* Outlook blue */
+  background-color: #000000; /* Outlook blue */
   color: white;
   display: flex; /* Flexbox to align content */
   align-items: center;

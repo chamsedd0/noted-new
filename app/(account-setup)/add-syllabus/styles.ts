@@ -1,17 +1,17 @@
 import styled from "styled-components";
 
 const Box = styled.div`
-  background-color: #383838;
+  background-color: #2D282F;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   padding: 60px;
-  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   color: white;
-  gap: 60px;
+  gap: 50px;
 
   @media (max-width: 1470px) {
     padding-bottom: 50px;
@@ -20,7 +20,7 @@ const Box = styled.div`
   }
 
   @media (max-width: 1100px) {
-    gap: 0px;
+    padding-top: 100px;
   }
 `;
 
@@ -30,17 +30,17 @@ const Form = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  width: 50%;
+  gap: 20px;
+  width: 70%;
 
   @media (max-width: 1100px) {
     margin-bottom: 15px;
-    width: 60%;
+    width: 80%;
   }
 
   @media (max-width: 800px) {
     margin-bottom: 15px;
-    width: 80%;
+    width: 100%;
     margin-top: 15px;
   }
 
@@ -51,6 +51,7 @@ const Form = styled.div`
     align-items: center;
     justify-content: center;
     gap: 10px;
+    margin-bottom: 14px;
 
     h2 {
       font-size: 40px;
@@ -94,74 +95,49 @@ const Logo = styled.img`
 `;
 
 const CourseList = styled.div`
-  width: 100%;
+  max-width: 100%;
   display: flex;
-  align-items: start;
-  justify-content: start;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 24px;
-  margin-bottom: 48px;
   padding: 10px;
-
-  @media (max-width: 1470px) {
-    gap: 14px;
-    margin-bottom: 30px;
-  }
-
-  @media (max-width: 1100px) {
-    margin-bottom: -10px;
-  }
-
-  /* when we have a lot courses we need scroll behaviour */
-
-  h2 {
-    font-size: 20px;
-    font-weight: 600;
-  }
 `;
 
 const CourseItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
+  flex-direction: column;
+  padding: 16px;
+  width: 188px;
+  height: 188px;
   gap: 20px;
   min-width: 200px;
+  background-color: #413B44;
+  border-radius: 16px;
 
   span {
-    height: 100%;
-    vertical-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: start;
+    align-self: start;
+  }
+
+  .upload {
     display: flex;
     align-items: center;
-    justify-content: start;
-    background-color: #545454;
-    flex: 1;
-    padding: 0px 24px;
-    border-radius: 100px;
-    font-size: 16px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    justify-content: space-between;
+    width: 100%;
 
-    @media (max-width: 800px) {
-      height: 100px;
-      width: fit-content;
-      padding: 24px;
-      justify-content: center;
-      text-align: center;
-      min-width: 150px;
-    }
-
-    @media (max-width: 1100px) {
-      font-size: 12px;
-    }
-
-    @media (max-width: 1470px) {
-      height: 42px;
+    b {
+      font-weight: 400;
+      font-size: 14px;
+      max-width: 50%;
+      color: #A3A3A3;
     }
   }
-  @media (max-width: 1470px) {
-    gap: 0px;
-  }
+
 `;
 
 const Loading = styled.div`

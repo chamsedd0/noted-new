@@ -9,26 +9,27 @@ const WeekdayCard = styled.div<WeekdayCardProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => (props.active ? "#282828" : "#545454")};
+  background-color: ${(props) => (props.active ? "white" : "#413B44")};
   padding: 20px;
   border-radius: 16px;
   width: 100px;
   height: 100px;
-  color: white;
+  color: ${(props) => (props.active ? "#413B44" : "white")};
   text-align: center;
   transition: all 0.3s ease;
   cursor: pointer;
   user-select: none;
+  transform: ${(props) => (props.active ? "scale(1.04)" : "scale(1)")};
 
   font-size: 20px;
   font-weight: 700;
 
   &:hover {
-    background-color: ${(props) => (props.active ? "#303030" : "#444444")};
+    background-color: ${(props) => (props.active ? "#eeeeee" : "#36303A")};
   }
 
   &:active {
-    background-color: #282828;
+    background-color: #28232b;
   }
 `;
 

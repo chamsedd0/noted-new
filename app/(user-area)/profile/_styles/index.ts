@@ -6,7 +6,7 @@ const CoursesLayout = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #383838;
+  background-color: #2D282F;
 `;
 
 const ContentWrapper = styled.div`
@@ -57,7 +57,7 @@ const ProfileSidebar = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  background-color: #444444;
+  background-color: #413B44;
   color: white;
   padding: 20px;
 
@@ -103,7 +103,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = styled.button<ButtonProps>`
-  background: ${({ active }) => (active ? "#545454" : "transparent")};
+  background: ${({ active }) => (active ? "rgb(78, 70, 82)" : "transparent")};
   width: 100%;
   height: 60px;
   padding: 18px 20px;
@@ -137,7 +137,7 @@ const Button = styled.button<ButtonProps>`
   }
 
   &:hover {
-    background: #545454;
+    background: rgb(78, 70, 82);
   }
 `;
 

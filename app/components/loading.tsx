@@ -18,7 +18,7 @@ const LoadingScreen = styled.div<{ isLoading: boolean }>`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #383838;
+  background-color: #2D282F;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,7 +35,7 @@ const Spinner = styled.div`
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #545454;
+  border-top: 5px solid #5b515f;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 

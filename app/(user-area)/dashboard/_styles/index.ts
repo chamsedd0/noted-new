@@ -4,7 +4,7 @@ const CoursesLayout = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #383838;
+  background-color: #2D282F;
   transition: opacity 0.3s ease;
 `;
 

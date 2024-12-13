@@ -7,19 +7,18 @@ import { accountSetupStore } from "../_store";
 import { useRouter } from "next/navigation";
 import BackButtonComponent from "@/app/components/buttons/backButton";
 
+import { useState } from "react";
+import ChooseButtonComponent from "@/app/components/buttons/chooseButton";
+
 export default function ChoosePlanPage() {
   const { updateUser, saveSetup } = accountSetupStore();
+  const [isRecommended, setIsRecommended] = useState(false);
   const router = useRouter();
 
-  const handlePlanChoosing = async (planStr: string) => {
+  const handleSaving = async () => {
+ 
     try {
-      const plan = planStr as Plan;
 
-      // Update plan in store
-      updateUser({
-        plan,
-        accountSetupStage: AccountSetupStage.COMPLETED,
-      });
 
       // Save all accumulated data to database
       await saveSetup();
@@ -30,6 +29,21 @@ export default function ChoosePlanPage() {
       console.error("Error saving plan:", error);
       alert("Failed to save plan. Please try again.");
     }
+
+    }
+
+  const handlePlanChoosing = (planStr: string) => {
+
+      const plan = planStr as Plan;
+      setIsRecommended(!isRecommended);
+
+      // Update plan in store
+      updateUser({
+        plan,
+        accountSetupStage: AccountSetupStage.COMPLETED,
+      });
+
+    
   };
 
   return (
@@ -40,19 +54,20 @@ export default function ChoosePlanPage() {
         <span>Choose the plan that suits you the most</span>
         <PlanCards>
           <PlanCard
-            isRecommended={false}
+            isRecommended={isRecommended}
             title={Plan.BASIC}
-            price={70}
+            price={169}
             setChosenPlan={handlePlanChoosing}
           />
           <PlanCard
-            isRecommended={true}
+            isRecommended={!isRecommended}
             title={Plan.PREMIUM}
-            price={150}
+            price={239}
             setChosenPlan={handlePlanChoosing}
           />
         </PlanCards>
         <ButtonContainer>
+          <ChooseButtonComponent event={handleSaving}></ChooseButtonComponent>
           <BackButtonComponent 
             event={() => router.push("/add-time-slots")} 
           />
