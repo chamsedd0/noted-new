@@ -50,8 +50,11 @@ const SideBarComponent = ({ page }: { page: string }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isNavigating, setIsNavigating] = useState(false);
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [sectionsState, setSectionsState] = useState({
+    deadlines: true,
+    schedule: true
+  });
 
-  // Navigate with animation
   const navigateDay = (direction: "prev" | "next") => {
     setIsNavigating(true);
     setSelectedDate((prevDate) => {
@@ -62,59 +65,78 @@ const SideBarComponent = ({ page }: { page: string }) => {
     setTimeout(() => setIsNavigating(false), 150);
   };
 
-  // Filter events for the selected day
   useEffect(() => {
     const dayCode = getDayCode(selectedDate);
     const dayEvents = events.filter((event) => event.day === dayCode);
     setFilteredEvents(sortEvents(dayEvents));
   }, [selectedDate, events]);
 
+  const toggleSection = (section: 'deadlines' | 'schedule') => {
+    setSectionsState(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   return (
     <NotifSidebar $isProfile={page === "profile"}>
-      <NotificationSection>
-        <h3>
+      <NotificationSection $isOpen={sectionsState.deadlines}>
+        <h3 onClick={() => toggleSection('deadlines')}>
           Deadlines
           <img src="/upcoming.svg" alt="upcoming" />
+          <img 
+            src="/vector.svg" 
+            alt="toggle" 
+            className="toggle-icon"
+          />
         </h3>
-
-        <NotificationCardComponent
-          title="Deadline Upcoming!"
-          message="You need to submit your homework for cmpe 371"
-          timestamp="21/10/2024"
-        />
+        <div className="content">
+          <NotificationCardComponent
+            title="Deadline Upcoming!"
+            message="You need to submit your homework for cmpe 371"
+            timestamp="21/10/2024"
+          />
+        </div>
       </NotificationSection>
 
-      <AnimatedScheduleSection>
-        <h3>
+      <AnimatedScheduleSection $isOpen={sectionsState.schedule}>
+        <h3 onClick={() => toggleSection('schedule')}>
           Schedule
           <img src="/schedule.svg" alt="Schedule icon" />
+          <img 
+            src="/vector.svg" 
+            alt="toggle" 
+            className="toggle-icon"
+          />
         </h3>
-        <DateNavigation>
-          <NavigationButton onClick={() => navigateDay("prev")}>
-            <img src="/left-arrow.svg" alt="Previous day" />
-          </NavigationButton>
-          <span>{formatDayDisplay(selectedDate)}</span>
-          <NavigationButton onClick={() => navigateDay("next")}>
-            <img src="/right-arrow.svg" alt="Next day" />
-          </NavigationButton>
-        </DateNavigation>
+        <div className="content">
+          <DateNavigation>
+            <NavigationButton onClick={() => navigateDay("prev")}>
+              <img src="/left-arrow.svg" alt="Previous day" />
+            </NavigationButton>
+            <span>{formatDayDisplay(selectedDate)}</span>
+            <NavigationButton onClick={() => navigateDay("next")}>
+              <img src="/right-arrow.svg" alt="Next day" />
+            </NavigationButton>
+          </DateNavigation>
 
-        <EventsContainer isChanging={isNavigating}>
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event, index) => (
-              <ScheduleCardComponent
-                key={`${event.title}-${event.start}-${index}`}
-                title={event.title}
-                timestamp={`${event.start}${
-                  event.start <= 12 ? "AM" : "PM"
-                } - ${event.finish}${event.finish <= 12 ? "AM" : "PM"}`}
-                color={event.color}
-              />
-            ))
-          ) : (
-            <EmptyMessage>No events scheduled for this day</EmptyMessage>
-          )}
-        </EventsContainer>
+          <EventsContainer isChanging={isNavigating}>
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((event, index) => (
+                <ScheduleCardComponent
+                  key={`${event.title}-${event.start}-${index}`}
+                  title={event.title}
+                  timestamp={`${event.start}${
+                    event.start <= 12 ? "AM" : "PM"
+                  } - ${event.finish}${event.finish <= 12 ? "AM" : "PM"}`}
+                  color={event.color}
+                />
+              ))
+            ) : (
+              <EmptyMessage>No events scheduled for this day</EmptyMessage>
+            )}
+          </EventsContainer>
+        </div>
       </AnimatedScheduleSection>
     </NotifSidebar>
   );

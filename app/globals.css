@@ -45,13 +45,21 @@ a {
 }
 
 /* styles/globals.css */
-
-
-
-
 * {
-  scrollbar-width: 5px;
   scrollbar-width: thin;
-  scrollbar-color: #625966 #413B44;
-  transition: all 0.3s ease;
+  scrollbar-color: #625966 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #625966;
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #7a6f7f;
 }

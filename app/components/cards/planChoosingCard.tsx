@@ -16,7 +16,6 @@ const PlanCardContainer = styled.div<StyledProps>`
   background-position: ${props => props.isRecommended ? "100% 0%" : "0% 0%"};
   color: #fff;
   padding: 24px;
-  padding-top: 43px;
   border-radius: 12px;
   border: none;
   position: relative;
@@ -108,7 +107,7 @@ const PlanPrice = styled.p`
     font-size: 40px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
 
     img {
       margin-top: 10px;
