@@ -92,10 +92,13 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
     if (checkTimeConflicts()) {
       setError("Time slot conflicts with an existing event");
       return;
+
+
+      
     }
 
     try {
-      const updatedEvent: Event = {
+      const updatedEvent: Event = { 
         uid: event?.uid || "",
         title: title.trim(),
         day: selectedDay,
