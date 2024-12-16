@@ -7,7 +7,7 @@ const Box = styled.div`
   min-height: 100vh;
   height: 100%;
   padding: 50px;
-  gap: 10px;
+  gap: 40px;
 
   display: flex;
   flex-direction: column;

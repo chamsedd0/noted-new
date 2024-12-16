@@ -6,26 +6,27 @@ import LogoutModal from "@/app/components/popups/logOutPopUp";
 import InputComponent from "@/app/components/inputs/input";
 import SaveButtonComponent from "@/app/components/buttons/saveButton";
 import ChangePlanButtonComponent from "@/app/components/buttons/changePlanButton";
-import PlanDashboardCard from "@/app/components/cards/dashboardPlanCard";
-import ContactButtonComponent from "@/app/components/buttons/contactButton";
 import SelectDateComponent from "@/app/components/inputs/smallSelect";
 import SideBarComponent from "@/app/components/sidebar";
-import Link from "next/link";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/lib/firebase";
 import { Plan } from "@/types/User";
 import {
-  BoxReplacement,
   ContentWrapper,
-  ProfileSidebar,
+  ErrorMessage,
   RightBoxReplacement,
-  Section,
+  Section,    
+  Section2,
+  ContactSection,
   ProfilePicture,
   InputsContainer,
-  Button,
+  PersonalInformationForm,
+  SubscriptionSection,
+  CancelButton,
   CoursesLayout,
 } from "./_styles";
 import globalStore from "../_store";
+import ContactButtonComponent from "@/app/components/buttons/contactButton";
 
 interface ProfileState {
   firstName: string;
@@ -39,10 +40,7 @@ interface ProfileState {
   loading: boolean;
 }
 
-interface SectionRef {
-  ref: React.RefObject<HTMLElement>;
-  id: string;
-}
+
 
 export default function ProfilePage() {
   const { user, updateUserData } = globalStore();
@@ -61,7 +59,6 @@ export default function ProfilePage() {
   });
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("profile");
   const profileRef = useRef<HTMLElement>(null);
   const subscriptionRef = useRef<HTMLElement>(null);
   const supportRef = useRef<HTMLElement>(null);
@@ -81,43 +78,11 @@ export default function ProfilePage() {
         loading: false,
       }));
     };
-    // Set up intersection observer
-    const sections: SectionRef[] = [
-      { ref: profileRef, id: "profile" },
-      { ref: subscriptionRef, id: "subscription" },
-      { ref: supportRef, id: "support" },
-    ];
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.getAttribute("id");
-            if (id) {
-              setActiveSection(id);
-            }
-          }
-        });
-      },
-      { threshold: 1 }
-    );
-
-    sections.forEach((section) => {
-      if (section.ref.current) {
-        section.ref.current.id = section.id;
-        observer.observe(section.ref.current);
-      }
-    });
+    
 
     setData();
 
-    return () => {
-      sections.forEach((section) => {
-        if (section.ref.current) {
-          observer.unobserve(section.ref.current);
-        }
-      });
-    };
+    
   }, [user]);
 
   const handleLogout = async () => {
@@ -156,141 +121,122 @@ export default function ProfilePage() {
     }
   };
 
-  const scrollToSection = (ref: React.RefObject<HTMLElement>) => {
-    ref.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "center",
-    });
-  };
+
 
   return (
     <>
       <CoursesLayout>
         <Header hightlighted="profile" />
 
-        <ContentWrapper>
-          {/* Left Sidebar */}
-          <BoxReplacement></BoxReplacement>
-          <ProfileSidebar>
-            <h2>Navigation</h2>
-            <Button
-              active={activeSection === "profile"}
-              onClick={() => scrollToSection(profileRef)}
-            >
-              <img src="/profileIcon.svg"></img>
-              <span>Manage Profile</span>
-            </Button>
-            <Button
-              active={activeSection === "subscription"}
-              onClick={() => scrollToSection(subscriptionRef)}
-            >
-              <img src="/subs.svg"></img>
-              <span>Manage Subscription</span>
-            </Button>
-            <Button
-              active={activeSection === "support"}
-              onClick={() => scrollToSection(supportRef)}
-            >
-              <img src="/support.svg"></img>
-              <span>Contact Support</span>
-            </Button>
-            <Button id="logout" onClick={() => setModalOpen(true)}>
-              <img src="/logout.svg"></img>
-              <span>Log Out</span>
-            </Button>
-          </ProfileSidebar>
+        <h2 className="bigTitle">Your Profile</h2>
 
-          {/* Main Content */}
-          <div style={{ flex: 3 }}>
-            <Section ref={profileRef}>
-              <h2>Your Profile</h2>
-              <p>
-                Make sure your information is correct. You can change your email
-                or name whenever you want.
-              </p>
+        <ContentWrapper>
+          
+              
+
+              <Section>
+
               <ProfilePicture>
+                <span className="title">Profile Picture</span>
                 <img src="/defaultProfile.png"></img>
                 <span>
                   Choose profile picture<img src="/editCourses.svg"></img>
                 </span>
               </ProfilePicture>
-              <Link
-                className="outlook"
-                href="https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=fee14eef-b619-4b47-b916-6101e89a4d3a&response_type=code&response_mode=query&scope=openid email Mail.Read offline_access"
-              >
-                <img src="/outlook.svg"></img>Connect Your University Email
-              </Link>
-              <InputsContainer>
-                <InputComponent
-                  title="Your name"
-                  placeHolder={state.firstName || "your name"}
-                  type="text"
-                  error={false}
-                  value={state.firstName}
-                  setVariable={(value) =>
-                    setState((prev) => ({ ...prev, firstName: value }))
-                  }
-                ></InputComponent>
-                <InputComponent
-                  title="Your surname"
-                  placeHolder={state.lastName || "your surname"}
-                  type="text"
-                  error={false}
-                  value={state.lastName}
-                  setVariable={(value) =>
-                    setState((prev) => ({ ...prev, lastName: value }))
-                  }
-                ></InputComponent>
-                <SelectDateComponent
-                  title="Your Birth Date"
-                  day={state.day}
-                  setDay={(value) =>
-                    setState((prev) => ({ ...prev, day: value }))
-                  }
-                  month={state.month}
-                  setMonth={(value) =>
-                    setState((prev) => ({ ...prev, month: value }))
-                  }
-                  setYear={(value) =>
-                    setState((prev) => ({ ...prev, year: value }))
-                  }
-                  year={state.year}
-                ></SelectDateComponent>
-                <InputComponent
-                  title="Your Email"
-                  placeHolder={state.email || "your email"}
-                  type="email"
-                  error={false}
-                  value={state.email}
-                  setVariable={(value) =>
-                    setState((prev) => ({ ...prev, email: value }))
-                  }
-                ></InputComponent>
-              </InputsContainer>
-              <SaveButtonComponent event={handleSave} />
+
+              <PersonalInformationForm>
+                <span className="title">Personal Information</span>
+                <InputsContainer>
+                  
+                  <InputComponent
+                    title="Your name"
+                    placeHolder={state.firstName || "your name"}
+                    type="text"
+                    error={false}
+                    value={state.firstName}
+                    setVariable={(value) =>
+                      setState((prev) => ({ ...prev, firstName: value }))
+                    }
+                  ></InputComponent>
+                  <InputComponent
+                    title="Your surname"
+                    placeHolder={state.lastName || "your surname"}
+                    type="text"
+                    error={false}
+                    value={state.lastName}
+                    setVariable={(value) =>
+                      setState((prev) => ({ ...prev, lastName: value }))
+                    }
+                  ></InputComponent>
+                  <SelectDateComponent
+                    title="Your Birth Date"
+                    day={state.day}
+                    setDay={(value) =>
+                      setState((prev) => ({ ...prev, day: value }))
+                    }
+                    month={state.month}
+                    setMonth={(value) =>
+                      setState((prev) => ({ ...prev, month: value }))
+                    }
+                    setYear={(value) =>
+                      setState((prev) => ({ ...prev, year: value }))
+                    }
+                    year={state.year}
+                  ></SelectDateComponent>
+                  <InputComponent
+                    title="Your Email"
+                    placeHolder={state.email || "your email"}
+                    type="email"
+                    error={false}
+                    value={state.email}
+                    setVariable={(value) =>
+                      setState((prev) => ({ ...prev, email: value }))
+                    }
+                  ></InputComponent>
+                </InputsContainer>
+                <div className="bottomContainer">
+                  <ErrorMessage>
+                    <img src="/warning.svg"></img>
+                    <p>You have unsaved changes!</p>
+                  </ErrorMessage>
+                  <SaveButtonComponent event={handleSave} />
+                </div>
+              </PersonalInformationForm>
+
+              
+              
             </Section>
 
-            <Section ref={subscriptionRef}>
-              <h2>Your Subscription</h2>
-              <p>Manage your subscription, upgrade or cancel it here.</p>
-              <PlanDashboardCard plan={state.chosenPlan}></PlanDashboardCard>
-              <ChangePlanButtonComponent></ChangePlanButtonComponent>
-            </Section>
+            
 
-            <Section ref={supportRef}>
-              <h2>Contact Support</h2>
-              <p>
-                If you are facing any problems with the website or the
-                application, please, send us an email and we will handle your
-                problem as soon as possible.
-              </p>
-              <p>
-                <b>support@noted.ai</b>
-              </p>
-              <ContactButtonComponent></ContactButtonComponent>
-            </Section>
-          </div>
+            <Section2>
+
+               <SubscriptionSection plan={state.chosenPlan}>
+                  <span className="title">Your Subscription</span>
+                  <span className="plan">{state.chosenPlan}</span>
+
+                  <div className="details">
+                    <span>Until: 04/25</span>
+                    <span>Next payment: 10.05.2024</span>
+                  </div>
+                  
+                  <div className="bottomContainer">
+                    <CancelButton>Cancel Subscription</CancelButton>
+                    <ChangePlanButtonComponent></ChangePlanButtonComponent>
+                  </div>
+                </SubscriptionSection>
+
+                <ContactSection>
+                  <span className="title">Contact Support</span>
+                  <b className="subtitle">Our Support is here!</b>
+                  <span className="message">If you are facing any problems with the website or the application, please, send us an email and we will handle your problem as soon as possible.</span>
+                  <div className="info">
+                    <span>support@noted.ai</span>
+                    <ContactButtonComponent></ContactButtonComponent>
+                  </div>
+                </ContactSection>
+              
+            </Section2>
 
           <RightBoxReplacement></RightBoxReplacement>
 

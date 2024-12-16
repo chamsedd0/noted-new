@@ -7,11 +7,13 @@ const ContactButton = styled(Button)`
   background-color: white;
   max-width: 170px !important;
   min-width: 170px !important;
+  height: 48px !important;
   font-size: 15px !important;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #383838 !important;
 
   &:hover {
     background-color: #bcbcbc;
@@ -29,7 +31,7 @@ const ContactButtonComponent = () => {
 
   return (
     <ContactButton onClick={handleContact}>
-      Contact Support
+      Contact
     </ContactButton>
   );
 };

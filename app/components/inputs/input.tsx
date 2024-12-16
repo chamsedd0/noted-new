@@ -5,7 +5,7 @@ interface InputProps {
 }
 
 const Input = styled.input<InputProps>`
-  min-width: 300px;
+  min-width: 100%;
   height: 48px;
   font-size: 16px;
   padding-left: 20px;

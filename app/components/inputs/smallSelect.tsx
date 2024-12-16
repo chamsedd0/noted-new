@@ -31,7 +31,7 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownHeader = styled.div`
-  background-color: #545454;
+  background-color: #413B44;
   color: #fff;
   padding: 20px;
   height: 48px;
@@ -43,9 +43,7 @@ const DropdownHeader = styled.div`
   transition: all 0.3s ease;
   font-size: 16px;
   font-weight: 600;
-  &:hover {
-    background-color: #444;
-  }
+
 
   span {
     font-size: 14px;
@@ -58,7 +56,7 @@ const DropdownList = styled.ul<{ isOpen: boolean }>`
 
   /* when the dropdown list opens it can have conflicts */
 
-  background-color: #333;
+  background-color: #2D282F;
   color: #fff;
   list-style: none;
   padding: 5px;
@@ -91,7 +89,7 @@ const DropdownListItem = styled.li`
   flex-direction: column;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #545454;
+  background-color: #413B44;
   font-size: 12px;
   font-weight: 600;
 
@@ -150,7 +148,7 @@ const SelectDateComponent = ({
     "December",
   ];
 
-  const years = Array.from({ length: 2020 - 1960 + 1 }, (_, i) => 1960 + i);
+  const years = Array.from({ length: 2024 - 1960 + 1 }, (_, i) => 1960 + i);
 
   const toggleDropdown = (title: string) => {
     switch (title) {

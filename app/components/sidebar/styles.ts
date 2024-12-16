@@ -7,13 +7,13 @@ const NotifSidebar = styled.div<{ $isProfile?: boolean }>`
   overflow-x: hidden;
   scroll-behavior: smooth;
   width: 300px;
-  top: 110px;
+  top: 140px;
   right: 40px;
   display: flex;
   flex-direction: column;
   gap: 40px;
 
-  @media (max-width: 1430px) {
+  @media (max-width: 1700px) {
     display: ${({ $isProfile }) => ($isProfile ? "none" : "flex")};
   }
 
@@ -36,8 +36,9 @@ const NotifSidebar = styled.div<{ $isProfile?: boolean }>`
 `;
 
 // Notification section
-const NotificationSection = styled.div`
+const NotificationSection = styled.div<{ $isOpen: boolean }>`
   width: 100%;
+
 
   h3 {
     color: #fff;
@@ -45,24 +46,43 @@ const NotificationSection = styled.div`
     margin-bottom: 24px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     gap: 20px;
+    cursor: pointer;
+    width: 100%;
+    
 
     img {
       width: 24px;
       height: 24px;
     }
+
+    .toggle-icon {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.3s ease;
+      transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+      
+    }
   }
 
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  gap: 10px;
+  .content {
+    width: 100%;
+    height: ${props => props.$isOpen ? 'auto' : '0'};
+    opacity: ${props => props.$isOpen ? '1' : '0'};
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 10px;
+  }
 `;
 
 // Schedule section
 const ScheduleSection = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -75,8 +95,9 @@ const ScheduleSection = styled.div`
     margin-bottom: 10px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     gap: 20px;
+    width: 100%;
 
     img {
       width: 24px;
@@ -124,8 +145,26 @@ const NavigationButton = styled.button`
   }
 `;
 // Add new styled components for animations
-const AnimatedScheduleSection = styled(ScheduleSection)`
-  transition: opacity 0.3s ease;
+const AnimatedScheduleSection = styled(ScheduleSection)<{ $isOpen: boolean }>`
+  h3 {
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    .toggle-icon {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.3s ease;
+      transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    }
+  }
+
+  .content {
+    width: 100%;
+    height: ${props => props.$isOpen ? 'auto' : '0'};
+    opacity: ${props => props.$isOpen ? '1' : '0'};
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
 `;
 
 const EventsContainer = styled.div<{ isChanging: boolean }>`

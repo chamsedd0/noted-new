@@ -6,151 +6,84 @@ const CoursesLayout = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  height: 100%;
   background-color: #2D282F;
+
+  .bigTitle {
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 110px;
+    padding: 0px 40px;
+  }
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 40px;
+  
+  gap: 20px;
   padding: 40px;
+  margin-right: 10px;
   flex: 1;
-  margin-top: 70px;
 
-  @media (max-width: 900px) {
-    gap: 20px;
+
+
+  @media (max-width: 1500px) {
+    margin-right: 0px;
+    flex-direction: column;
+
   }
 `;
 
-const BoxReplacement = styled.div`
+
+
+const PersonalInformationForm = styled.div`
   flex: 1;
-  min-width: 445px;
-
-  @media (max-width: 1470px) {
-    min-width: 360px;
-  }
-
-  @media (max-width: 1200px) {
-    min-width: 300px;
-  }
-
-  @media (max-width: 1020px) {
-    min-width: 170px;
-  }
-
-  @media (max-width: 900px) {
-    min-width: 80px;
-  }
-
-  @media (max-width: 700px) {
-    display: none;
-  }
-`;
-
-const ProfileSidebar = styled.div`
-  position: fixed;
-  width: 445px;
-  max-height: 400px;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-
-  background-color: #413B44;
-  color: white;
-  padding: 20px;
-
-  @media (max-width: 1470px) {
-    width: 360px;
-  }
-
-  @media (max-width: 1200px) {
-    width: 300px;
-  }
-
-  @media (max-width: 1020px) {
-    width: 170px;
-  }
-
-  @media (max-width: 900px) {
-    width: 80px;
-    gap: 10px;
-    left: 20px;
-  }
-
-  @media (max-width: 700px) {
-    right: 20px;
-    left: auto;
-  }
-
-  h2 {
-    align-self: start;
-    margin-bottom: 20px;
-
-    @media (max-width: 1100px) {
-      display: none;
-    }
-  }
-
-  #logout {
-    color: #fe8686;
-  }
-`;
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  active?: boolean;
-}
-
-const Button = styled.button<ButtonProps>`
-  background: ${({ active }) => (active ? "rgb(78, 70, 82)" : "transparent")};
-  width: 100%;
-  height: 60px;
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-radius: 16px;
-  justify-content: start;
-  color: #fff;
-  border: none;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: left;
-  overflow: hidden;
-
-  @media (max-width: 1020px) {
-    padding: 0px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @media (max-width: 900px) {
-    width: 60px;
-  }
-
-  span {
-    @media (max-width: 1020px) {
-      display: none;
-    }
-  }
-
-  &:hover {
-    background: rgb(78, 70, 82);
-  }
-`;
-
-const Section = styled.section`
-  margin-bottom: 40px;
+  
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: center;
   gap: 20px;
+  background-color: #36303A;
+  border-radius: 16px;
+  padding: 20px;
+  
+  height: 100%;
+
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    align-self: start;
+    margin: 0px;
+  }
+  
+
+  .bottomContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+  }
+`;
+
+const Section = styled.section`
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  gap: 20px;
+  width: 100%;
+  height: 390px;
 
   @media (max-width: 700px) {
     max-width: 80%;
+  }
+
+  @media (max-width: 1700px) {
+    width: 100%;
   }
 
   h2 {
@@ -207,15 +140,173 @@ const Section = styled.section`
   }
 `;
 
-const ProfilePicture = styled.div`
+const Section2 = styled.section`
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: 1500px) {
+    flex-direction: row;
+  }
+
+  h2 {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 16px;
+
+    @media (max-width: 700px) {
+      font-size: 28px;
+    }
+  }
+
+  p {
+    font-size: 16px;
+    color: white;
+    max-width: 588px;
+
+    @media (max-width: 700px) {
+      font-size: 14px;
+      max-width: 350px;
+    }
+
+    b {
+      font-size: 24px;
+    }
+  }
+
+  button {
+    margin-top: 20px;
+  }
+
+  .outlook {
+    margin-top: 10px;
+    color: white;
+    height: 48px;
+    padding: 0rem 2rem;
+    background-color: #127cd6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100px;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+
+    img {
+      width: 24px;
+    }
+
+    &:hover {
+      background-color: #126ebc;
+    }
+  }
+`;
+
+const ContactSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+
+  background: url('/contactBg.svg');
+
+  background-size: cover;
+  background-position: center;
+  min-height: 390px;
+  max-width: 450px;
+
+  border-radius: 16px;
+  padding: 20px;
+
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    align-self: start;
+    margin: 0px;
+  }
+
+  .subtitle {
+    font-size: 34px;
+    font-weight: 700;
+    color: white;
+    align-self: start;
+    max-width: 60%;
+    margin: 0px;
+  }
+
+  .message {
+    font-size: 14px;
+    font-weight: 400;
+    color: white;
+    align-self: start;
+    margin: 0px;
+  }
+
+  .info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+
+    span {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+    }
+  }
+
+  @media (max-width: 1500px) {
+    flex: 1;
+    max-width: unset;
+
+  }
+`;
+
+const ErrorMessage = styled.div`
   display: flex;
   align-items: center;
   justify-content: start;
-  gap: 30px;
+  gap: 20px;
+  color: #FF0000;
+  margin-top: 20px;
+  
+  p {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  max-width: 70%;
+`;
+
+const ProfilePicture = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  background-color: #36303A;
+  border-radius: 16px;
+  padding: 20px;
+  height: 100%;
+
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    align-self: start;
+    margin-bottom: 30px;
+  }
 
   img {
     border-radius: 100%;
-    width: 150px;
+    width: 180px;
+    margin-bottom: 32px;
 
     @media (max-width: 700px) {
       width: 75px;
@@ -223,14 +314,18 @@ const ProfilePicture = styled.div`
   }
 
   span {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
     display: flex;
     align-items: center;
     justify-content: start;
     gap: 20px;
     color: white;
     cursor: pointer;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
 
     @media (max-width: 700px) {
       font-size: 14px;
@@ -239,17 +334,32 @@ const ProfilePicture = styled.div`
     img {
       width: 24px;
       border-radius: 0px;
+      margin-bottom: 0px;
     }
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    align-self: start;
+    margin: 0px;
+    margin-bottom: 30px;
   }
 `;
 
 const InputsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two equal columns */
-  gap: 20px; /* Space between form items */
-  max-width: 600px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   width: 100%;
   margin-top: 16px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+
+  
 
   @media (max-width: 700px) {
     display: flex;
@@ -260,20 +370,97 @@ const InputsContainer = styled.div`
 `;
 
 const RightBoxReplacement = styled.div`
-  @media (max-width: 1400px) {
+
+  flex: 1;
+  min-width: 300px;
+  max-width: 300px;
+
+
+  @media (max-width: 1700px) {
     display: none;
   }
 `;
 
+const CancelButton = styled.button`
+  background: transparent;
+  border: none;
+  text-decoration: underline;
+  color: white;
+  font-size: 14px;
+
+  cursor: pointer;
+  &:hover {
+    color: #FF0000;
+  }
+`;
+
+const SubscriptionSection = styled.div<{plan: string | null}>`
+  background: ${props => props.plan === "Basic Plan" ? "url('/basicBg.svg')" : `url('/premiumBg.svg')`};
+  background-size: cover;
+  background-position: center;
+  min-height: 390px;
+  min-width: 450px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 20px;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+
+  .details {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    width: 100%;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    align-self: start;
+    margin: 0px;
+  }
+
+  .plan {
+    font-size: 32px;
+    padding-top: 60px;
+    font-weight: 700;
+    color: white;
+    align-self: start;
+    margin: 0px;
+  }
+
+  .bottomContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 80px;
+    width: 100%;
+  }
+
+  @media (max-width: 1500px) {
+    flex: 1;
+    max-width: unset;
+  }
+`;
 
 export {
+    CancelButton,
     CoursesLayout,
     ContentWrapper,
-    BoxReplacement,
-    ProfileSidebar,
-    Button,
+    ErrorMessage,
+    ContactSection,
     Section,
+    Section2,
     ProfilePicture,
+    PersonalInformationForm,
     InputsContainer,
-    RightBoxReplacement
+    RightBoxReplacement,
+    SubscriptionSection
 }

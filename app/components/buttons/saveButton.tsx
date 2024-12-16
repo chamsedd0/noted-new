@@ -14,6 +14,10 @@ const SaveButton = styled(Button)`
   &:hover {
     background-color: #bcbcbc; /* Slight background color change on hover */
   }
+
+  @media (max-width: 1200px) {
+    transform: scale(0.8) translateX(10%);
+  }
 `;
 
 type SaveButtonProps = {

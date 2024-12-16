@@ -93,10 +93,6 @@ const Header = ({ hightlighted }: HeaderProps) => {
             Profile
           </Link>
 
-          <Link href="/settings">
-            <Image src="/settings.svg" width={24} height={24} alt="settings" />
-            Preferences
-          </Link>
 
           <button
             onClick={() => {
