@@ -174,7 +174,6 @@ const CourseCardComponent: React.FC<CourseCardProps> = ({
       const spaceRight = window.innerWidth - rect.right;
       const spaceLeft = rect.left;
       const spaceTop = rect.top;
-      const spaceBottom = window.innerHeight - rect.bottom;
 
       // Add 310px for tooltip width + margin
       if (spaceRight >= 310) {

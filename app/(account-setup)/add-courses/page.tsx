@@ -34,7 +34,7 @@ export default function AddCoursePage() {
     newCourseName: "",
   };
 
-  const handleAddCourse = (values: FormValues, setFieldValue: (field: string, value: any) => void) => {
+  const handleAddCourse = (values: FormValues, setFieldValue: (field: string, value: unknown) => void) => {
     if (!values.newCourseName.trim()) {
       alert("Course name cannot be empty");
       return;
