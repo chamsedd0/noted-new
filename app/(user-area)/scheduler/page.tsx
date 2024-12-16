@@ -77,8 +77,8 @@ export default function SchedulerPage() {
           <TitleWrapper>
             <h1>Scheduler</h1>
             <Controls
-              $isSelected={!selectedEvent}
-              $activitySelected={selectedEvent !== null}
+              isSelected={!selectedEvent}
+              activitySelected={selectedEvent !== null}
             >
               <img
                 src="/trash.svg"
