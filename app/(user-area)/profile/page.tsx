@@ -1,7 +1,7 @@
 "use client";
 import Header from "@/app/components/header";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import LogoutModal from "@/app/components/popups/logOutPopUp";
 import InputComponent from "@/app/components/inputs/input";
 import SaveButtonComponent from "@/app/components/buttons/saveButton";
