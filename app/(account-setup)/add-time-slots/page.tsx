@@ -9,7 +9,7 @@ import {
   TimeWrapper,
   ButtonContainer,
 } from "./styles";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { TimeSlot } from "@/types/Time";
 import SelectComponent from "@/app/components/inputs/select";
 import NextButtonComponent from "@/app/components/buttons/nextButton";
@@ -36,6 +36,19 @@ export default function AddTimeSlots() {
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [currentTimeSlots, setCurrentTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedDays, setSelectedDays] = useState<Weekday[]>([]);
+
+  useEffect(() => {
+    if (selectedCourseId && user?.courses) {
+      const course = user.courses.find(c => c.uid === selectedCourseId);
+      if (course?.timeSlots) {
+        // Set the existing time slots
+        setCurrentTimeSlots(course.timeSlots);
+        // Set the active days from existing time slots
+        const existingDays = [...new Set(course.timeSlots.map(slot => slot.day))] as Weekday[];
+        setSelectedDays(existingDays);
+      }
+    }
+  }, [selectedCourseId, user?.courses]);
 
   const handleDayToggle = useCallback((day: Weekday) => {
     setSelectedDays(prev =>
@@ -123,6 +136,7 @@ export default function AddTimeSlots() {
                   timestamps={course.timeSlots ?? []}
                   onSelect={() => setSelectedCourseId(course.uid)}
                   completed={Boolean(course.timeSlots?.length)}
+                  allCourses={user.courses}
                 />
               ))}
             </Grid>

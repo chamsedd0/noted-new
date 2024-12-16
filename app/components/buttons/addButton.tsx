@@ -3,11 +3,24 @@ import Button from "./button";
 
 const AddButton = styled(Button)`
   background-color: white;
-  max-width: 90px !important;
-  min-width: 90px !important;
+  max-width: unset !important;
+  min-width: unset !important;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: #bcbcbc; /* Slight background color change on hover */
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+    margin: auto;
   }
 `;
 
@@ -22,7 +35,7 @@ const AddButtonComponent = ({ f }: ButtonComponentProps) => {
         f();
       }}
     >
-      Add
+      <img src="/addEventBlack.svg" alt="Add"></img>
     </AddButton>
   );
 };

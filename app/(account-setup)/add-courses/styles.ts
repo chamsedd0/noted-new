@@ -78,6 +78,8 @@ const InputsContainer = styled.div`
 `;
 
 const CourseList = styled.div`
+  max-height: 150px;
+  overflow-y: auto;
   width: 100%;
   display: flex;
   align-items: start;
@@ -86,8 +88,29 @@ const CourseList = styled.div`
   gap: 24px;
   margin-bottom: 48px;
   padding: 10px;
+  padding-right: 18px; /* Extra padding for scrollbar */
 
-  /* there is a problem with too many courses */
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+
+  /* Custom scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #413B44;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 const CourseItem = styled.div`

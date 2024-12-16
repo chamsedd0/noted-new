@@ -100,14 +100,26 @@ export default function PopUpTimeSelect({
           <ResetButton onClick={resetSelection}>
             <img src="/reset.svg" alt="reset" />
           </ResetButton>
-          {timeOptions.map((time, index) => (
-            <DropdownListItem
-              key={index}
-              onClick={() => handleTimeSelect(time)}
-            >
-              {time}
-            </DropdownListItem>
-          ))}
+          {timeOptions.map((time, index) => {
+            const timeHour = parseInt(time.split(":")[0]);
+            const startHour = selectedStartTime !== "Start Time" ? parseInt(selectedStartTime.split(":")[0]) : null;
+            const finishHour = selectedFinishTime !== "Finish Time" ? parseInt(selectedFinishTime.split(":")[0]) : null;
+            
+            const isSelected = time === selectedStartTime || time === selectedFinishTime;
+            const isInRange = startHour !== null && finishHour !== null && 
+              timeHour > startHour && timeHour < finishHour;
+
+            return (
+              <DropdownListItem
+                key={index}
+                isSelected={isSelected}
+                isInRange={isInRange}
+                onClick={() => handleTimeSelect(time)}
+              >
+                {time}
+              </DropdownListItem>
+            );
+          })}
         </DropdownList>
       </DropdownContainer>
     </Wrapper>

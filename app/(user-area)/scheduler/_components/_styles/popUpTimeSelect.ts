@@ -95,7 +95,7 @@ const DropdownList = styled.ul<{ isOpen: boolean }>`
   
 `;
 
-const DropdownListItem = styled.li`
+const DropdownListItem = styled.li<{ isSelected?: boolean; isInRange?: boolean }>`
     width: 64px;
     height: 48px;
     border-radius: 6px;
@@ -104,13 +104,21 @@ const DropdownListItem = styled.li`
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    background-color: #545454;
+    background-color: ${props => 
+        props.isSelected ? 'white' : 
+        props.isInRange ? 'white' : 
+        '#545454'
+    };
+    color: ${props => (props.isSelected || props.isInRange) ? '#383838' : 'white'};
     font-size: 16px;
     font-weight: 600;
 
-
     &:hover {
-        background-color: #444;
+        background-color: ${props => 
+            props.isSelected ? 'white' : 
+            props.isInRange ? 'white' : 
+            '#444'
+        };
     }
 `;
 

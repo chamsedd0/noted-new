@@ -34,6 +34,30 @@ export default function AddCoursePage() {
     newCourseName: "",
   };
 
+  const handleAddCourse = (values: FormValues, setFieldValue: (field: string, value: any) => void) => {
+    if (!values.newCourseName.trim()) {
+      alert("Course name cannot be empty");
+      return;
+    }
+
+    if (user?.courses?.some((course) => course.title === values.newCourseName.trimEnd())) {
+      alert("This course has already been added");
+      return;
+    }
+
+    const newCourse = {
+      uid: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      title: values.newCourseName.trimEnd(),
+      color: "gray",
+      lastModified: new Date().toISOString(),
+    };
+
+    updateUser({
+      courses: [...(user?.courses || []), newCourse],
+    });
+    setFieldValue("newCourseName", "");
+  };
+
   return (
     <Box>
       <Logo src="/logo.svg" alt="Logo" />
@@ -70,7 +94,12 @@ export default function AddCoursePage() {
         }}
       >
         {({ values, setFieldValue, handleSubmit }) => (
-          <Form>
+          <Form onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleAddCourse(values, setFieldValue);
+            }
+          }}>
             <div className="introduction">
               <h2>Add your courses</h2>
               <p>
@@ -88,36 +117,7 @@ export default function AddCoursePage() {
                 type="text"
               />
               <AddButtonComponent
-                f={() => {
-                  if (!values.newCourseName.trim()) {
-                    alert("Course name cannot be empty");
-                    return;
-                  }
-
-                  if (
-                    user?.courses?.some(
-                      (course) =>
-                        course.title === values.newCourseName.trimEnd()
-                    )
-                  ) {
-                    alert("This course has already been added");
-                    return;
-                  }
-
-                  const newCourse = {
-                    uid: `${Date.now()}_${Math.random()
-                      .toString(36)
-                      .substr(2, 9)}`,
-                    title: values.newCourseName.trimEnd(),
-                    color: "gray",
-                    lastModified: new Date().toISOString(),
-                  };
-
-                  updateUser({
-                    courses: [...(user?.courses || []), newCourse],
-                  });
-                  setFieldValue("newCourseName", "");
-                }}
+                f={() => handleAddCourse(values, setFieldValue)}
               />
             </InputsContainer>
 
@@ -134,7 +134,7 @@ export default function AddCoursePage() {
                       });
                     }}
                   >
-                    Remove
+                    <img src="/trash2.svg" alt="Remove"></img>
                   </RemoveButtonComponent>
                 </CourseItem>
               ))}
