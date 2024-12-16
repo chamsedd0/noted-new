@@ -59,9 +59,7 @@ export default function ProfilePage() {
   });
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const profileRef = useRef<HTMLElement>(null);
-  const subscriptionRef = useRef<HTMLElement>(null);
-  const supportRef = useRef<HTMLElement>(null);
+
 
   useEffect(() => {
     const setData = async () => {
