@@ -102,7 +102,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
         color: selectedColor,
         start: startTime,
         finish: endTime,
-        type: "custom",
+        type: "activity",
       };
 
       await onUpdate(updatedEvent);
