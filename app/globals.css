@@ -48,8 +48,10 @@ a {
 
 
 
+
 * {
   scrollbar-width: 5px;
+  scrollbar-width: thin;
   scrollbar-color: #625966 #413B44;
   transition: all 0.3s ease;
 }

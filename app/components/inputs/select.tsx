@@ -73,7 +73,7 @@ const DropdownList = styled.ul<{ isOpen: boolean }>`
   padding-bottom: 45px;
 `;
 
-const DropdownListItem = styled.li`
+const DropdownListItem = styled.li<{ isSelected?: boolean; isInRange?: boolean }>`
   width: 64px;
   height: 48px;
   border-radius: 6px;
@@ -82,12 +82,22 @@ const DropdownListItem = styled.li`
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #4e4752;
+  background-color: ${props => 
+      props.isSelected ? 'white !important' : 
+      props.isInRange ? 'white !important' : 
+      '#4e4752 !important'
+  };
+  color: ${props => (props.isSelected || props.isInRange) ? '#383838 !important' : 'white !important'};
   font-size: 16px;
   font-weight: 600;
+  transform: ${props => (props.isSelected || props.isInRange) ? 'scale(1.02)' : 'scale(1)'};
 
   &:hover {
-    background-color: #453f49;
+    background-color: ${props => 
+        props.isSelected ? 'white !important' : 
+        props.isInRange ? 'white !important' : 
+        '#453f49 !important'
+    };
   }
 `;
 
@@ -190,6 +200,10 @@ const SelectComponent = ({
   const handleReset = () => {
     setSelectedStartTime(null);
     setSelectedFinishTime(null);
+    
+    // Remove this day's time slot from parent component
+    const filteredTimeSlots = timeStamps.filter((slot) => slot.day !== title);
+    setTimeStamps(filteredTimeSlots);
   };
 
   useEffect(() => {
@@ -206,6 +220,18 @@ const SelectComponent = ({
       ]);
     }
   }, [selectedFinishTime]);
+
+  // Initialize from existing time slots - only once on mount
+  useEffect(() => {
+    const existingSlot = timeStamps.find(slot => slot.day === title);
+    if (existingSlot) {
+      const startTime = timeSlots.find(t => t.value === existingSlot.start);
+      const finishTime = timeSlots.find(t => t.value === existingSlot.finish);
+      
+      if (startTime) setSelectedStartTime(startTime);
+      if (finishTime) setSelectedFinishTime(finishTime);
+    }
+  }, []); // Remove title and timeStamps from dependencies
 
   return (
     <Wrapper isOpen={isOpen}>
@@ -224,14 +250,29 @@ const SelectComponent = ({
           <ResetButton onClick={handleReset}>
             <img src="/reset.svg" alt="reset" />
           </ResetButton>
-          {timeSlots.map((time, index) => (
-            <DropdownListItem
-              key={index}
-              onClick={(e) => handleTimeSelect(e, time)}
-            >
-              {time.display}
-            </DropdownListItem>
-          ))}
+          {timeSlots.map((time, index) => {
+            const isSelected = Boolean(
+              selectedStartTime?.value === time.value || 
+              selectedFinishTime?.value === time.value
+            );
+            const isInRange = Boolean(
+              selectedStartTime && 
+              selectedFinishTime && 
+              time.value >= selectedStartTime.value && 
+              time.value <= selectedFinishTime.value
+            );
+
+            return (
+              <DropdownListItem
+                key={index}
+                isSelected={isSelected}
+                isInRange={isInRange}
+                onClick={(e) => handleTimeSelect(e, time)}
+              >
+                {time.display}
+              </DropdownListItem>
+            );
+          })}
         </DropdownList>
       </DropdownContainer>
     </Wrapper>

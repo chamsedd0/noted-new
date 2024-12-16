@@ -34,24 +34,6 @@ export interface SelectComponentProps {
   allCourses?: Course[];
 }
 
-export const checkTimeConflict = (
-  newStart: number,
-  newFinish: number,
-  day: string,
-  existingTimeSlots: TimeSlot[],
-  currentDay?: string
-) => {
-  return existingTimeSlots.some((slot) => {
-    if (slot.day !== day || (currentDay && slot.day === currentDay))
-      return false;
-    return (
-      (newStart >= slot.start && newStart < slot.finish) ||
-      (newFinish > slot.start && newFinish <= slot.finish) ||
-      (newStart <= slot.start && newFinish >= slot.finish)
-    );
-  });
-};
-
 const TimeSelectPopUp = ({
   title,
   timeSlots,
@@ -63,7 +45,6 @@ const TimeSelectPopUp = ({
   const [selectedStartTime, setSelectedStartTime] = useState("Start Time");
   const [selectedFinishTime, setSelectedFinishTime] = useState("Finish Time");
 
-  // Load existing time slot for this day
   useEffect(() => {
     const existingSlot = timeSlots.find((slot) => slot.day === title);
     if (existingSlot) {
@@ -72,14 +53,15 @@ const TimeSelectPopUp = ({
     }
   }, [title, timeSlots]);
 
-  const handleTimeSelect = (e: React.MouseEvent, time: string) => {
-    if (selectedStartTime === "Start Time" || time < selectedStartTime) {
+  const handleTimeSelect = (time: string) => {
+    const hour = parseInt(time.split(":")[0]);
+    
+    if (selectedStartTime === "Start Time" || hour < parseInt(selectedStartTime)) {
       setSelectedStartTime(time);
     } else {
       const start = parseInt(selectedStartTime.split(":")[0]);
-      const finish = parseInt(time.split(":")[0]);
+      const finish = hour;
 
-      // Check conflicts with other courses only
       const hasConflict = allCourses
         .filter((course) => course.title !== currentCourseTitle)
         .some((course) =>
@@ -117,12 +99,10 @@ const TimeSelectPopUp = ({
       <DropdownContainer>
         <DropdownHeader onClick={() => setIsOpen(!isOpen)}>
           <span>
-            {selectedStartTime.toString() +
-              " - " +
-              selectedFinishTime.toString()}{" "}
+            {selectedStartTime} - {selectedFinishTime}
           </span>
           <Chevron isOpen={isOpen}>
-            <img src="/vector.svg"></img>
+            <img src="/vector.svg" alt="toggle" />
           </Chevron>
         </DropdownHeader>
         <DropdownList isOpen={isOpen}>
@@ -132,16 +112,28 @@ const TimeSelectPopUp = ({
               setSelectedFinishTime("Finish Time");
             }}
           >
-            <img src="/reset.svg"></img>
+            <img src="/reset.svg" alt="reset" />
           </ResetButton>
-          {generateTimeSlots().map((time, index) => (
-            <DropdownListItem
-              key={index}
-              onClick={(e) => handleTimeSelect(e, time)}
-            >
-              {time}
-            </DropdownListItem>
-          ))}
+          {generateTimeSlots().map((time, index) => {
+            const timeHour = parseInt(time.split(":")[0]);
+            const startHour = selectedStartTime !== "Start Time" ? parseInt(selectedStartTime.split(":")[0]) : null;
+            const finishHour = selectedFinishTime !== "Finish Time" ? parseInt(selectedFinishTime.split(":")[0]) : null;
+            
+            const isSelected = time === selectedStartTime || time === selectedFinishTime;
+            const isInRange = startHour !== null && finishHour !== null && 
+              timeHour >= startHour && timeHour <= finishHour;
+
+            return (
+              <DropdownListItem
+                key={index}
+                isSelected={isSelected}
+                isInRange={isInRange}
+                onClick={() => handleTimeSelect(time)}
+              >
+                {time}
+              </DropdownListItem>
+            );
+          })}
         </DropdownList>
       </DropdownContainer>
     </Wrapper>
