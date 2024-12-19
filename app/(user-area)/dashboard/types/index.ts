@@ -15,6 +15,7 @@ export interface CourseCardProps {
   setEdit: (value: boolean) => void;
   setSelectedCourse: (value: string | null) => void;
   onDelete: () => void;
+  uid: string;
   isDropdownOpen: boolean;
   setDropdownOpen: (isOpen: boolean) => void;
 }

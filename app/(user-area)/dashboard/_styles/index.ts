@@ -44,6 +44,44 @@ const TitleWrapper = styled.div`
   margin-bottom: 40px;
 `;
 
+const AddCourseCard = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #36303A;
+  padding: 24px;
+
+  border-radius: 15px;
+  max-width: 100%;
+  max-height: 250px;
+  color: white;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  img {
+    width: 64px;
+    height: 64px;
+
+    user-drag: none; /* Prevent image dragging */
+    -webkit-user-drag: none; /* For WebKit browsers */
+    user-select: none; /* Prevent selection */
+
+  }
+
+  
+
+  &:active {
+    background-color: #241E27;
+  }
+
+  
+  @media (max-width: 1470px) {
+    min-width: 440px;
+  }
+
+`
+
 const CoursesGrid = styled.div`
   width: 98%;
   display: grid;
@@ -86,6 +124,7 @@ export {
   ContentWrapper,
   CoursesSection,
   TitleWrapper,
+  AddCourseCard,
   CoursesGrid,
   RightBoxReplacement,
 };

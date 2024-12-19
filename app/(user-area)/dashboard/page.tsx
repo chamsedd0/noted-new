@@ -6,11 +6,13 @@ import { useState } from "react";
 import AddCourseModal from "./_components/addCourseModal";
 import EditCourseModal from "./_components/editCourseModal";
 import { Course } from "@/types/Course";
+import { useRouter } from "next/navigation";
 import {
   ContentWrapper,
   CoursesGrid,
   CoursesLayout,
   CoursesSection,
+  AddCourseCard,
   RightBoxReplacement,
   TitleWrapper,
 } from "./_styles";
@@ -28,6 +30,7 @@ interface DashboardState {
 
 export default function CoursesPage({}) {
   const { courses, addCourse, updateCourse, deleteCourse } = globalStore();
+  const router = useRouter();
   const [state, setState] = useState<DashboardState>({
     popupOpened: false,
     editPopupOpened: false,
@@ -36,8 +39,8 @@ export default function CoursesPage({}) {
     courseToDelete: null,
     openDropdowns: {},
   });
-  const handleCourseClick = (title: string) => {
-    console.log(title);
+  const handleCourseClick = (uid: string) => {
+    router.push(`/dashboard/notes/${uid}`);
   };
 
   const handleAddCourse = async (newCourse: Course) => {
@@ -130,6 +133,7 @@ export default function CoursesPage({}) {
                   <CourseDashboardCardComponent
                     key={course.uid}
                     clickFunction={handleCourseClick}
+                    uid={course.uid}
                     title={course.title}
                     regularNotes={3}
                     smartNotes={4}
@@ -164,6 +168,9 @@ export default function CoursesPage({}) {
                     }}
                   />
                 ))}
+                <AddCourseCard onClick={() => setState((prev) => ({ ...prev, popupOpened: true }))}>
+                  <img src="/addButtonGray.svg" alt="" />
+                </AddCourseCard>
             </CoursesGrid>
           </CoursesSection>
 
