@@ -14,7 +14,6 @@ const CourseDashboardCard = styled.div`
   max-height: 250px;
   color: white;
   position: relative;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
 

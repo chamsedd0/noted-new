@@ -19,6 +19,7 @@ const CourseDashboardCardComponent = ({
   clickFunction,
   setEdit,
   setSelectedCourse,
+  uid,
   onDelete,
   isDropdownOpen,
   setDropdownOpen,
@@ -29,7 +30,7 @@ const CourseDashboardCardComponent = ({
   };
 
   return (
-    <CourseDashboardCard onClick={() => clickFunction(title)}>
+    <CourseDashboardCard onClick={() => clickFunction(uid)}>
       <CardHeader>
         <div>
           <Title>{title}</Title>
