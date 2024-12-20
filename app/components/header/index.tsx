@@ -7,18 +7,23 @@ import LogoutModal from "@/app/components/popups/logOutPopUp";
 import { useRouter } from "next/navigation";
 import { signOutUser } from "@/app/lib/firebase";
 import Image from "next/image";
+import NotificationCardComponent from "../cards/notificationCard";
 import {
   HeaderContainer,
   Logo,
   NavItems,
   UserProfile,
+  DropdownNotifications,
+  SeparationLine,
   DropdownMenu,
 } from "./styles";
 import globalStore from "@/app/(user-area)/_store";
 
 interface HeaderProps {
-  hightlighted: "profile" | "coursenotes" | "scheduler";
+  hightlighted: "profile" | "dashboard" | "scheduler" | "notifications";
 }
+
+
 
 interface UserProfile {
   name: string;
@@ -30,6 +35,25 @@ const Header = ({ hightlighted }: HeaderProps) => {
   const router = useRouter();
   const { user } = globalStore();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isNotificationsDropdownOpen, setIsNotificationsDropdownOpen] = useState(false);
+
+  const notifications = [
+    {
+      title: "Notification 1",
+      message: "This is a notification",
+      timestamp: "2024-01-01",
+    },
+    {
+      title: "Notification 2",
+      message: "This is a notification",
+      timestamp: "2024-01-01",
+    },
+    {
+      title: "Notification 3",
+      message: "This is a notification",
+      timestamp: "2024-01-01",
+    },
+  ];  
 
   const handleLogout = async () => {
     setModalOpen(false);
@@ -45,6 +69,12 @@ const Header = ({ hightlighted }: HeaderProps) => {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+    setIsNotificationsDropdownOpen(false);
+  };
+
+  const toggleNotificationsDropdown = () => {
+    setIsNotificationsDropdownOpen(!isNotificationsDropdownOpen);
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -54,8 +84,10 @@ const Header = ({ hightlighted }: HeaderProps) => {
       </Logo>
       <SearchBarComponent />
       <NavItems
-        $hightlightCourse={hightlighted === "coursenotes"}
+        $hightlightCourse={hightlighted === "dashboard"}
         $hightlightSchedule={hightlighted === "scheduler"}
+        $hightlightNotifications={hightlighted === "notifications"}
+        
       >
         <span className="courses">
           <Link href="/dashboard" prefetch={true}>
@@ -67,7 +99,7 @@ const Header = ({ hightlighted }: HeaderProps) => {
             Scheduler
           </Link>
         </span>
-        <span className="notification">
+        <span className="notification" onClick={toggleNotificationsDropdown}>
           <Image
             src="/notifications.svg"
             alt="Notifications"
@@ -86,6 +118,24 @@ const Header = ({ hightlighted }: HeaderProps) => {
             height={40}
           />
         </UserProfile>
+
+        <DropdownNotifications $isOpen={isNotificationsDropdownOpen}>
+
+            <h2>Notifications</h2>
+          
+            {
+              notifications.map((notification) => (
+                <div style={{width: "100%"}}>
+                  <NotificationCardComponent title={notification.title} message={notification.message} timestamp={notification.timestamp} />
+                  <SeparationLine />
+
+                </div>
+              ))
+            }
+         
+
+          <Link href="/dashboard/notifications" onClick={toggleNotificationsDropdown}>See all notifications</Link>
+        </DropdownNotifications>
 
         <DropdownMenu $isOpen={isDropdownOpen}>
           <Link href="/profile">

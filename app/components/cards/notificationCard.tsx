@@ -82,7 +82,7 @@ const NotificationCardComponent = ({
       <img className="close" src="/close.svg"></img>
 
       <NotificationHeader>
-        <img src="/warning.svg"></img>
+        <img src="/notification.svg"></img>
 
         <p>{title}</p>
       </NotificationHeader>

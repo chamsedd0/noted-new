@@ -30,6 +30,7 @@ const CourseDashboardCard = styled.div`
   
   @media (max-width: 1470px) {
     min-width: 440px;
+    min-height: 215px;
     max-width: none;
   }
   

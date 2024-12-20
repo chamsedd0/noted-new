@@ -52,8 +52,9 @@ const AddCourseCard = styled.div`
   padding: 24px;
 
   border-radius: 15px;
-  max-width: 100%;
-  max-height: 250px;
+  width: 100%;
+  max-width: 400px;
+  min-height: 215px;
   color: white;
   position: relative;
   transition: all 0.3s ease;
@@ -63,7 +64,6 @@ const AddCourseCard = styled.div`
     width: 64px;
     height: 64px;
 
-    user-drag: none; /* Prevent image dragging */
     -webkit-user-drag: none; /* For WebKit browsers */
     user-select: none; /* Prevent selection */
 
@@ -78,28 +78,19 @@ const AddCourseCard = styled.div`
   
   @media (max-width: 1470px) {
     min-width: 440px;
+    min-height: 215px;
   }
+  
 
 `
 
 const CoursesGrid = styled.div`
-  width: 98%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
-  gap: 20px 20px;
-
-  @media (max-width: 1470px) {
-    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-    gap: 30px 20px;
-  }
-
-  @media (max-width: 1460px) {
-    grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
-    width: 100%;
-  }
-  @media (max-width: 1350px) {
-    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-  }
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: start;
+  justify-content: start;
 `;
 
 const RightBoxReplacement = styled.div`
