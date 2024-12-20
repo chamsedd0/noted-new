@@ -106,6 +106,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
         start: startTime,
         finish: endTime,
         type: "activity",
+        
       };
 
       await onUpdate(updatedEvent);

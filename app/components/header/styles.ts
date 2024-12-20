@@ -15,6 +15,68 @@ const HeaderContainer = styled.div`
   z-index: 100;
 `;
 
+const DropdownNotifications = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  background-color: #413B44;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  
+  width: 300px;
+
+  z-index: 100;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  overflow: hidden;
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? "all" : "none")};
+
+  h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  a {
+    margin-top: 12px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+
+`;  
+
+const SeparationLine = styled.div`
+  width: 90%;
+  height: 1px;
+  background-color: #555059;
+  margin: auto;
+`;
+
+
 const Logo = styled.div`
   display: flex;
   align-items: center;
@@ -31,6 +93,7 @@ const Logo = styled.div`
 const NavItems = styled.div<{
   $hightlightCourse: boolean;
   $hightlightSchedule: boolean;
+  $hightlightNotifications: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -62,7 +125,7 @@ const NavItems = styled.div<{
   }
 
   .notification {
-    opacity: 0.5;
+    opacity: ${(props) => (props.$hightlightNotifications ? 1 : 0.5)};
   }
 `;
 
@@ -96,7 +159,7 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
 
   overflow: hidden;
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
@@ -131,4 +194,4 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   }
 `;
 
-export { HeaderContainer, Logo, NavItems, UserProfile, DropdownMenu };
+export { HeaderContainer, Logo, NavItems, UserProfile, DropdownMenu, DropdownNotifications, SeparationLine };
