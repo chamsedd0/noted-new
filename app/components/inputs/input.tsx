@@ -16,6 +16,17 @@ const Input = styled.input<InputProps>`
   color: #c6c6c6;
   font-weight: 500;
 
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  
+
+  &:focus {
+    text-overflow: clip;
+    overflow: visible;
+  }
+
   &[type="date"] {
     width: 100%;
     padding-right: 20px;
@@ -28,11 +39,11 @@ const Input = styled.input<InputProps>`
 
   &[type="date"]::-webkit-datetime-edit-text {
     color: #c6c6c6;
-    opacity: 0.7; /* Placeholder color */
+    opacity: 0.7;
   }
 
   &[type="date"]::-webkit-datetime-edit {
-    color: #c6c6c6; /* Default text color */
+    color: #c6c6c6;
     opacity: 0.7;
   }
 `;

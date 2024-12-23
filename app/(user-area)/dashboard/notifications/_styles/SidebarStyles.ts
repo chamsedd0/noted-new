@@ -3,12 +3,12 @@ import styled from 'styled-components'
 
 export const SidebarWrapper = styled.div`
   position: fixed;
-  left: 20px;
-  top: 70px;
+  left: 40px;
+  top: 120px;
   width: 290px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 `
 
 export const SidebarHeader = styled.div<{ isCollapsed: boolean }>`
@@ -22,11 +22,11 @@ export const SidebarHeader = styled.div<{ isCollapsed: boolean }>`
   transition: width 0.3s ease;
 
   h2 {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     margin-left: 10px;
     opacity: ${props => props.isCollapsed ? 0 : 1};
-    transition: opacity 0.2s ease;
+    transition: opacity 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
     display: ${props => props.isCollapsed ? 'none' : 'block'};
@@ -70,7 +70,7 @@ export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
     color: white;
     font-size: 16px;
     opacity: ${props => props.isCollapsed ? 0 : 1};
-    transition: opacity 0.2s ease;
+    transition: opacity 0.3s ease;
 
   }
 
@@ -82,7 +82,7 @@ export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
 
 export const SidebarItem = styled.div<{ active?: boolean; isCollapsed?: boolean }>`
   display: flex;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
   align-items: center;
   justify-content: ${props => props.isCollapsed ? 'center' : 'start'};
   min-width: 100%;
@@ -105,8 +105,9 @@ export const SidebarItem = styled.div<{ active?: boolean; isCollapsed?: boolean 
 
 
   p {
+    font-size: 16px;
     opacity: ${props => props.isCollapsed ? 0 : 1};
-    transition: opacity 0.2s ease;
+    transition: opacity 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
     display: ${props => props.isCollapsed ? 'none' : 'block'};

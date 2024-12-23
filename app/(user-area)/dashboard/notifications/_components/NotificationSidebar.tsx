@@ -1,5 +1,4 @@
 'use client'
-import { useState } from 'react'
 import { 
   SidebarWrapper,
   SidebarHeader, 
@@ -20,6 +19,7 @@ export default function NotificationSidebar({ isCollapsed, setIsCollapsed }: Not
 
   return (
     <SidebarWrapper>
+        <h1>Inbox</h1>
       <SidebarHeader isCollapsed={isCollapsed}>
         <h2>Notifications</h2>
         <ToggleButton onClick={toggleSidebar}>
@@ -32,10 +32,7 @@ export default function NotificationSidebar({ isCollapsed, setIsCollapsed }: Not
           <img src="/inbox.svg" alt="Inbox" />
           <p>Inbox</p>
         </SidebarItem>
-        <SidebarItem isCollapsed={isCollapsed}>
-            <img src="/icon4.svg" alt="Inbox" />
-          <p>Read</p>
-        </SidebarItem>
+
         <SidebarItem isCollapsed={isCollapsed}>
             <img src="/icon3.svg" alt="Important" />
           <p>Important</p>
@@ -59,18 +56,12 @@ export default function NotificationSidebar({ isCollapsed, setIsCollapsed }: Not
           <img src="/icon5.svg" alt="Checked" />
           <p>Checked</p>
         </SidebarItem>
-        <SidebarItem isCollapsed={isCollapsed}>
-          <img src="/icon3.svg" alt="Important" />
-          <p>Important</p>
-        </SidebarItem>
+
         <SidebarItem isCollapsed={isCollapsed}>
           <img src="/icon1.svg" alt="Cancelled" />
           <p>Cancelled</p>
         </SidebarItem>
-        <SidebarItem isCollapsed={isCollapsed}>
-          <img src="/deleteInbox.svg" alt="Deleted" />
-          <p>Deleted</p>
-        </SidebarItem>
+
       </SidebarContainer>
     </SidebarWrapper>
   )
