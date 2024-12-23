@@ -6,6 +6,8 @@ import {
   NotificationsContainer, 
   MainContent, 
   Header, 
+  ControlButtons,
+  Button,
   SortButton 
 } from './_styles/NotificationStyles'
 import { RightBoxReplacement } from '../_styles'
@@ -14,6 +16,72 @@ export default function NotificationsPage() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
 
   const notifications = [
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
+    {
+      course: "Data Structures and Algorithms",
+      message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
+      date: "21/10/2024",
+      time: "22:10"
+    },
     {
       course: "Data Structures and Algorithms",
       message: "You have a quiz on 21/10/2024 for Data Structures and Algorithms",
@@ -31,20 +99,38 @@ export default function NotificationsPage() {
       />
       <MainContent isSidebarCollapsed={isSidebarCollapsed}>
         <Header>
-          <h1>InBox</h1>
+          <ControlButtons>
+            <Button>
+              <img src="/emptyCheckbox.svg" alt="Important" />
+            </Button>
+            <Button>
+              <img src="/icon3.svg" alt="Important" />
+            </Button>
+            <Button>
+              <img src="/move.svg" alt="Important" />
+            </Button>
+            <Button>
+              <img src="/deleteInbox.svg" alt="Important" />
+            </Button>
+            <Button>
+              <img src="/refresh.svg" alt="Important" />
+            </Button>
+          </ControlButtons>
           <SortButton>
             Sort by: Date 
           </SortButton>
         </Header>
-        {notifications.map((notification, index) => (
-          <NotificationItem
-            key={index}
-            course={notification.course}
-            message={notification.message}
-            date={notification.date}
-            time={notification.time}
-          />
-        ))}
+        <div className='notifications-container'>
+          {notifications.map((notification, index) => (
+            <NotificationItem
+              key={index}
+              course={notification.course}
+              message={notification.message}
+              date={notification.date}
+              time={notification.time}
+            />
+          ))}
+        </div>
         <RightBoxReplacement></RightBoxReplacement>
       </MainContent>
       

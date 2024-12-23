@@ -1,5 +1,5 @@
 'use client'
-import { Checkbox, BookmarkButton, TimeStamp, NotificationText, NotificationContainer } from '../_styles/NotificationStyles'
+import { TimeStamp, NotificationText, NotificationContainer } from '../_styles/NotificationStyles'
 
 interface NotificationItemProps {
   course: string
@@ -11,16 +11,14 @@ interface NotificationItemProps {
 export default function NotificationItem({ course, message, date, time }: NotificationItemProps) {
   return (
     <NotificationContainer>
-      <Checkbox type="checkbox" />
-      <BookmarkButton>
-        <span className="bookmark-icon">🔖</span>
-      </BookmarkButton>
-      <div>
+        <img src="/emptyCheckbox.svg" alt="Important" />
+        <img src="/emptyImportant.svg" alt="Important" />
+      <div className='notification-text'>
         <NotificationText>
           <strong>{course}</strong>
           <span>{message}</span>
         </NotificationText>
-        <TimeStamp>{`${date} ${time}`}</TimeStamp>
+        <TimeStamp>{`${time}`}</TimeStamp>
       </div>
     </NotificationContainer>
   )
