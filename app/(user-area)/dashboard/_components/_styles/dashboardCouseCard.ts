@@ -10,12 +10,32 @@ const CourseDashboardCard = styled.div`
   padding: 24px;
   padding-top: 45px;
   border-radius: 15px;
-  max-width: 100%;
-  max-height: 250px;
   color: white;
   position: relative;
   transition: all 0.3s ease;
   cursor: pointer;
+  width: 100%;
+  min-height: 215px;
+  max-height: 250px;
+
+  /* Default for larger screens - fill available space */
+  min-width: 300px;
+  max-width: calc(33.33% - 20px); /* Account for grid gap */
+
+  @media (max-width: 1470px) {
+    min-width: 48%;
+    max-width: 48%;
+  }
+
+  @media (max-width: 1200px) {
+    min-width: 48%;
+    max-width: 48%;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    min-width: 280px;
+  }
 
   &:hover {
     background-color: #36303A;
@@ -23,15 +43,8 @@ const CourseDashboardCard = styled.div`
   }
 
   &:active {
-    background-color:rgb(48, 43, 53);
+    background-color: rgb(48, 43, 53);
     box-shadow: none;
-  }
-
-  
-  @media (max-width: 1470px) {
-    min-width: 440px;
-    min-height: 215px;
-    max-width: none;
   }
   
 `;

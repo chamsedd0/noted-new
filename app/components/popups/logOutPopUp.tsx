@@ -15,11 +15,12 @@ const ModalOverlay = styled.div<ModalOverlayProps>`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  opacity: ${(props) => (props.$isOpen ? 1 : 0)};
-  pointer-events: ${(props) => (props.$isOpen ? "all" : "none")};
+  opacity: ${props => (props.$isOpen ? 1 : 0)};
+  visibility: ${props => (props.$isOpen ? 'visible' : 'hidden')};
+  transition: all 0.3s ease;
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ $isOpen?: boolean }>`
   background-color: #2D282F;
   color: white;
   border-radius: 10px;
@@ -33,9 +34,12 @@ const ModalContent = styled.div`
   justify-content: center;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   padding-bottom: 20px;
+  transform: scale(${props => (props.$isOpen ? 1 : 0.95)});
+  opacity: ${props => (props.$isOpen ? 1 : 0)};
+  transition: all 0.3s ease;
 
   @media (max-width: 1470px) {
-    transform: scale(0.9);
+    transform: scale(${props => (props.$isOpen ? 0.9 : 0.85)});
   }
 
   h2 {
@@ -129,7 +133,7 @@ interface LogoutModalProps {
 const LogoutModal = ({ onConfirm, onCancel, isOpen }: LogoutModalProps) => {
   return (
     <ModalOverlay $isOpen={isOpen} onClick={() => onCancel(false)}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+      <ModalContent $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <img src="/Union.svg"></img>
           <CloseButton onClick={() => onCancel(false)}>
