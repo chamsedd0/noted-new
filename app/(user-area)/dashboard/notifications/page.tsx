@@ -132,7 +132,11 @@ export default function NotificationsPage() {
           ))}
         </div>
         <RightBoxReplacement></RightBoxReplacement>
+        
+
+        
       </MainContent>
+      
       
     </NotificationsContainer>
   )

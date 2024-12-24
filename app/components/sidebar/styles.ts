@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const NotifSidebar = styled.div<{ $isProfile?: boolean }>`
-  position: fixed;
+  position: absolute;
   max-height: 77.5vh;
   overflow-y: auto;
   overflow-x: hidden;

@@ -23,7 +23,11 @@ export default function NotificationSidebar({ isCollapsed, setIsCollapsed }: Not
       <SidebarHeader isCollapsed={isCollapsed}>
         <h2>Notifications</h2>
         <ToggleButton onClick={toggleSidebar}>
-          <img src="/burger.svg" alt="Plus" />
+          <img 
+            src={isCollapsed ? "/burger.svg" : "/close.svg"} 
+            alt={isCollapsed ? "Menu" : "Close"}
+            style={!isCollapsed ? {width: '20px', height: '20px'} : undefined}
+          />
         </ToggleButton>
       </SidebarHeader>
 

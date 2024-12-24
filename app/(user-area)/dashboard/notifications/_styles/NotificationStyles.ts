@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 export const NotificationsContainer = styled.div`
   margin-top: 110px;
+  margin-bottom: 40px;
   display: flex;
   max-width: 80%;
   background-color: transparent;

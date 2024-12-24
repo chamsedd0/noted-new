@@ -138,7 +138,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => {
   return (
     <ModalOverlay $isOpen={isOpen} onClick={onCancel}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+      <ModalContent $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <img src="/trash.svg"></img>
           <CloseButton onClick={onCancel}>

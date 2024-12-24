@@ -2,7 +2,7 @@
 import styled from 'styled-components'
 
 export const SidebarWrapper = styled.div`
-  position: fixed;
+  position: absolute;
   left: 40px;
   top: 120px;
   width: 290px;

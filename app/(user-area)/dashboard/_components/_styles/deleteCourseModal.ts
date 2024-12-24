@@ -15,7 +15,7 @@ const ModalOverlay = styled.div<{ isOpen: boolean }>`
   justify-content: center;
   z-index: 1000;
   opacity: ${props => (props.isOpen ? 1 : 0)};
-  pointer-events: ${props => (props.isOpen ? 'all' : 'none')};
+  visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
   transition: all 0.3s ease;
 `;
 
@@ -33,9 +33,12 @@ const ModalContent = styled.div`
   justify-content: center;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   padding-bottom: 20px;
+  transform: scale(${props => (props.isOpen ? 1 : 0.95)});
+  opacity: ${props => (props.isOpen ? 1 : 0)};
+  transition: all 0.3s ease;
 
   @media (max-width: 1470px) {
-    transform: scale(0.9);
+    transform: scale(${props => (props.isOpen ? 0.9 : 0.85)});
   }
 
   h2 {
