@@ -40,7 +40,11 @@ const CourseDashboardCard = styled.div`
   &:hover {
     background-color: #36303A;
     box-shadow: none;
+    transform: translateY(-4px);
   }
+
+
+
 
   &:active {
     background-color: rgb(48, 43, 53);

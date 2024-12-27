@@ -11,21 +11,22 @@ export const AddNoteContainer = styled.div`
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
   min-height: 200px;
-
+  min-width: 300px;
   &:hover {
     transform: translateY(-2px);
   }
 
+  &:active {
+    background-color: #241E27;
+  }
+
   img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     opacity: 0.7;
   }
 
-  p {
-    color: #808080;
-    font-size: 14px;
-  }
+
 ` 

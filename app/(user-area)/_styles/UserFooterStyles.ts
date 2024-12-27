@@ -3,19 +3,17 @@ import styled from 'styled-components'
 
 export const FooterWrapper = styled.footer`
   width: 100%;
-  background-color: #36303A;
   padding: 40px;
   margin-top: auto;
 `
 
 export const FooterContainer = styled.div`
-  max-width: 1600px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 40px;
-  padding: 0 40px;
+  
 
   @media (max-width: 768px) {
     flex-direction: column;

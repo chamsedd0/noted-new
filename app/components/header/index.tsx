@@ -89,9 +89,15 @@ const Header = ({ hightlighted }: HeaderProps) => {
         $hightlightNotifications={hightlighted === "notifications"}
         
       >
+
+        <span className="grades">
+          <Link href="/dashboard/grades" prefetch={true}>
+            Grades
+          </Link>
+        </span>
         <span className="courses">
           <Link href="/dashboard" prefetch={true}>
-            Course Notes
+            Courses
           </Link>
         </span>
         <span className="scheduler">
