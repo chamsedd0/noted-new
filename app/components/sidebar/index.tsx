@@ -136,6 +136,7 @@ const SideBarComponent = ({ page }: { page: string }) => {
               <EmptyMessage>No events scheduled for this day</EmptyMessage>
             )}
           </EventsContainer>
+          
         </div>
       </AnimatedScheduleSection>
     </NotifSidebar>

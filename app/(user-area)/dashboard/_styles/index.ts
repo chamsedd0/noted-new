@@ -48,8 +48,10 @@ const AddCourseCard = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   background-color: #36303A;
   padding: 24px;
+  gap: 15px;
 
   border-radius: 15px;
   
@@ -59,14 +61,15 @@ const AddCourseCard = styled.div`
   cursor: pointer;
 
   img {
-    width: 64px;
-    height: 64px;
-
-    -webkit-user-drag: none; /* For WebKit browsers */
-    user-select: none; /* Prevent selection */
-
+    width: 50px;
+    height: 50px;
+    opacity: 0.7;
   }
 
+
+  &:hover {
+    transform: translateY(-2px);
+  }
   
 
   &:active {
