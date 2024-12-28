@@ -11,25 +11,22 @@ export const SidebarWrapper = styled.div`
   gap: 20px;
 `
 
-export const SidebarHeader = styled.div<{ isCollapsed: boolean }>`
+export const SidebarHeader = styled.div`
   display: flex;
-  justify-content: ${props => props.isCollapsed ? 'center' : 'space-between'};
+  justify-content: space-between;
   align-items: center;
   background-color: #36303A;
   border-radius: 16px;
   padding: 10px 10px;
-  width: ${props => props.isCollapsed ? '80px' : '100%'};
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
 
   h2 {
     font-size: 16px;
     font-weight: 600;
     margin-left: 10px;
-    opacity: ${props => props.isCollapsed ? 0 : 1};
-    transition: opacity 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
-    display: ${props => props.isCollapsed ? 'none' : 'block'};
     
   }
 `
@@ -53,7 +50,7 @@ export const ToggleButton = styled.button`
   }
 `
 
-export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
+export const SidebarContainer = styled.div`
   background-color: #36303A;
   border-radius: 16px;
   padding: 10px;
@@ -61,17 +58,14 @@ export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
   flex-direction: column;
   align-items: start;
   color: white;
-  width: ${props => props.isCollapsed ? '80px' : '100%'};
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
+  
   
   h3 {
     margin: 8px 15px;
     font-weight: 600;
     color: white;
     font-size: 16px;
-    opacity: ${props => props.isCollapsed ? 0 : 1};
-    transition: opacity 0.3s ease;
-
   }
 
   img {
@@ -82,17 +76,17 @@ export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
 
 export const SidebarItem = styled.div<{ active?: boolean; isCollapsed?: boolean }>`
   display: flex;
-  transition: background-color 0.3s ease;
   align-items: center;
   justify-content: ${props => props.isCollapsed ? 'center' : 'start'};
-  min-width: 100%;
   min-height: 60px;
+  min-width: 100%;
   gap: 20px;
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 12px;
   margin: 0.5px 0;
   background-color: ${props => props.active ? '#413B44' : 'transparent'};
+  transition: all 0.3s ease;
   
   &:hover {
     background-color: #413B44;
@@ -103,13 +97,14 @@ export const SidebarItem = styled.div<{ active?: boolean; isCollapsed?: boolean 
     justify-self: center;
   }
 
-
   p {
     font-size: 16px;
     opacity: ${props => props.isCollapsed ? 0 : 1};
-    transition: opacity 0.3s ease;
+    transform: ${props => props.isCollapsed ? 'translateX(-20px)' : 'translateX(0)'};
+    transition: opacity 0.3s ease, transform 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
-    display: ${props => props.isCollapsed ? 'none' : 'block'};
+    pointer-events: ${props => props.isCollapsed ? 'none' : 'auto'};
+    position: ${props => props.isCollapsed ? 'absolute' : 'relative'};
   }
-` 
+`

@@ -146,7 +146,7 @@ const LogoutModal = ({ onConfirm, onCancel, isOpen }: LogoutModalProps) => {
           schedule and classes
         </p>
         <ButtonWrapper>
-          <DeleteButton onClick={() => onConfirm()}>Log out</DeleteButton>
+          <a href="/" onClick={() => onConfirm()}><DeleteButton>Log out</DeleteButton></a>
           <CancelButton onClick={() => onCancel(false)}>Cancel</CancelButton>
         </ButtonWrapper>
       </ModalContent>

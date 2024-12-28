@@ -7,7 +7,7 @@ import UserFooter from "./_components/UserFooter";
 import styled from "styled-components";
 
 const LayoutWrapper = styled.div`
-  min-height: 100vh;
+  min-height: 160vh;
   display: flex;
   flex-direction: column;
 `

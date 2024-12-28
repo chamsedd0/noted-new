@@ -60,8 +60,6 @@ const Header = ({ hightlighted }: HeaderProps) => {
     try {
       await signOutUser();
       console.log("User signed out successfully.");
-      router.prefetch("/");
-      router.replace("/");
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -91,19 +89,18 @@ const Header = ({ hightlighted }: HeaderProps) => {
       >
 
         <span className="grades">
-          <Link href="/dashboard/grades" prefetch={true}>
+          <a href="/dashboard/grades">
             Grades
-          </Link>
+          </a>
         </span>
         <span className="courses">
-          <Link href="/dashboard" prefetch={true}>
-            Courses
-          </Link>
+            <a href="/dashboard">
+            Courses</a>
         </span>
         <span className="scheduler">
-          <Link href="/scheduler" prefetch={true}>
+          <a href="/scheduler">
             Scheduler
-          </Link>
+          </a>
         </span>
         <span className="notification" onClick={toggleNotificationsDropdown}>
           <Image
@@ -144,10 +141,10 @@ const Header = ({ hightlighted }: HeaderProps) => {
         </DropdownNotifications>
 
         <DropdownMenu $isOpen={isDropdownOpen}>
-          <Link href="/profile">
+          <a href="/profile">
             <Image src="/profile.svg" width={24} height={24} alt="profile" />
             Profile
-          </Link>
+          </a>
 
 
           <button

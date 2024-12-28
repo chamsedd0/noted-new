@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 const NotifSidebar = styled.div<{ $isProfile?: boolean }>`
   position: absolute;
-  max-height: 77.5vh;
+  
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -35,10 +36,13 @@ const NotifSidebar = styled.div<{ $isProfile?: boolean }>`
   scrollbar-width: none; /* Firefox */
 `;
 
-// Notification section
-const NotificationSection = styled.div<{ $isOpen: boolean }>`
+export const SectionContent = styled(motion.div)`
   width: 100%;
+  overflow: hidden;
+`;
 
+const NotificationSection = styled.div`
+  width: 100%;
 
   h3 {
     color: #fff;
@@ -50,33 +54,6 @@ const NotificationSection = styled.div<{ $isOpen: boolean }>`
     gap: 20px;
     cursor: pointer;
     width: 100%;
-    
-
-    img {
-      width: 24px;
-      height: 24px;
-    }
-
-    .toggle-icon {
-      width: 12px;
-      height: 12px;
-      transition: transform 0.3s ease;
-      transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
-      
-    }
-  }
-
-  .content {
-    width: 100%;
-    height: ${props => props.$isOpen ? 'auto' : '0'};
-    opacity: ${props => props.$isOpen ? '1' : '0'};
-    overflow: hidden;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-    gap: 10px;
   }
 `;
 
@@ -94,7 +71,7 @@ const ScheduleSection = styled.div`
     font-size: 24px;
     margin-bottom: 10px;
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: start;
     gap: 20px;
     width: 100%;
@@ -145,25 +122,19 @@ const NavigationButton = styled.button`
   }
 `;
 // Add new styled components for animations
-const AnimatedScheduleSection = styled(ScheduleSection)<{ $isOpen: boolean }>`
+const AnimatedScheduleSection = styled.div`
+  width: 100%;
+
   h3 {
-    margin-bottom: 10px;
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 20px;
     cursor: pointer;
-
-    .toggle-icon {
-      width: 12px;
-      height: 12px;
-      transition: transform 0.3s ease;
-      transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
-    }
-  }
-
-  .content {
     width: 100%;
-    height: ${props => props.$isOpen ? 'auto' : '0'};
-    opacity: ${props => props.$isOpen ? '1' : '0'};
-    overflow: hidden;
-    transition: all 0.3s ease;
   }
 `;
 
@@ -174,6 +145,18 @@ const EventsContainer = styled.div<{ isChanging: boolean }>`
   width: 100%;
   opacity: ${(props) => (props.isChanging ? 0 : 1)};
   transition: opacity 0.3s ease;
+  max-height: 200px; // Height for 3 cards (60px + 10px gap per card)
+  overflow-y: auto;
+  padding-right: 10px;
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 `;
 
 // Add a new styled component for the empty message
