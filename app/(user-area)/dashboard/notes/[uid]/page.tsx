@@ -26,7 +26,7 @@ interface DragState {
 export default function CoursePage({ params }: { params: { uid: string } }) {
   const { courses } = globalStore();
 
-  const course = courses.find((course) => course.uid === params.uid);
+    const course = courses.find((course) => course.uid === params.uid);
   const smartNotesGridRef = useRef<HTMLDivElement>(null)
   const regularNotesGridRef = useRef<HTMLDivElement>(null)
   const recentNotesGridRef = useRef<HTMLDivElement>(null)
@@ -251,12 +251,12 @@ export default function CoursePage({ params }: { params: { uid: string } }) {
       gridRef.current.scrollLeft += scrollAmount
     }
   }
-
-  if (!course) {
-    return <div>Course not found</div>;
-  }
-
-  return (
+  
+    if (!course) {
+      return <div>Course not found</div>;
+    }
+  
+    return (
     <CourseNotesContainer>
       <CourseHeader>
         <h1>{course.title} <BookMark color={course.color} /></h1>
@@ -425,5 +425,5 @@ export default function CoursePage({ params }: { params: { uid: string } }) {
 
       <RightBoxReplacement></RightBoxReplacement>
     </CourseNotesContainer>
-  );
-}
+    );
+  }

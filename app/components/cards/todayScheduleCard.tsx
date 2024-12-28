@@ -1,11 +1,8 @@
 import styled from "styled-components";
 
-// Main container for the card
-
 type ScheduleCardDivProps = {
   color: string;
-  title: string;
-  timestamp: string;
+  isPast: boolean;
 };
 
 const ScheduleCard = styled.div<ScheduleCardDivProps>`
@@ -13,7 +10,7 @@ const ScheduleCard = styled.div<ScheduleCardDivProps>`
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  background-color: ${({ color }) => color || "#545454"};
+  background-color: ${({ color, isPast }) => isPast ? `${color}80` : color};  // Add transparency for past events
   padding: 16px;
   border-radius: 10px;
   min-width: 100%;
@@ -21,6 +18,20 @@ const ScheduleCard = styled.div<ScheduleCardDivProps>`
   color: white;
   font-weight: 600;
   font-size: 14px;
+  position: relative;
+  
+  ${({ isPast }) => isPast && `
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+  `}
 
   .time {
     text-align: end;
@@ -32,15 +43,19 @@ const ScheduleCard = styled.div<ScheduleCardDivProps>`
   }
 `;
 
-type ScheduleCardProps = {
+interface ScheduleCardProps {
   color: string;
   title: string;
   timestamp: string;
-};
+  start: number;
+}
 
-const ScheduleCardComponent = ({ color, title, timestamp }: ScheduleCardProps) => {
+const ScheduleCardComponent = ({ color, title, timestamp, start }: ScheduleCardProps) => {
+  const currentHour = new Date().getHours();
+  const isPast = start < currentHour;
+
   return (
-    <ScheduleCard color={color} title={title} timestamp={timestamp}>
+    <ScheduleCard color={color} isPast={isPast}>
       <div className="title">{title}</div>
       <div className="time">{timestamp}</div>
     </ScheduleCard>
