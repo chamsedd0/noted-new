@@ -16,6 +16,10 @@ import {
   DropdownNotifications,
   SeparationLine,
   DropdownMenu,
+  MobileMenuButton,
+  MobileMenu,
+  MobileMenuContent,
+  MobileNavItems,
 } from "./styles";
 import globalStore from "@/app/(user-area)/_store";
 
@@ -36,6 +40,7 @@ const Header = ({ hightlighted }: HeaderProps) => {
   const { user } = globalStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [isNotificationsDropdownOpen, setIsNotificationsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const notifications = [
     {
@@ -80,14 +85,13 @@ const Header = ({ hightlighted }: HeaderProps) => {
       <Logo>
         <Image src="/logo.svg" width={100} height={30} alt="logo" />
       </Logo>
-      <SearchBarComponent />
+
+      {/* Desktop Navigation */}
       <NavItems
         $hightlightCourse={hightlighted === "dashboard"}
         $hightlightSchedule={hightlighted === "scheduler"}
         $hightlightNotifications={hightlighted === "notifications"}
-        
       >
-
         <span className="grades">
           <a href="/dashboard/grades">
             Grades
@@ -164,6 +168,66 @@ const Header = ({ hightlighted }: HeaderProps) => {
           onConfirm={handleLogout}
         />
       </NavItems>
+
+      {/* Mobile Menu Button */}
+      <MobileMenuButton onClick={() => setIsMobileMenuOpen(true)}>
+        <img src="/burger.svg" alt="Menu" />
+      </MobileMenuButton>
+
+      {/* Mobile Menu */}
+      <MobileMenu $isOpen={isMobileMenuOpen}>
+        <MobileMenuContent $isOpen={isMobileMenuOpen}>
+          <div className="menu-header">
+            <h2>Menu</h2>
+            <button onClick={() => setIsMobileMenuOpen(false)}>
+              <img src="/close.svg" alt="Close" />
+            </button>
+          </div>
+
+          <SearchBarComponent />
+
+          <MobileNavItems>
+            <a href="/dashboard/grades">Grades</a>
+            <a href="/dashboard">Courses</a>
+            <a href="/scheduler">Scheduler</a>
+          </MobileNavItems>
+
+          <UserProfile onClick={toggleDropdown}>
+            {user?.name}
+            <Image
+              src={"/defaultProfile.png"}
+              alt="User profile"
+              width={40}
+              height={40}
+            />
+          </UserProfile>
+        </MobileMenuContent>
+      </MobileMenu>
+
+      {/* Always visible notification icon */}
+      <span className="notification" onClick={toggleNotificationsDropdown}>
+        <Image
+          src="/notifications.svg"
+          alt="Notifications"
+          width={24}
+          height={24}
+        />
+      </span>
+
+      {/* Existing dropdowns */}
+      <DropdownNotifications $isOpen={isNotificationsDropdownOpen}>
+        {/* ... */}
+      </DropdownNotifications>
+
+      <DropdownMenu $isOpen={isDropdownOpen}>
+        {/* ... */}
+      </DropdownMenu>
+
+      <LogoutModal
+        isOpen={isModalOpen}
+        onCancel={setModalOpen}
+        onConfirm={handleLogout}
+      />
     </HeaderContainer>
   );
 };

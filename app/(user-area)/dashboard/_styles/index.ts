@@ -20,7 +20,7 @@ const ContentWrapper = styled.div`
 
 const CoursesSection = styled.div`
   flex: 3;
-  max-width: 85%;
+  width: 80%;
   color: #fff;
   h1 {
     font-size: 32px;
@@ -31,8 +31,21 @@ const CoursesSection = styled.div`
   }
   padding: 20px;
 
-  @media (max-width: 1200px) {
-    max-width: 100%;
+  
+  @media (max-width: 1600px) {
+    width: 77%;
+  }
+
+  @media (max-width: 1400px) {
+    width: 74%;
+  }
+
+  @media (max-width: 1300px) {
+    width: 70%;
+  }
+
+  @media (max-width: 1100px) {
+    width: 100%;
   }
 `;
 

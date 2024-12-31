@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isToday, isSameDay } from 'date-fns';
-import { CalendarWrapper, Header, MonthYear, Button, DaysWrapper, DayLabel, DateGrid, DateCell } from './styling';
+import { CalendarWrapper, Header, MonthYear, Button, DaysWrapper, DayLabel, DateGrid, DateCell, EventTooltip } from './styling';
+
+interface CalendarEvent {
+  date: Date;
+  title: string;
+}
 
 const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const events = [
-    new Date(2024, 11, 4),
-    new Date(2024, 11, 9),
-    new Date(2024, 11, 13),
-    new Date(2024, 11, 20),
+  const events: CalendarEvent[] = [
+    { date: new Date(2024, 11, 4), title: "Meeting with Professor" },
+    { date: new Date(2024, 11, 9), title: "Project Deadline" },
+    { date: new Date(2024, 11, 13), title: "Study Group" },
+    { date: new Date(2024, 11, 20), title: "Final Exam" },
   ];
 
   const startDay = startOfWeek(startOfMonth(currentMonth));
@@ -18,8 +22,6 @@ const Calendar = () => {
 
   const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
   const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-
-  const handleDateClick = (day: Date) => setSelectedDate(day);
 
   const renderDays = () => {
     const days = [];
@@ -48,12 +50,18 @@ const Calendar = () => {
           <DateCell
             key={day.toISOString()}
             isToday={isToday(day)}
-            isSelected={isSameDay(day, selectedDate)}
-            isEvent={events.some((event) => isSameDay(day, event))}
+            isEvent={events.some((event) => isSameDay(day, event.date))}
             isDisabled={!isSameMonth(day, currentMonth)}
-            onClick={() => handleDateClick(cloneDay)}
           >
             {format(day, 'd')}
+            {events.some((event) => isSameDay(day, event.date)) && (
+              <EventTooltip>
+                {events
+                  .filter(event => isSameDay(day, event.date))
+                  .map(event => event.title)
+                  .join(', ')}
+              </EventTooltip>
+            )}
           </DateCell>
         );
         day = addDays(day, 1);
