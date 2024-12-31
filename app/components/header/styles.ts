@@ -13,6 +13,80 @@ const HeaderContainer = styled.div`
   font-weight: 700;
   position: fixed;
   z-index: 100;
+
+  @media (max-width: 1024px) {
+    padding: 15px 20px;
+    gap: 20px;
+    justify-content: space-between;
+  }
+`;
+
+const MobileMenuButton = styled.button`
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+
+  @media (max-width: 1024px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
+const MobileMenu = styled.div<{ $isOpen: boolean }>`
+  display: none;
+  
+  @media (max-width: 1024px) {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+    pointer-events: ${({ $isOpen }) => ($isOpen ? "all" : "none")};
+    transition: opacity 0.3s ease;
+  }
+`;
+
+const MobileMenuContent = styled.div<{ $isOpen: boolean }>`
+  background-color: #36303A;
+  width: 300px;
+  height: 100%;
+  padding: 20px;
+  transform: translateX(${({ $isOpen }) => ($isOpen ? "0" : "-100%")});
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
 `;
 
 const DropdownNotifications = styled.div<{ $isOpen: boolean }>`
@@ -99,6 +173,10 @@ const NavItems = styled.div<{
   align-items: center;
   gap: 60px;
   color: white;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
 
   span {
     transition: all 0.3s ease;
@@ -194,4 +272,22 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   }
 `;
 
-export { HeaderContainer, Logo, NavItems, UserProfile, DropdownMenu, DropdownNotifications, SeparationLine };
+const MobileNavItems = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+`;
+
+export { HeaderContainer, Logo, NavItems, UserProfile, DropdownMenu, DropdownNotifications, SeparationLine, MobileMenuButton, MobileMenu, MobileMenuContent, MobileNavItems };

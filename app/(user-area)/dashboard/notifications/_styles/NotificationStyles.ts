@@ -5,13 +5,26 @@ export const NotificationsContainer = styled.div`
   margin-top: 110px;
   margin-bottom: 40px;
   display: flex;
-  max-width: 80%;
+  width: 80%;
   background-color: transparent;
   color: white;
   border-radius: 16px;
 
+  
+  @media (max-width: 1600px) {
+    width: 77%;
+  }
+
+  @media (max-width: 1400px) {
+    width: 73%;
+  }
+
+  @media (max-width: 1300px) {
+    width: 74%;
+  }
+
   @media (max-width: 1100px) {
-    max-width: 100%;
+    width: 100%;
   }
 `
 
