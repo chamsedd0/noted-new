@@ -4,30 +4,29 @@ import { useState } from "react";
 import SearchBarComponent from "@/app/components/inputs/searchBar";
 import Link from "next/link";
 import LogoutModal from "@/app/components/popups/logOutPopUp";
-import { useRouter } from "next/navigation";
-import { signOutUser } from "@/app/lib/firebase";
 import Image from "next/image";
 import NotificationCardComponent from "../cards/notificationCard";
 import {
   HeaderContainer,
   Logo,
-  NavItems,
-  UserProfile,
-  DropdownNotifications,
-  SeparationLine,
-  DropdownMenu,
   MobileMenuButton,
   MobileMenu,
   MobileMenuContent,
+  DropdownNotifications,
+  SeparationLine,
+  UserProfile,
   MobileNavItems,
+  NavItems,
+  DropdownMenu,
+  NotificationIndicator,
+  NotificationWrapper,
 } from "./styles";
 import globalStore from "@/app/(user-area)/_store";
+import { signOutUser } from "@/app/lib/firebase";
 
 interface HeaderProps {
   hightlighted: "profile" | "dashboard" | "scheduler" | "notifications";
 }
-
-
 
 interface UserProfile {
   name: string;
@@ -35,12 +34,11 @@ interface UserProfile {
 }
 
 const Header = ({ hightlighted }: HeaderProps) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNotificationsDropdownOpen, setIsNotificationsDropdownOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const router = useRouter();
   const { user } = globalStore();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isNotificationsDropdownOpen, setIsNotificationsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const notifications = [
     {
@@ -75,8 +73,15 @@ const Header = ({ hightlighted }: HeaderProps) => {
     setIsNotificationsDropdownOpen(false);
   };
 
-  const toggleNotificationsDropdown = () => {
-    setIsNotificationsDropdownOpen(!isNotificationsDropdownOpen);
+  const handleClickOutside = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).classList.contains('mobile-overlay')) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  const handleLinkClick = () => {
+    setIsMobileMenuOpen(false);
+    setIsNotificationsDropdownOpen(false);
     setIsDropdownOpen(false);
   };
 
@@ -86,142 +91,132 @@ const Header = ({ hightlighted }: HeaderProps) => {
         <Image src="/logo.svg" width={100} height={30} alt="logo" />
       </Logo>
 
+      <div className="search-section">
+        <SearchBarComponent />
+      </div>
+
       {/* Desktop Navigation */}
-      <NavItems
-        $hightlightCourse={hightlighted === "dashboard"}
-        $hightlightSchedule={hightlighted === "scheduler"}
-        $hightlightNotifications={hightlighted === "notifications"}
-      >
-        <span className="grades">
-          <a href="/dashboard/grades">
-            Grades
-          </a>
-        </span>
-        <span className="courses">
-            <a href="/dashboard">
-            Courses</a>
-        </span>
-        <span className="scheduler">
-          <a href="/scheduler">
-            Scheduler
-          </a>
-        </span>
-        <span className="notification" onClick={toggleNotificationsDropdown}>
-          <Image
-            src="/notifications.svg"
-            alt="Notifications"
-            width={24}
-            height={24}
-          />
-        </span>
-
-        {/* UserProfile Section */}
-        <UserProfile onClick={toggleDropdown}>
-          {user?.name}
-          <Image
-            src={"/defaultProfile.png"}
-            alt="User profile"
-            width={40}
-            height={40}
-          />
-        </UserProfile>
-
-        <DropdownNotifications $isOpen={isNotificationsDropdownOpen}>
-
-            <h2>Notifications</h2>
-          
-            {
-              notifications.map((notification) => (
-                <div style={{width: "100%"}}>
-                  <NotificationCardComponent title={notification.title} message={notification.message} timestamp={notification.timestamp} />
-                  <SeparationLine />
-
-                </div>
-              ))
-            }
-         
-
-          <Link href="/dashboard/notifications" onClick={toggleNotificationsDropdown}>See all notifications</Link>
-        </DropdownNotifications>
+      <div className="desktop-nav">
+        <NavItems
+          $hightlightCourse={hightlighted === "dashboard"}
+          $hightlightSchedule={hightlighted === "scheduler"}
+          $hightlightNotifications={hightlighted === "notifications"}
+        >
+          <span className="grades">
+            <Link href="/dashboard/grades">Grades</Link>
+          </span>
+          <span className="courses">
+            <Link href="/dashboard">Courses</Link>
+          </span>
+          <span className="scheduler">
+            <Link href="/scheduler">Scheduler</Link>
+          </span>
+          <NotificationWrapper className="notification" onClick={() => setIsNotificationsDropdownOpen(!isNotificationsDropdownOpen)}>
+            <Image src="/notifications.svg" alt="Notifications" width={24} height={24} />
+            {notifications.length > 0 && <NotificationIndicator />}
+          </NotificationWrapper>
+          <UserProfile onClick={toggleDropdown}>
+            {user?.name}
+            <Image src={"/defaultProfile.png"} alt="User profile" width={40} height={40} />
+          </UserProfile>
+        </NavItems>
 
         <DropdownMenu $isOpen={isDropdownOpen}>
-          <a href="/profile">
+          <Link href="/profile">
             <Image src="/profile.svg" width={24} height={24} alt="profile" />
             Profile
-          </a>
-
-
-          <button
-            onClick={() => {
-              setModalOpen(true);
-              setIsDropdownOpen(false);
-            }}
-          >
+          </Link>
+          <button onClick={() => setModalOpen(true)}>
             <Image src="/logout.svg" width={24} height={24} alt="logout" />
             Log Out
           </button>
         </DropdownMenu>
+      </div>
 
-        <LogoutModal
-          isOpen={isModalOpen}
-          onCancel={setModalOpen}
-          onConfirm={handleLogout}
-        />
-      </NavItems>
-
-      {/* Mobile Menu Button */}
-      <MobileMenuButton onClick={() => setIsMobileMenuOpen(true)}>
-        <img src="/burger.svg" alt="Menu" />
-      </MobileMenuButton>
+      {/* Mobile Controls */}
+      <div className="mobile-controls">
+        <NotificationWrapper className="notification" onClick={() => setIsNotificationsDropdownOpen(!isNotificationsDropdownOpen)}>
+          <Image src="/notifications.svg" alt="Notifications" width={24} height={24} />
+          {notifications.length > 0 && <NotificationIndicator />}
+        </NotificationWrapper>
+        <MobileMenuButton onClick={() => setIsMobileMenuOpen(true)}>
+          <img src="/burger.svg" alt="Menu" />
+        </MobileMenuButton>
+      </div>
 
       {/* Mobile Menu */}
-      <MobileMenu $isOpen={isMobileMenuOpen}>
+      <MobileMenu 
+        $isOpen={isMobileMenuOpen} 
+        className="mobile-overlay"
+        onClick={handleClickOutside}
+      >
         <MobileMenuContent $isOpen={isMobileMenuOpen}>
           <div className="menu-header">
             <h2>Menu</h2>
             <button onClick={() => setIsMobileMenuOpen(false)}>
-              <img src="/close.svg" alt="Close" />
+              <img src="/close.svg" alt="Close" style={{ width: '20px', height: '20px' }} />
             </button>
           </div>
 
-          <SearchBarComponent />
+          <div className="search-container">
+            <SearchBarComponent />
+          </div>
 
           <MobileNavItems>
-            <a href="/dashboard/grades">Grades</a>
-            <a href="/dashboard">Courses</a>
-            <a href="/scheduler">Scheduler</a>
+            <Link href="/dashboard/grades" onClick={handleLinkClick}>
+              <img src="/grades.svg" alt="Grades" />
+              Grades
+            </Link>
+            <Link href="/dashboard" onClick={handleLinkClick}>
+              <img src="/courses.svg" alt="Courses" />
+              Courses
+            </Link>
+            <Link href="/scheduler" onClick={handleLinkClick}>
+              <img src="/schedule.svg" alt="Scheduler" />
+              Scheduler
+            </Link>
+            <Link href="/dashboard/notifications" onClick={handleLinkClick}>
+              <NotificationWrapper>
+                <img src="/notifications.svg" alt="Notifications" />
+                {notifications.length > 0 && <NotificationIndicator />}
+              </NotificationWrapper>
+              Notifications
+            </Link>
+            <Link href="/profile" onClick={handleLinkClick}>
+              <img src="/profile.svg" alt="Profile" />
+              Profile
+            </Link>
           </MobileNavItems>
 
-          <UserProfile onClick={toggleDropdown}>
-            {user?.name}
-            <Image
-              src={"/defaultProfile.png"}
-              alt="User profile"
-              width={40}
-              height={40}
-            />
-          </UserProfile>
+          <div className="profile-section">
+            <UserProfile>
+              {user?.name}
+              <Image src={"/defaultProfile.png"} alt="User profile" width={40} height={40} />
+            </UserProfile>
+
+            <button 
+              className="logout-button"
+              onClick={() => setModalOpen(true)}
+            >
+              <Image src="/logout.svg" width={24} height={24} alt="logout" />
+              Log Out
+            </button>
+          </div>
         </MobileMenuContent>
       </MobileMenu>
 
-      {/* Always visible notification icon */}
-      <span className="notification" onClick={toggleNotificationsDropdown}>
-        <Image
-          src="/notifications.svg"
-          alt="Notifications"
-          width={24}
-          height={24}
-        />
-      </span>
-
-      {/* Existing dropdowns */}
       <DropdownNotifications $isOpen={isNotificationsDropdownOpen}>
-        {/* ... */}
+        <h2>Notifications</h2>
+        {notifications.map((notification, index) => (
+          <div key={index} style={{width: "100%"}}>
+            <NotificationCardComponent {...notification} />
+            <SeparationLine />
+          </div>
+        ))}
+        <Link href="/dashboard/notifications" onClick={() => setIsNotificationsDropdownOpen(false)}>
+          See all notifications
+        </Link>
       </DropdownNotifications>
-
-      <DropdownMenu $isOpen={isDropdownOpen}>
-        {/* ... */}
-      </DropdownMenu>
 
       <LogoutModal
         isOpen={isModalOpen}
