@@ -10,13 +10,13 @@ import {
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC8lo3amCw3tbIF4ZDte88wr0lT_EKncy4",
-  authDomain: "firo-f9739.firebaseapp.com",
-  projectId: "firo-f9739",
-  storageBucket: "firo-f9739.firebasestorage.app",
-  messagingSenderId: "687041022206",
-  appId: "1:687041022206:web:34938743dc517d9bdbfdaf",
-  measurementId: "G-0T47HFHQEB",
+  apiKey: "AIzaSyCLNjp0w2PesKAU1cxkxqYA2p2f0gDjKf0",
+  authDomain: "smart-notes-ai.firebaseapp.com",
+  projectId: "smart-notes-ai",
+  storageBucket: "smart-notes-ai.firebasestorage.app",
+  messagingSenderId: "543408347905",
+  appId: "1:543408347905:web:9e114c073a2cb85bb99900",
+  measurementId: "G-Y708KB7KS5"
 };
 
 // Initialize Firebase
